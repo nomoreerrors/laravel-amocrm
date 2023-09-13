@@ -21,19 +21,26 @@ class AmoAuthController extends Controller
 
         $data = [
             "client_id" => "d7424ba2-7070-4a5b-9124-dcdea55b6197",
-            "client_secret" => "pX2z7hawERQNVRhqQ4EbW8AWvP9uLowN96cjB7Z2SugWPPZe5jORLQU8EIK95GF1",
+            "client_secret" => "RTseKQRdMwe3tH0WO450mwgRT0TvMeyL6A2UjlsOxhzRM7P3eGnCCQVydCsH1GMn",
             "grant_type" => "authorization_code",
-            "code" => "def502008b43da7e7230ffa8bf0d85973152a04040e294c1e149a78eb876fb58c839271b0d50f1cbce66914ec87aa0e5bd9446b284d8a296ed87691cc4098d6a82e1087964fa28e9c55f632c3456d74523ec5130dad88942e065b084477493b1596b350a75b8b8672b10fbf5f72f1ff9e31c29c01441279a4d4f29a7c85cee23548719536d8a161ae5f8726e2ea35016b92666fe165259978322ca1b8f2997266d436b244fd31d1b0f60e56dae4286bc40918cd4309b75711f3e8d5f89e26ee8a34059d9b1efc2eb16e3dbe0cb2c1f1993acfb968135974b24e7c096e5a64cb0eebe5bdf13639aceddffe535cf335ce2fefc29f73c975c492d53c159f26328f4251acc8d3170bd9468926fd6271f2880042f3514c09b158b91ca5452464242b6acdfc5ac073ae2c8990948ef47402fa2859994ce595c0d94be8c0586dc2017f7697c40e3f3b0ff5e127e060016c932ae836e16310106f64580ad909883e587cff4279db2d866484797a6d4ea136b287703e52f563e3091f6f75f2a451d4c5a9f82910cb0107644c1368db9d59008218a1b9d639304ed2530753ca12c4c36637da83680f8ff8911872059c3c0b86a8abe9cfef7cdbe822eb3ca1f042c2a4806235e1eb05f67b5b64ab01cc342ec78a2b378a87912543c26959d6fe80c55c9832e9626d2e650f85fa3226c6f2fc6",
+            "code" => "def50200eacb359cb21f238691a5ae06861c1c93ac8667351a4d183795418cbb6bf44a917ab584fc0ac24f8ee505af266dd136e6f1ee5935015063d2079ad8b95571f4e9f0d75d3a537230c5b61484293637e67e442a0f2e72102334ee981de7094098ce52618d4c5b52eb830ffde99c4bd814121c22cb6bdd1ce37223dc6e2be723ef7d1385f495a3672d7745d1800fb485d3d86c7c851568265318978d480c4a27de3afe3c86b416ad020bbccff65de75f9606d0f6fdf0dcb63875fcae8de7606ad3d6e05f49848afe57afc0c91f522dbe488d94a812e1f90735a474117b8e27174b34b05ee86d802db7083198c7f31e2486848d0b2ef6ae8b3e90eb44cdeb2e23f3ce032fa93be5324ec005504f97e8aa35a8da8bd47f45994f4392c926ceb85aae87a66ca96faa72d6a37ef357259092568d6ee7a7b990a5b38b6b3d954bb96213166d01c8cfef3cb55c610aeb68095d3b4506c54b7ae70ca151571579dbe7281f8dcb17bd26a6bcf5f29e2215c70019a700852d6c14fbadd38608f0a2e02840af777728d0361669e40653be1fcf47999b5035c80d2186914b812c49d43ff81ec2e591004d34af93508b6406d51380b066cf8769faa697cbb78835a3b25a031f38f210b84e916cc24155d49cc556a09d10c964720bf4039420891895debdaf753e40e6e5b927022cb34449",
             "redirect_uri" => "http://gingerbw.beget.tech"
         ];
+
+        $apiClient = new AmoCRMApiClient($data['client_id'], $data['client_secret'], $data['redirect_uri']);
+        $token = $apiClient->getAccessToken();
+        dd($token);
+
+
+
+
         
+        // $apiClient = Http::withHeaders([
+        //     "content-type" => "application/json",
+        //     "User-Agent" => "amoCRM-oAuth-client/1.0",
+        // ])->post($link, $data);
 
-        $apiClient = Http::withHeaders([
-            "content-type" => "application/json",
-            "User-Agent" => "amoCRM-oAuth-client/1.0",
-        ])->post($link, $data);
 
-        dd($apiClient);
 
 
      }
