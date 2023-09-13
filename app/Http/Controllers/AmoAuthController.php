@@ -11,10 +11,7 @@ use AmoCRM\Client\AmoCRMApiClient;
 class AmoAuthController extends Controller
 {
 
-    // public function __construct()
-    // {
-    //     app()->call('App\Http\Controllers\AdminControllers@yourmethod');
-    // }
+   
     
     protected function getToken()
     {
@@ -31,26 +28,12 @@ class AmoAuthController extends Controller
         ];
         
 
-        // $apiClient = new AmoCRMApiClient($data['client_id'], $data['client_secret'], $data['redirect_uri']);
-        // $apiClient->setAccountBaseDomain($subdomain);
+        $apiClient = Http::withHeaders([
+            "content-type" => "application/json",
+            "User-Agent" => "amoCRM-oAuth-client/1.0",
+        ])->post($link, $data);
 
-
-
-        $cuddy = Http::asForm()
-                        ->post($link, $data);
-            
-            
-         
-
-
-
-        dd($cuddy);
-        // $apiClient = Http::withHeaders([
-        //     "content-type" => "application/json",
-        //     "User-Agent" => "amoCRM-oAuth-client/1.0",
-        // ])->post($link, $data);
-
-        // dd($apiClient);
+        dd($apiClient);
 
 
      }
