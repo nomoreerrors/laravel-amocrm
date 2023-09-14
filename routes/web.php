@@ -19,4 +19,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
 Route::get('/token', [AmoAuthController::class, 'getToken']);
+Route::get('/sponsor', [AmoAuthController::class, 'getSponsor']);
