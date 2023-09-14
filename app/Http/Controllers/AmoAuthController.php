@@ -9,6 +9,7 @@ use AmoCRM\Client\AmoCRMApiClient;
 use Carbon\Exceptions\Exception;
 use Spatie\FlareClient\Api;
 
+
 class AmoAuthController extends Controller
 {
     
@@ -32,72 +33,72 @@ class AmoAuthController extends Controller
 
         $apiClient = new AmoCRMApiClient($client_id, $client_secret, $redirect_uri);
 
+        
+        $subdomain = 'gingersnaps'; 
+        $link = 'https://' . $subdomain . '.amocrm.ru/oauth2/access_token'; 
 
-            if (isset($_GET['referer'])) {
-                $apiClient->setAccountBaseDomain($_GET['referer']);
+
+        $data = [
+            'client_id' => 'c619beb0-3934-4354-8b73-515ce57573ee',
+            'client_secret' => '5OWp4jw9Y4qvnGPZ3IzJbY6PDD2KoxgNM6c5FmFHK2G1hGDpwfogTW4uryPq0MGU',
+            'grant_type' => 'authorization_code',
+            'code' => 'def50200b059873de08cfe4f381d76f460bc6c60e2777ae4b0e466127e3820a4acd7682a19e421769b222aa3c496ce778f479453577c8f0e3a24168714ffe75f682d9020fd609f4aa7772aeba3cf404ca4b21075ca05e44d6435f36ed6719d65cd9f472190df51401e8306bf4f522d1e531173b4215b9aab7554da5d18f61828f60c394f21f2f593dc46e0195199116d300100d8302da56ed747a3068e19f1ccac269863bceec15141d30fc152d30f9a3e0d7f9aa140fc62624277e4affdc301a68089e399103e57caa4dea928f77de59fea969b3c153133c38ee510b297c90fd93a4081af59f811b1f9dbbb4b62fae731d0d990b5ea213dfc026c2fadd62436e19341496955eb341adea3d5ecfe19275fec35072d722a194b86a81ee766b7d15f261a4d2a87bdcae7257b23672cf14d94631e907dd88e84db8f5adbd393bb5de401ba2527f797c8f557c62bb5dfc5ab22c4b30cf6d4e69502e0f6b5e501c3d07f4fccca717f1798d005a8b330ec4e13d8cd70f62f2ca116442a78da01e3464f1e1b4a1c33c42fad190fe57887af74ae50d6f362a598b88a911cd4a74520da2719749be2f43a8782afc2d1c5d11c8040eb9500288e6407178f22e2c9a9d6e1fec1d37b57ee55cc712bf1e1141465a0d305e00fb431a099927f0f70b7512bca1e94536191a94cbd292c0994',
+            'redirect_uri' => 'http://gingerbw.beget.tech',
+        ];
+
+       
+    
+        $curl = curl_init(); 
+        curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl,CURLOPT_USERAGENT,'amoCRM-oAuth-client/1.0');
+        curl_setopt($curl,CURLOPT_URL, $link);
+        curl_setopt($curl,CURLOPT_HTTPHEADER,['Content-Type:application/json']);
+        curl_setopt($curl,CURLOPT_HEADER, false);
+        curl_setopt($curl,CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($curl,CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, 1);
+        curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, 2);
+        $out = curl_exec($curl);  
+        $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+
+
+        $code = (int)$code;
+        $errors = [
+            400 => 'Bad request',
+            401 => 'Unauthorized',
+            403 => 'Forbidden',
+            404 => 'Not found',
+            500 => 'Internal server error',
+            502 => 'Bad gateway',
+            503 => 'Service unavailable',
+        ];
+
+        try
+        {
+            if ($code < 200 || $code > 204) {
+                echo "ошибочка";
+                // throw new Exception(isset($errors[$code]) ? $errors[$code] : 'Undefined error', $code);
             }
+        }
+        catch(\Exception $e)
+        {
+            die('Ошибка: ' . $e->getMessage() . PHP_EOL . 'Код ошибки: ' . $e->getCode());
+        }
 
+        /**
+         * Данные получаем в формате JSON, поэтому, для получения читаемых данных,
+         * нам придётся перевести ответ в формат, понятный PHP
+         */
+        dd($out);
+        $response = json_decode($out, true);
 
-            if (!isset($_GET['code'])) {
-                $state = bin2hex(random_bytes(16));
-                $_SESSION['oauth2state'] = $state;
-                if (isset($_GET['button'])) {
-                    echo $apiClient->getOAuthClient()->getOAuthButton(
-                        [
-                            'title' => 'Установить интеграцию',
-                            'compact' => true,
-                            'class_name' => 'className',
-                            'color' => 'default',
-                            'error_callback' => 'handleOauthError',
-                            'state' => $state,
-                        ]
-                    );
-                    die;
-                } else {
-                    $authorizationUrl = $apiClient->getOAuthClient()->getAuthorizeUrl([
-                        'state' => $state,
-                        'mode' => 'post_message',
-                    ]);
-                    header('Location: ' . $authorizationUrl);
-                    die;
-                }
-            } elseif (!isset($_GET['from_widget']) && (empty($_GET['state']) || empty($_SESSION['oauth2state']) || ($_GET['state'] !== $_SESSION['oauth2state']))) {
-                unset($_SESSION['oauth2state']);
-                exit('Invalid state');
-            }
-
-            /**
-             * Ловим обратный код
-             */
-            try {
-                $accessToken = $apiClient->getOAuthClient()->getAccessTokenByCode($_GET['code']);
-
-                if (!$accessToken->hasExpired()) {
-                    saveToken([
-                        'accessToken' => $accessToken->getToken(),
-                        'refreshToken' => $accessToken->getRefreshToken(),
-                        'expires' => $accessToken->getExpires(),
-                        'baseDomain' => $apiClient->getAccountBaseDomain(),
-                    ]);
-                }
-            } catch (Exception $e) {
-                die((string)$e);
-            }
-
-            $ownerDetails = $apiClient->getOAuthClient()->getResourceOwner($accessToken);
-
-            printf('Hello, %s!', $ownerDetails->getName());
-
-
-
- 
-
-        // {
-        // curl https://gingerbw.amocrm.ru/oauth2/access_token -d \
-        // '{"client_id":"c619beb0-3934-4354-8b73-515ce57573ee","client_secret":"5OWp4jw9Y4qvnGPZ3IzJbY6PDD2KoxgNM6c5FmFHK2G1hGDpwfogTW4uryPq0MGU","grant_type":"authorization_code","code":"def50200919672bb6c46dd8015ee7cc93a91be9771fd65ba23a02fd908f00b4a4be7ebed5b053a456673c9d5188eb06fe329311ac95cbd0e0ae4437a5437c953d6e9cb64bb86e16f13803e7f965b8771540f83bac74f71746e5951dd68e2658a472fc9f23871d767786d0dc72d12d9b4e31bf2567d1fc41ce7c0286baa5e2a180dea5f8731425ccc5e9c46c87e946895d849d91d5ad176ec3053b3f96a4930f674c3e2ce71a83e8a80f9fce8194469b77ed82320c1d5761463f9e5d34b715cefcb88aadb258517ec4fb1e68083692696316aab74b66841b9bb91a28ab5c4ca77885fce819ae0c9fa1ddd95fe54bbfdfd925e2c7fa08f7254b99a4e00ef7e327f97429a56287e0c82954cb5c9a15941889347f91e572cb71641e1c1f2ccfd2d607a3e5f00209eb26f84047015fd7f02c23fa30fe839c18b91dfaad1fe772380c201a3fca949f88468635ec3606c9b988c87b9e7bf2a9346890965f58bf047190cfbbf5acd97fe4774564eb23c36edec9d70d51fee3eb8814baccd051aeadb848a504e9328d207ad790ee0d92e461b6b8958930e3875950b3c6520ea3a9ef27c5cbb35e2cac649f4328322177372fe587eaaa60c3244474445627d75a53474fa63123a3b476101bdaef06d347bcfa417dd91754f8bcde038bb09370119951d7758c65763cd7a589c76139930","redirect_uri":"http://gingerbw.beget.tech"}' \
-        // -H 'Content-Type:application/json' \
-        // -X POST
-            // }
+        $access_token = $response['access_token']; 
+        $refresh_token = $response['refresh_token'];  
+        $token_type = $response['token_type']; 
+        $expires_in = $response['expires_in'];
+        
+        
 
 
     }
