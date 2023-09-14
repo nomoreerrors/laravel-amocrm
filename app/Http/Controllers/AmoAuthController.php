@@ -12,10 +12,9 @@ use Spatie\FlareClient\Api;
 class AmoAuthController extends Controller
 {
     
-    protected function getSponsor()
+    protected function getSponsor(Request $request)
     {
-        $code = $_GET['code'];
-        echo $code;
+      echo 'Im here!!!!!';
     }
 
 
