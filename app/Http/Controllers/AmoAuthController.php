@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
 use AmoCRM\Client\AmoCRMApiClient;
 use Carbon\Exceptions\Exception;
+use League\OAuth2\Client\Token\AccessToken;
 use Spatie\FlareClient\Api;
 
 
@@ -19,10 +20,10 @@ class AmoAuthController extends Controller
         $subdomain = 'gingersnaps'; 
         $link = 'https://' . $subdomain . '.amocrm.ru/oauth2/access_token'; 
         $data = [
-            'client_id' => 'c619beb0-3934-4354-8b73-515ce57573ee',
-            'client_secret' => 't2yJpDwDKUd1CaaZoajClNXiIVLNdwdcEWc4WMm6HQZQtcVQBXLP8IAid2GjBHoY',
+            'client_id' => 'd7424ba2-7070-4a5b-9124-dcdea55b6197',
+            'client_secret' => 'RbJp1sK09tnpWYI6woixo3b73RP1B4efxvC9IHPUAnV48xCQZSTCz5UVUuybTMkP',
             'grant_type' => 'authorization_code',
-            'code' => 'def50200e3f65a658a9b8b68f9a8032054bef12baa8dc40f1a1d756687f6e64cedac78358ea4352663166b196c718b6885d1dd2b8414ba90e5d4a8bdea6e153d71c88611b3fbaf4db76cb9c5131ca0f1a813d72c3970a7b19f5b9808dfb880816ab6e80dc98362dc4e1049d0c76bf80c13c96656438c1c7072c5a8c3bef8d57f0a32790eb900929d7e3479fedb58eac8ebf7c690bf8f6ce9d94862631724e2d08c061da5dfbf98883fde7e925bc491b798c5e70261fb54c4fbd938ed2d963d3f8868b74c5b415de9148dc6534060e4877e2aaca91dbcb4c315d734269b139072acfbc199f3257af527092f34cac29bfad8e0f46b32e4ec652526f1e8caa8802f5b951b2cf513cfaaabe6a050ab638197ea2ea8e21cc0e9d180b7ac5064e6a3aa2f9cca31548ece48dd15dbc88ae525138942b5ef76498fe70497a88cc2effff8edbdc4df8ce9f0c7ae6432c7bb7eb184630a2ee27f304be48f20f40a9547ba774175c151779e0e9e25b84226821e10945ec0d8266f93590489cb647ad53d91acb489c0096bcc1e136f5856b1524e3b4dae6e6ddab3bfba136781443c620b9db8d4b3e720ecd39a84bc9ddb7135e2703f4204adee7ea56bba5162d299e861e92e5b669b61c7bcbf37758a16bb3cc2abe20b3cb6c75bc51a243e386ca1f206f143fa0587bf6fb1d93a5ddc2f',
+            'code' => 'def50200e0f6e3419007004dc2ae627374f6a16568c31c5948e8314200e4b6f8cca95746d9e852bc5640305b91ac083f451361b0ab8946ccaf809433f53843a01f6968f876905e7c781724e58101882669d2abf5f364d031a778a9129af3b7e7300a79053b79b14c56128cdfc3d3d1c366a4ec8f696dd7792496722079a24b2fe641ea2796b8548825c49dcec4ef237733b0a56cc771ede1eb248ec318eee7460d69d355e9d5d2d6fb66cb5a4104a414c9eb91c6e7c3edb064dc382dcaabe6291e5954a619a20472cff52e2dc484fc591b41eefa3e3bb4a496ba41e546508ceb186969e57c98b3aff6a9a7ac915cbb900f40c4e8fefabd29645a9214604831bc5c9969feafbbe708192fd08c5d73b950e83c7b04a9cbdc5c118e0d00bedf49cc8ede9707de425a4b6cdb78ecbd97b4ed56ac2eb04f6ea212f2ea48ca61ed5aa0307b1a3fc3efb670fe6784f1454a49f793d22df1d239839e950841d7f60b55037c179519d14732c1648ccaa067aaf2f4eb6559dd3a9ae7728221925a1378bc2cfd5e2b02b3b8f763a1abfdce3cdc81fada561af5cc12a5bd52338c12ba6cac6e45b3699896366657edf91cb7c83a5cfe2000e570b2010b187503336970056ab88b8b33507f8d2270a3df8d8c0d4e7af02ea89063f82a1f910686d3e494d6ec9068230a56cf9a504da7507b',
             'redirect_uri' => 'http://gingerbw.beget.tech',
         ];
 
@@ -34,15 +35,18 @@ class AmoAuthController extends Controller
                     ])->post($link, $data);
 
         $response = json_decode($out, true); //преобразование строки JSON в массив
-        $statusCode = (int)$response['status'];
         echo '<h1>SUCCESS</h1>';
 
         
-        $access_token = $response['access_token']; 
+        $access_token = new AccessToken($response); 
         $refresh_token = $response['refresh_token'];  
         $token_type = $response['token_type']; 
         $expires_in = $response['expires_in'];
-  
+
+        $apiClient = new AmoCRMApiClient($data['client_id'], $data['client_secret'], $data['redirect_uri']);
+        $apiClient->setAccessToken($access_token);
+        $tokenIsBack = $apiClient->getAccessToken();
+        dd($tokenIsBack);
 
      
     }
