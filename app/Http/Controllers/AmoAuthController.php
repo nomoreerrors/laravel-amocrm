@@ -14,7 +14,7 @@ class AmoAuthController extends Controller
     
     protected function getSponsor(Request $request)
     {
-      echo 'Im here!!!!!';
+      echo 'Im here!!!!!!!';
     }
 
 
