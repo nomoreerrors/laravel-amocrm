@@ -14,17 +14,33 @@ class AmoAuthController extends Controller
     
     protected function getToken()
     {
-        $client_id = 'd6b82438-952d-4558-ae25-9c1588ddbf2c';
-        $client_secret = 'yPwX6EdaKFS3tprEhp5al5xqrE3vUJlEAsf6b1OvZkoESJq1cF7DeKi95W0JV2Qs';
+        $client_id = 'c619beb0-3934-4354-8b73-515ce57573ee';
+        $client_secret = 'i0DDmNODe146gokSR8gc2vRVkfhLneiBSjEYlM9Qxoyg92W7PeKiSlIEPD1CmKyH';
         $redirect_uri = 'http://gingerbw.beget.tech';
-        $autorization_code = 'def502006dba850e168e18a530901b2c5ab748039bf18aee0c27153b93d38f4217c4b459167657c4b9fd8aacd51bb6aba436f11e78bd2da8e8cf93e61ea221da22612ee699bb2fe18e125fdfa14e92322ba1c2f0bc52683b95d9f191112d064a379601bd9ce8fd37c82877cf972f54453de4f1c7134dbe316782575a4ff0a27f503822332f5b93084b8954fc96ceef2a180dda0de4fb15e7b8253a4c5f844bd85033d332e373dc87938a01e80b9559ee0937af34437bb4bf06527b63bcd887167d6fb7ea103de86788c499e4d553ba038ddbd436f49fc2f4ac6e243f1cbc359ae520b20311719b8a3913a9afd587c81d44bd404bd3d2def1a7c8b911f08bed8846ee0ca7f24c91fe3e61caea02df2ce596e90a7b3e3d5622f80d97df21d5069ab38093156a9583dda80812e8a5cfe6ca15850ef3057ff03cfb892cf5c191a7a2fb40b2dc52e22a55b8c3e1741e06c7b7d5b3e6b7a777e47445b977b50cbebd5747465483114a0870a95ab6decacbd4fa0a82688943be8115a9e0862d71f7739b10287cc8a0b5f6eee32facaac4cb93eeea081b0b95a46b63f7d047575ab241304180f5a891b6e75f40f72615368247b7b5738256ed60c12e87fa92ee1573067e4f1b5a9294406f55f5e0203e9783cd4fa15dd176e44f8e0ecd5f874e299e204b265972d8e447f17becfcf6';
+        $autorization_code = 'def502005f88192b1184d553ffdb13b3d865be9787006fb25253e942f177482a8a2f7b4373bb5f6a953ca168a3ce83c65fe61cc6f341246818fdd55fc24c4843292893a7486f787ab3fea5811919121960ab53d578411caa0b0eed9449f0839a1ee3c162648621413219f34d61b0d536db8997346cdfb77b926ca353188d3712ff9696a7e505ec364b641f0f62224de0d9aacc690bd4e34689432fc1f17d5a62dea8acb6616efb874fb3d4fecbaa61aceca23c13a2bf98b7f7115f14b7fed0b79ae27f02167766615f3ba4b9ea81898be70642cc845281916385a0ea9a053c9c8c2d8993afaab55f96f713bf5910b39d0b813d220b554d67011cc4934eb067a55be7ee7519d81f7896ac8484974c8c294efa6f5128c542f2953b629192ddd5872d1b46a705425ef9ccd3a32cacff0dc674d664d67f9e9a6dd66523f57d8866f03fa9dd7e939cb27ee32911f73449fb83a6f60ff7ca2f24476bb18354fcfdd1e9cb27af0a2fd92bf7dc0dd33e3452e94d3b1a65738fd4e2b98fb5e20f5a9d777af553850e6365952ab948918db5c3e9cc0d2fde30e9bb3cf7cd8c2688ba3a7a835ba24b4a949b932f936d3e0db16318a7f98a0eab8e4820c6dc876de43f25577053a25768d6a43bd511ff51e987609ae0444f45690647c199710b509668e1145b8dc06896fe4147dcd0f51c';
+        $state = bin2hex(random_bytes(16));
 
         $apiClient = new AmoCRMApiClient($client_id, $client_secret, $redirect_uri);
-        $accessToken = $apiClient->getOAuthClient()->getAccessTokenByCode($autorization_code);
+        $authorizationUrl = $apiClient->getOAuthClient()->getAuthorizeUrl([
+            'state' => $state,
+            'mode' => 'post_message',
+        ]);
 
-        dd($accessToken);
+        header('Location: ' . $authorizationUrl);
 
 
 
+        // $accessToken = $apiClient->getOAuthClient()->getAccessTokenByCode($autorization_code);
+
+        // if (!$accessToken->hasExpired()) {
+        //     saveToken([
+        //         'accessToken' => $accessToken->getToken(),
+        //         'refreshToken' => $accessToken->getRefreshToken(),
+        //         'expires' => $accessToken->getExpires(),
+        //         'baseDomain' => $apiClient->getAccountBaseDomain(),
+        //     ]);
+        // }
+
+        // dd($accessToken);
     }
 }
