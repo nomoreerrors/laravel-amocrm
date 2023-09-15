@@ -9,6 +9,10 @@ use AmoCRM\Client\AmoCRMApiClient;
 use Carbon\Exceptions\Exception;
 use League\OAuth2\Client\Token\AccessToken;
 use Spatie\FlareClient\Api;
+use League\OAuth2\Client\Provider\RequestProvider;
+use Illuminate\Support\Facades\Storage;
+use \League\OAuth2\Client\Token\AccessTokenInterface;
+ 
 
 
 class AmoAuthController extends Controller
@@ -17,37 +21,63 @@ class AmoAuthController extends Controller
 
     protected function getToken()
     {
-        $subdomain = 'gingersnaps'; 
-        $link = 'https://' . $subdomain . '.amocrm.ru/oauth2/access_token'; 
-        $data = [
-            'client_id' => 'd7424ba2-7070-4a5b-9124-dcdea55b6197',
-            'client_secret' => 'RbJp1sK09tnpWYI6woixo3b73RP1B4efxvC9IHPUAnV48xCQZSTCz5UVUuybTMkP',
-            'grant_type' => 'authorization_code',
-            'code' => 'def50200e0f6e3419007004dc2ae627374f6a16568c31c5948e8314200e4b6f8cca95746d9e852bc5640305b91ac083f451361b0ab8946ccaf809433f53843a01f6968f876905e7c781724e58101882669d2abf5f364d031a778a9129af3b7e7300a79053b79b14c56128cdfc3d3d1c366a4ec8f696dd7792496722079a24b2fe641ea2796b8548825c49dcec4ef237733b0a56cc771ede1eb248ec318eee7460d69d355e9d5d2d6fb66cb5a4104a414c9eb91c6e7c3edb064dc382dcaabe6291e5954a619a20472cff52e2dc484fc591b41eefa3e3bb4a496ba41e546508ceb186969e57c98b3aff6a9a7ac915cbb900f40c4e8fefabd29645a9214604831bc5c9969feafbbe708192fd08c5d73b950e83c7b04a9cbdc5c118e0d00bedf49cc8ede9707de425a4b6cdb78ecbd97b4ed56ac2eb04f6ea212f2ea48ca61ed5aa0307b1a3fc3efb670fe6784f1454a49f793d22df1d239839e950841d7f60b55037c179519d14732c1648ccaa067aaf2f4eb6559dd3a9ae7728221925a1378bc2cfd5e2b02b3b8f763a1abfdce3cdc81fada561af5cc12a5bd52338c12ba6cac6e45b3699896366657edf91cb7c83a5cfe2000e570b2010b187503336970056ab88b8b33507f8d2270a3df8d8c0d4e7af02ea89063f82a1f910686d3e494d6ec9068230a56cf9a504da7507b',
-            'redirect_uri' => 'http://gingerbw.beget.tech',
-        ];
+        $baseDomain = "gingersnaps.amocrm.ru"; 
+        $client_id = 'd7424ba2-7070-4a5b-9124-dcdea55b6197';
+        $client_secret = 'GIKKv84w9uNqnhO1rUTIbkIkhJhMUxDu62d4CYqBTyuP7gw61idW8iR9Vkw6bg4I';
+        $auth_code = 'def5020004fc9e96d795cd4dded897c29bb1249d89c486d61b4cd5a3ab8989b9d7c42ed1fd2c91ed08860034886dd7a4e112b0195d5b4671b6baa5b13198569ae2940cd089a50e31316ea76eeac5b55d163429e4eb81cf64896aeb53339f191e85156948cbb4f7adb63889cc922eadfa7f7fdcffd2da3be82426bb21598c89e4f227b06e1cefbf0eaf9982e749881852028fad8bba527e8a95764080b59705cf6e7c89212860680e3bef9b945bea2ae06301e6370d00508dc780f1994662e74bf14ee27eefb2b0e5cd97a7023d48d11146f3e2c603ebf7548f6e017f81d07d90408f51a7f361636ea843256869973e7b25461e29ce76702ba656d8297b97a411fc37cdc7e463da514d88003d2c07b9a35cec2d7045d30dcd52aaed35daa3be370050de609c4b7297dca3cd25bb77579539ada11c6c98d3eeaf099d137ceb5589ec1c616783adaf66b8f1c2f636f3e66e1121e85d42dbce2e1c8f0c0af5cc41c1db0e29425f8f3f61eeacecaa7580df92777eeeec9e93850a0ee0841b8530efbeeb3e78b2c95d8609e973d96766a7cc5415e59ff86efdc022cd391e488cf854a28942a09433f22a0c469f277c477f527893e339f02a2f637aeb218e51fa065bcc6461247675f9341779e33e64f1a2151247ef5adc6d84211fd14c6f7041122c7da15b4061aef5371c287734';
+        $redirect_uri = 'http://gingerbw.beget.tech';
 
-       
-
-        $out = Http::withHeaders([
-                        'User-Agent' => 'amoCRM-oAuth-client/1.0',
-                        'Content-Type' => 'application/json'
-                    ])->post($link, $data);
-
-        $response = json_decode($out, true); //преобразование строки JSON в массив
-        echo '<h1>SUCCESS</h1>';
 
         
-        $access_token = new AccessToken($response); 
-        $refresh_token = $response['refresh_token'];  
-        $token_type = $response['token_type']; 
-        $expires_in = $response['expires_in'];
 
-        $apiClient = new AmoCRMApiClient($data['client_id'], $data['client_secret'], $data['redirect_uri']);
-        $apiClient->setAccessToken($access_token);
-        $tokenIsBack = $apiClient->getAccessToken();
-        dd($tokenIsBack);
+        $apiClient = new AmoCRMApiClient($client_id, $client_secret, $redirect_uri);
+        $accessToken = $apiClient->setAccountBaseDomain($baseDomain)
+                                 ->getOAuthClient()
+                                 ->getAccessTokenByCode($auth_code);
 
+
+
+                                 echo $apiClient->getOAuthClient()->getOAuthButton(
+                                    [
+                                        'title' => 'Установить интеграцию',
+                                        'compact' => true,
+                                        'class_name' => 'className',
+                                        'color' => 'default',
+                                        'error_callback' => 'handleOauthError',
+
+                                    ]);
+                     
+
+
+        $apiClient->setAccessToken($accessToken)
+                  ->setAccountBaseDomain('$baseDomain')
+                  ->onAccessTokenRefresh(
+                    function (AccessTokenInterface $accessToken, string $baseDomain) {
+                        Storage::put('access_token.txt', json_encode(
+                            [
+                                'accessToken' => $accessToken->getToken(),
+                                'refreshToken' => $accessToken->getRefreshToken(),
+                                'expires' => $accessToken->getExpires(),
+                                'baseDomain' => $baseDomain,
+                            ]
+                            ));
+        });
+
+
+        
+
+     
+
+
+
+
+ 
+    
+
+        
+
+
+         
      
     }
 }
