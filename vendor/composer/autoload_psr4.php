@@ -107,5 +107,5 @@ return array(
     'AmoCRM\\Contracts\\' => array($vendorDir . '/amocrm/amocrm-api-library/src/AmoCRM/Contracts'),
     'AmoCRM\\Collections\\' => array($vendorDir . '/amocrm/amocrm-api-library/src/AmoCRM/Collections'),
     'AmoCRM\\Client\\' => array($vendorDir . '/amocrm/amocrm-api-library/src/AmoCRM/Client'),
-    'AmoCRM\\' => array($vendorDir . '/amocrm/amocrm-api-library/src'),
+    'AmoCRM\\' => array($vendorDir . '/amocrm/amocrm-api-library/src/AmoCRM', $vendorDir . '/amocrm/amocrm-api-library/src'),
 );

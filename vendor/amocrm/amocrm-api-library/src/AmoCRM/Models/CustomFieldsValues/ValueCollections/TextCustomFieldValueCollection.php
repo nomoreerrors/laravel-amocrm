@@ -2,6 +2,8 @@
 
 namespace AmoCRM\Models\CustomFieldsValues\ValueCollections;
 
+ 
+
 /**
  * Class TextCustomFieldValueCollection
  *
@@ -9,5 +11,5 @@ namespace AmoCRM\Models\CustomFieldsValues\ValueCollections;
  */
 class TextCustomFieldValueCollection extends BaseCustomFieldValueCollection
 {
-
+    
 }

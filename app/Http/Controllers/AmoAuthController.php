@@ -12,23 +12,29 @@ use Spatie\FlareClient\Api;
 use League\OAuth2\Client\Provider\RequestProvider;
 use Illuminate\Support\Facades\Storage;
 use \League\OAuth2\Client\Token\AccessTokenInterface;
- 
+use AmoCRM\Collections\CustomFieldsValuesCollection;
+use AmoCRM\Models\CustomFieldsValues\TextCustomFieldValuesModel;
+use AmoCRM\Models\LeadModel;
+use AmoCRM\Models\CustomFieldsValues\ValueModels\TextCustomFieldValueModel;
+use \AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueCollection;
+use App\Http\classes\AccessTokenStorage;
+use App\Providers\AppServiceProvider;
 
 
 class AmoAuthController extends Controller
 {
-    
-
-    protected function getToken()
+    /**
+     * Аутентификация по коду и получение access token
+     */
+    protected function authByCode(): void
     {
         $baseDomain = "gingersnaps.amocrm.ru"; 
-        $client_id = 'd7424ba2-7070-4a5b-9124-dcdea55b6197';
-        $client_secret = 'GIKKv84w9uNqnhO1rUTIbkIkhJhMUxDu62d4CYqBTyuP7gw61idW8iR9Vkw6bg4I';
-        $auth_code = 'def5020004fc9e96d795cd4dded897c29bb1249d89c486d61b4cd5a3ab8989b9d7c42ed1fd2c91ed08860034886dd7a4e112b0195d5b4671b6baa5b13198569ae2940cd089a50e31316ea76eeac5b55d163429e4eb81cf64896aeb53339f191e85156948cbb4f7adb63889cc922eadfa7f7fdcffd2da3be82426bb21598c89e4f227b06e1cefbf0eaf9982e749881852028fad8bba527e8a95764080b59705cf6e7c89212860680e3bef9b945bea2ae06301e6370d00508dc780f1994662e74bf14ee27eefb2b0e5cd97a7023d48d11146f3e2c603ebf7548f6e017f81d07d90408f51a7f361636ea843256869973e7b25461e29ce76702ba656d8297b97a411fc37cdc7e463da514d88003d2c07b9a35cec2d7045d30dcd52aaed35daa3be370050de609c4b7297dca3cd25bb77579539ada11c6c98d3eeaf099d137ceb5589ec1c616783adaf66b8f1c2f636f3e66e1121e85d42dbce2e1c8f0c0af5cc41c1db0e29425f8f3f61eeacecaa7580df92777eeeec9e93850a0ee0841b8530efbeeb3e78b2c95d8609e973d96766a7cc5415e59ff86efdc022cd391e488cf854a28942a09433f22a0c469f277c477f527893e339f02a2f637aeb218e51fa065bcc6461247675f9341779e33e64f1a2151247ef5adc6d84211fd14c6f7041122c7da15b4061aef5371c287734';
+        $client_id = 'd6b82438-952d-4558-ae25-9c1588ddbf2c';
+        $client_secret = 'yMhFfxrrtvcIf75564N8QEeH7G3CartHAq8joQYPuFKjyQiSI541uHA2rNdcMVWL';
+        $auth_code = 'def502006bca1f0f4aa14dc905fde2d1013aa7734c23c5d9f1c795d78b309c146e8c232583a767e22c4093941b5525ca63f72829d7992c1a45c83545b218b587e9ad7f67dcc1cdf5dfd82e18c320f66104ed27908c38514295737de83318633ecc1747431b06fec93266e240d673d12605fada1db4e676d86fcb17603e13c7baee59f08000b2209ef4029eae5939ca78722fd727df6ee853db0b700045acc44d376a8848721993972d3b9b8c04ce5d4abdd6608be408445d18d6fe4fbd8c0b7fc511769951912fe8318d09ec1d14fddda305215f61739c113e8f7940076ac99d84147c9bc2dd9f1b93adeee89744689d8966b0c71bf16fd4a31c3aeb5b968396b73dff60e77613701700c37e3724ebce3fbfe9b1a2a3ea3112873d900da35ed817d577e2ac25ae7eeb0e9faaab96eceab16d9e8fd31fa7ed5d241c1b94be85dc1880e7daeb2867718fed09ace63d74982dd2ae3542242c1016398b646ec3504eb642df9a308c3eb6359bcb86a6d8e7b6cf1b17c80e7ae2360a68af6cf4584f920f694e11b3b6642f16f8da025af4a45c919e9cee115b94d1ad740f9f5f9c5cd55acad914c054095da442181b697083b6b24c1bdac0bfa61a6626b3f6d5b866a56b37bf8d69e68c8963f37b7c45d7577a382297c442eea716fecb1813271775cf14d42e7ba963e9e6c8bc4c';
         $redirect_uri = 'http://gingerbw.beget.tech';
 
 
-        
 
         $apiClient = new AmoCRMApiClient($client_id, $client_secret, $redirect_uri);
         $accessToken = $apiClient->setAccountBaseDomain($baseDomain)
@@ -37,37 +43,27 @@ class AmoAuthController extends Controller
 
 
 
-                                 echo $apiClient->getOAuthClient()->getOAuthButton(
-                                    [
-                                        'title' => 'Установить интеграцию',
-                                        'compact' => true,
-                                        'class_name' => 'className',
-                                        'color' => 'default',
-                                        'error_callback' => 'handleOauthError',
-
-                                    ]);
-                     
-
-
         $apiClient->setAccessToken($accessToken)
-                  ->setAccountBaseDomain('$baseDomain')
                   ->onAccessTokenRefresh(
                     function (AccessTokenInterface $accessToken, string $baseDomain) {
-                        Storage::put('access_token.txt', json_encode(
-                            [
-                                'accessToken' => $accessToken->getToken(),
-                                'refreshToken' => $accessToken->getRefreshToken(),
-                                'expires' => $accessToken->getExpires(),
-                                'baseDomain' => $baseDomain,
-                            ]
-                            ));
+                            Storage::put('access_token.txt', json_encode(
+                                    [
+                                        'accessToken' => $accessToken->getToken(),
+                                        'refreshToken' => $accessToken->getRefreshToken(),
+                                        'expires' => $accessToken->getExpires(),
+                                        'baseDomain' => $baseDomain,
+                                    ]
+                                    ));
         });
 
+        AccessTokenStorage::saveToken($accessToken, $baseDomain);
 
+        $token = AccessTokenStorage::getToken();
+        dd($token);
         
 
      
-
+       
 
 
 

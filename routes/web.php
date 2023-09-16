@@ -20,5 +20,5 @@ Route::get('/', function () {
 });
 
 
-Route::get('/token', [AmoAuthController::class, 'getToken']);
+Route::get('/token', [AmoAuthController::class, 'authByCode']);
 Route::get('/sponsor', [AmoAuthController::class, 'getSponsor']);

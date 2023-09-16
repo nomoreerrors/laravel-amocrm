@@ -47,7 +47,7 @@
       "AmoCRM\\Filters\\": "src/AmoCRM/Filters",
       "AmoCRM\\Helpers\\": "src/AmoCRM/Helpers",
       "AmoCRM\\Contracts\\": "src/AmoCRM/Contracts",
-      "AmoCRM\\Support\\": "src/AmoCRM/Support"
+      "AmoCRM\\Support\\": "src/AmoCRM/Support",
     }
   },
   "scripts": {
