@@ -25,8 +25,7 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/",
-            "AmoCRM\\": "vendor/amocrm/amocrm-api-library/src/AmoCRM/"
+            "Database\\Seeders\\": "database/seeders/"
         }
           
     },

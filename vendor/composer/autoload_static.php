@@ -608,8 +608,7 @@ class ComposerStaticInit21eb009b6e6d761e9f9599ef116b5d56
         ),
         'AmoCRM\\' => 
         array (
-            0 => __DIR__ . '/..' . '/amocrm/amocrm-api-library/src/AmoCRM',
-            1 => __DIR__ . '/..' . '/amocrm/amocrm-api-library/src',
+            0 => __DIR__ . '/..' . '/amocrm/amocrm-api-library/src',
         ),
     );
 
@@ -1028,6 +1027,7 @@ class ComposerStaticInit21eb009b6e6d761e9f9599ef116b5d56
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\ValidateSignature' => __DIR__ . '/../..' . '/app/Http/Middleware/ValidateSignature.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
+        'App\\Http\\classes\\AccessTokenStorage' => __DIR__ . '/../..' . '/app/Http/classes/AccessTokenStorage.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',

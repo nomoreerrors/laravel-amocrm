@@ -12,7 +12,7 @@ class AccessTokenStorage
  * Put token to Laravel storage
  */
 {
-    public static function saveToken(object $accessToken, string $baseDomain): void
+    public static function saveToken(AccessToken $accessToken, string $baseDomain): void
     {
         if (
             $accessToken->getToken() &&

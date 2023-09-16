@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
@@ -19,61 +18,27 @@ use AmoCRM\Models\CustomFieldsValues\ValueModels\TextCustomFieldValueModel;
 use \AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueCollection;
 use App\Http\classes\AccessTokenStorage;
 use App\Providers\AppServiceProvider;
+use App\Http\Config\AmoConfig\amoConfig;
+use App\Http\classes\AmoConnectionInitialize;
 
 
 class AmoAuthController extends Controller
 {
     /**
-     * Аутентификация по коду и получение access token
+     * Аутентификация по коду авторизации и получение access token
      */
     protected function authByCode(): void
     {
-        $baseDomain = "gingersnaps.amocrm.ru"; 
-        $client_id = 'd6b82438-952d-4558-ae25-9c1588ddbf2c';
-        $client_secret = 'yMhFfxrrtvcIf75564N8QEeH7G3CartHAq8joQYPuFKjyQiSI541uHA2rNdcMVWL';
-        $auth_code = 'def502006bca1f0f4aa14dc905fde2d1013aa7734c23c5d9f1c795d78b309c146e8c232583a767e22c4093941b5525ca63f72829d7992c1a45c83545b218b587e9ad7f67dcc1cdf5dfd82e18c320f66104ed27908c38514295737de83318633ecc1747431b06fec93266e240d673d12605fada1db4e676d86fcb17603e13c7baee59f08000b2209ef4029eae5939ca78722fd727df6ee853db0b700045acc44d376a8848721993972d3b9b8c04ce5d4abdd6608be408445d18d6fe4fbd8c0b7fc511769951912fe8318d09ec1d14fddda305215f61739c113e8f7940076ac99d84147c9bc2dd9f1b93adeee89744689d8966b0c71bf16fd4a31c3aeb5b968396b73dff60e77613701700c37e3724ebce3fbfe9b1a2a3ea3112873d900da35ed817d577e2ac25ae7eeb0e9faaab96eceab16d9e8fd31fa7ed5d241c1b94be85dc1880e7daeb2867718fed09ace63d74982dd2ae3542242c1016398b646ec3504eb642df9a308c3eb6359bcb86a6d8e7b6cf1b17c80e7ae2360a68af6cf4584f920f694e11b3b6642f16f8da025af4a45c919e9cee115b94d1ad740f9f5f9c5cd55acad914c054095da442181b697083b6b24c1bdac0bfa61a6626b3f6d5b866a56b37bf8d69e68c8963f37b7c45d7577a382297c442eea716fecb1813271775cf14d42e7ba963e9e6c8bc4c';
-        $redirect_uri = 'http://gingerbw.beget.tech';
-
-
-
-        $apiClient = new AmoCRMApiClient($client_id, $client_secret, $redirect_uri);
-        $accessToken = $apiClient->setAccountBaseDomain($baseDomain)
-                                 ->getOAuthClient()
-                                 ->getAccessTokenByCode($auth_code);
-
-
-
-        $apiClient->setAccessToken($accessToken)
-                  ->onAccessTokenRefresh(
-                    function (AccessTokenInterface $accessToken, string $baseDomain) {
-                            Storage::put('access_token.txt', json_encode(
-                                    [
-                                        'accessToken' => $accessToken->getToken(),
-                                        'refreshToken' => $accessToken->getRefreshToken(),
-                                        'expires' => $accessToken->getExpires(),
-                                        'baseDomain' => $baseDomain,
-                                    ]
-                                    ));
-        });
-
-        AccessTokenStorage::saveToken($accessToken, $baseDomain);
-
-        $token = AccessTokenStorage::getToken();
-        dd($token);
+        $config = [
+        'baseDomain' => "gingersnaps.amocrm.ru", 
+        'client_id' => 'd7424ba2-7070-4a5b-9124-dcdea55b6197',
+        'client_secret' => 'GIKKv84w9uNqnhO1rUTIbkIkhJhMUxDu62d4CYqBTyuP7gw61idW8iR9Vkw6bg4I',
+        'auth_code' => 'def5020077d3f5f9a1d0051f5492396f44ea30b734ed9c5c8b0c93d67fd6891e2382f3e28acd6a384360c07afe97af75e1cf4eb66a65291028e661f01531f72314963432a43f9fbd535dc397cbf4c1876a03d91534c4e6e1132c8b98fd585582582687cb1cae0a2da3bead92509764e1a3775fa28db362fc1cc268080b35bc8e8199db885acba83e83096521211928a74d5d1ca74bc11d58ac290bf7ab46c098e30da6c18ee6e28ff3f58bd224cef1ba79ac16724316c31793986456a53480786f808b4dccd3e3afcffa2b1931264b3db56a2dd2949fb50b3f2ebf898e492c23782ea153cf038296e700f0b041d2b229ab93492e38081781de3a7ef9ee35dbc3af9e61afb76458f8da44a914cdbc0f9df80f048634b343fa3705fc383f71d42098371b11bbc6450c86d053ebead76b2cafe92468537de84e27415d76b9f779d230d4d8f35fe249744c6d409794b300dbce561288951652f31b961609aa83eb4c34a627a7576529a04fd8d7d090f068a869db462a5a4eee478d8d85487fd74666689abaa75a49865b36b90b26844d86cc48d2b45b3b4a2fb1bdc3067c9fda72f2e5c45042807ca7f3f56d6da85ca8ccfe370ba97cc74b85633c85800effd718e5b06f7acc5b3288e41c8f6d35f33ce1bd342fca55e0dfe1b778fce94e8b58f5e52989e9b2af657d2294e9a3',
+        'redirect_uri' => 'http://gingerbw.beget.tech'
+        ];
         
+        AmoConnectionInitialize::apiRequest($config);
 
-     
-       
-
-
-
- 
-    
-
-        
-
-
-         
      
     }
 }
