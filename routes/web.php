@@ -17,8 +17,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+}); 
+
+
+Route::controller(AmoAuthController::class)->group(function () {
+    Route::get('/token', 'authByCode')->name('token');
+    // Route::post('/getexchanges', 'getUpdatesByHook')->name('post');
 });
-
-
-Route::get('/token', [AmoAuthController::class, 'authByCode']);
-Route::get('/getexchanges', [AmoAuthController::class, 'getUpdatesByHook']);
