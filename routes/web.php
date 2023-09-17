@@ -22,5 +22,5 @@ Route::get('/', function () {
 
 Route::controller(AmoAuthController::class)->group(function () {
     Route::get('/token', 'authByCode')->name('token');
-    // Route::post('/getexchanges', 'getUpdatesByHook')->name('post');
+
 });
