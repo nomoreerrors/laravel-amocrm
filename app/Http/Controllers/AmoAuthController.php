@@ -30,4 +30,10 @@ class AmoAuthController extends Controller
 
      
     }
+
+
+    protected function getUpdateByHook(): void
+    {
+        echo 'successfully updated!';
+    }
 }

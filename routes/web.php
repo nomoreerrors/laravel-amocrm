@@ -21,4 +21,4 @@ Route::get('/', function () {
 
 
 Route::get('/token', [AmoAuthController::class, 'authByCode']);
-Route::get('/sponsor', [AmoAuthController::class, 'getSponsor']);
+Route::get('/getexchanges', [AmoAuthController::class, 'getUpdateByHook']);
