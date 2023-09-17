@@ -7,7 +7,7 @@ use AmoCRM\Collections\CustomFieldsValuesCollection;
 use AmoCRM\Models\CustomFieldsValues\TextCustomFieldValuesModel;
 use AmoCRM\Models\CustomFieldsValues\ValueModels\TextCustomFieldValueModel;
 use \AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueCollection;
-use App\Http\Config\AmoConfig\amoConfig;
+use Illuminate\Support\Facades\Storage;
 use App\Http\classes\AmoConnectionInitialize;
 
 
@@ -34,6 +34,6 @@ class AmoAuthController extends Controller
 
     protected function getUpdatesByHook(Request $request): void
     {
-        dd($request);
+        Storage::put('webhookrequest.txt',json_encode($request));
     }
 }
