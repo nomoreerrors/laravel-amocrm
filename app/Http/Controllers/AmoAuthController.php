@@ -32,8 +32,8 @@ class AmoAuthController extends Controller
     }
 
 
-    protected function getUpdateByHook(): void
+    protected function getUpdatesByHook(Request $request): void
     {
-        echo 'successfully updated!';
+        dd($request);
     }
 }
