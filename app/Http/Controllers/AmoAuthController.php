@@ -31,11 +31,15 @@ class AmoAuthController extends Controller
      
     }
 
-
+    /**
+     * Получить новую сделку или изменения в сделке с AmoCRM
+     */
     public function getUpdatesByHook(Request $request): RedirectResponse
     {
         $data = $request->all();
-        Storage::put('webhookrequest.txt',json_encode($data));
+
+        Storage::put('webhookrequest.txt',json_encode($request));
         return back();
+
     }
 }
