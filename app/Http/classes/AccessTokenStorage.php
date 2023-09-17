@@ -25,7 +25,7 @@ class AccessTokenStorage
                     'accessToken' => $accessToken->getToken(),
                     'refreshToken' => $accessToken->getRefreshToken(),
                     'expires' => $accessToken->getExpires(),
-                    'baseDomain' => $baseDomain,
+                    'baseDomain' => $baseDomain
                 ]
                 ));
 

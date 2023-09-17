@@ -3,21 +3,10 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Http;
-use AmoCRM\Client\AmoCRMApiClient;
-use Carbon\Exceptions\Exception;
-use League\OAuth2\Client\Token\AccessToken;
-use Spatie\FlareClient\Api;
-use League\OAuth2\Client\Provider\RequestProvider;
-use Illuminate\Support\Facades\Storage;
-use \League\OAuth2\Client\Token\AccessTokenInterface;
 use AmoCRM\Collections\CustomFieldsValuesCollection;
 use AmoCRM\Models\CustomFieldsValues\TextCustomFieldValuesModel;
-use AmoCRM\Models\LeadModel;
 use AmoCRM\Models\CustomFieldsValues\ValueModels\TextCustomFieldValueModel;
 use \AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueCollection;
-use App\Http\classes\AccessTokenStorage;
-use App\Providers\AppServiceProvider;
 use App\Http\Config\AmoConfig\amoConfig;
 use App\Http\classes\AmoConnectionInitialize;
 
