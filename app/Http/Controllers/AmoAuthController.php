@@ -9,7 +9,7 @@ use AmoCRM\Models\CustomFieldsValues\ValueModels\TextCustomFieldValueModel;
 use \AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueCollection;
 use Illuminate\Support\Facades\Storage;
 use App\Http\classes\AmoConnectionInitialize;
-
+use Illuminate\Http\RedirectResponse;
 
 class AmoAuthController extends Controller
 {
@@ -32,8 +32,9 @@ class AmoAuthController extends Controller
     }
 
 
-    protected function getUpdatesByHook(Request $request): void
+    public function getUpdatesByHook(Request $request): RedirectResponse
     {
         Storage::put('webhookrequest.txt',json_encode($request));
+        return back();
     }
 }
