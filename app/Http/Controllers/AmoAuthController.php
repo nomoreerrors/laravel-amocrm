@@ -15,7 +15,11 @@ use App\Http\classes\AmoConnectionInitialize;
 use Illuminate\Http\RedirectResponse;
 
 class AmoAuthController extends Controller
-{
+{   
+
+    protected string $field;
+
+
     /**
      * Аутентификация по коду авторизации и получение access token
      */
@@ -35,20 +39,119 @@ class AmoAuthController extends Controller
     }
 
 
+    public function getField(array $data, string $field): array
+    {
+    //    $this->field = $field;
+    // Попробую убрать вложенность. Из каждого массива сделать отдельный объект и проверять
+    dd($field);
+       $result = array_filter($data, function($obj) {
+           foreach($obj as $key) {
+               if($key ==  $this->field) {
+                        dd($this->field);
+                        
+                        return $key;
+                        die;
+                    };
+                    if(gettype($key) == 'array') {
+
+                        foreach($key as $key2) {
+                            if($key2 == $this->field) {
+                                
+                                
+                                return $key2;
+                                die;
+                            }
+                            if(gettype($key2) == 'array') {
+                                foreach($key2 as $key3) {
+                                    if($key2 == $this->field) {
+                                        return $key2;
+                                    };
+                                    if(gettype($key3) == 'array') {
+                                        foreach($key3 as $key4) {
+                                            if($key4 == $this->field) {
+                                                return $key4;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } 
+                }
+
+       });
+       return $result;
+    }
+ 
+       
+
+
     /**
      * Получить новую сделку или изменения в сделке с AmoCRM
      */
-    public function getUpdatesByHook(Request $request): RedirectResponse
+    public function getUpdatesByHook(Request $request)
     {
-        $data = $request->all();
-        // $cuddy = ['lol'=> 'wut', 'house' => 'doctor', 'cameron' => ['bitch' => '2', 'Tom' => 'Cruise']];
+        // $data = $request->all();
+        // $account_id = $data['account']['account_id'];
+        // $costPrice = $data['leads']['update'][0]['custom_fields'][0]['values']['value'];
+        $data = [
+            "account" => 
+                [
+                    "subdomain" => "gingersnaps",
+                    "id" => "31285798",
+                    "_links" => ["self" => "https => \/\/gingersnaps.amocrm.ru"]
+                ],
+            "leads" => 
+                [
+                    "update" => 
+                    [
+                        [
+                            "id" => "38138155",
+                            "name" => "\u041f\u043e\u043a\u0443\u043f\u043a\u0430 \u0444\u0443\u0442\u0431\u043e\u043b\u044c\u043d\u044b\u0445 \u043c\u044f\u0447\u0435\u0439",
+                            "status_id" => "60307670",
+                            "price" => "177000",
+                            "responsible_user_id" => "10067946",
+                            "last_modified" => "1694964742",
+                            "modified_user_id" => "10067946",
+                            "created_user_id" => "10067946",
+                            "date_create" => "1694964733",
+                            "pipeline_id" => "7227930",
+                            "account_id" => "31285798",
+                            "custom_fields" => 
+                            [
+                                [
+                                "id" => "2129045",
+                                "name" => "\u0421\u0435\u0431\u0435\u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c",
+                                "values" => [["value" => "120000"]]
+                                ]
+                             ],
+                            "created_at" => "1694964733",
+                            "updated_at" => "1694964742"
+                        ]
+                    ]
+                ]
+            ];
+
+            dd($this->getField($data, 'id'));
+
+
+  
+            
+
+
         // $filtered = array_filter($data, function($el) {
         //      return !empty($el['last_name']);
         //     });
-        dd($data);
-        $costPrice = $data['leads']['update'][0]['custom_fields'];
-        Storage::put('webhookrequest.txt',json_encode($costPrice));
-        return back();
+        // $account = $request->only('account');
+        // $leads = $request->only('leads');
+        // $account_id = $account[0]['id'];
+        
+        // Storage::put('request.txt', json_encode($costPrice));
+        
+
+           
+       
+        // return back();
 
     }
 }

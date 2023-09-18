@@ -49,7 +49,7 @@
 
                                 <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Form Request</h2>
 
-                    <form method="POST" action="{{ route("api") }}">
+                    <form method="POST" action="{{ route("getupdates") }}">
                         <input type="text" name="first_name" placeholder="Имя">
                         <input type="text" name="last_name" placeholder="Фамилия">
                         <input  type="submit" value="SEND" />

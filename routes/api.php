@@ -19,6 +19,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/getexchanges', [AmoAuthController::class, 'getUpdatesByHook'])->name('api');
+Route::post('/getupdates', [AmoAuthController::class, 'getUpdatesByHook'])->name('getupdates');
 
 //Пробуем api middleware, чтобы избежать аутентификации по csrf-токену
