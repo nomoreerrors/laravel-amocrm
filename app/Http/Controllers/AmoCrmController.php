@@ -1,9 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use AmoCRM\Client\AmoCRMApiRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use AmoCRM\Collections\CustomFieldsValuesCollection;
+use AmoCRM\EntitiesServices\Webhooks;
 use AmoCRM\Models\CustomFieldsValues\TextCustomFieldValuesModel;
 use AmoCRM\Models\CustomFieldsValues\ValueModels\TextCustomFieldValueModel;
 use \AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueCollection;
@@ -11,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\classes\AmoConnectionInitialize;
 use Illuminate\Http\RedirectResponse;
 
-class AmoAuthController extends Controller
+class AmoCrmController extends Controller
 {
     /**
      * Аутентификация по коду авторизации и получение access token
@@ -31,14 +34,16 @@ class AmoAuthController extends Controller
      
     }
 
+
     /**
      * Получить новую сделку или изменения в сделке с AmoCRM
      */
     public function getUpdatesByHook(Request $request): RedirectResponse
     {
         $data = $request->all();
-
-        Storage::put('webhookrequest.txt',json_encode($request));
+     
+        $data['accounts']['leads']['values']['value'];
+        Storage::put('webhookrequest.txt',json_encode($data));
         return back();
 
     }
