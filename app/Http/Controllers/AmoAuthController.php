@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\classes\AmoConnectionInitialize;
 use Illuminate\Http\RedirectResponse;
 
-class AmoCrmController extends Controller
+class AmoAuthController extends Controller
 {
     /**
      * Аутентификация по коду авторизации и получение access token
@@ -41,9 +41,8 @@ class AmoCrmController extends Controller
     public function getUpdatesByHook(Request $request): RedirectResponse
     {
         $data = $request->all();
-     
-        $data['accounts']['leads']['values']['value'];
-        Storage::put('webhookrequest.txt',json_encode($data));
+        $costPrice = $data['account']['leads']['values']['value'];
+        Storage::put('webhookrequest.txt',json_encode($costPrice));
         return back();
 
     }
