@@ -45,9 +45,8 @@ class AmoAuthController extends Controller
         // $filtered = array_filter($data, function($el) {
         //      return !empty($el['last_name']);
         //     });
-        // dd($filtered);
-        
-        $costPrice = $data['account']['leads']['custom_fields'];
+        dd($data);
+        $costPrice = $data['leads']['update'][0]['custom_fields'];
         Storage::put('webhookrequest.txt',json_encode($costPrice));
         return back();
 
