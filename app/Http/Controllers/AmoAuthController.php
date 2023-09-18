@@ -41,8 +41,14 @@ class AmoAuthController extends Controller
     public function getUpdatesByHook(Request $request): RedirectResponse
     {
         $data = $request->all();
-        // $costPrice = $data['account']['leads']['values']['value'];
-        Storage::put('webhookrequest.txt',json_encode($data));
+        // $cuddy = ['lol'=> 'wut', 'house' => 'doctor', 'cameron' => ['bitch' => '2', 'Tom' => 'Cruise']];
+        // $filtered = array_filter($data, function($el) {
+        //      return !empty($el['last_name']);
+        //     });
+        // dd($filtered);
+        
+        $costPrice = $data['account']['leads']['custom_fields'];
+        Storage::put('webhookrequest.txt',json_encode($costPrice));
         return back();
 
     }
