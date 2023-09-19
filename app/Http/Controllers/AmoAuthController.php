@@ -42,79 +42,35 @@ class AmoAuthController extends Controller
 
      
     }
-
-
-    public function getField(array $data, string $field)
+    /**
+     * Рекурсия возвращает любое поле массива, полученного из webhooks
+     */
+    public function getField(array $data, string $field): array
     {
+                static $a = [];
+                static $c = [];
+                    foreach($data as $key => $value) {
+                        foreach($value as $key2 => $value2) {
+                            if($key2 == $field) {
+                            $a[$field] = $value2;
+                        }
+                        if(gettype($value2) == 'array') {
+                            $c[$key2] = $value2;
+                        };
+                        };
+                    };
+                if(count($a) == 0) {
+                    $this->getField($c, $field);
+                } 
 
-        $result = [];
-
-        if(array_key_exists($field, $data)) $result[$field] = $data[$field];
+              return $a;
+                 
+    }
         
-        $array = [];
 
-        foreach($data as $key => $value) {
-            foreach($value as $key2 => $value2) {
-            if($key2 == $field) {
-                $result[$field] = $value2;
-                break;
-            }
-            if(gettype($value2) == 'array') $array[] = $value2;
-            }
-        };
 
-        $array2 = [];
-        foreach($array as $key => $value) {
-            foreach($value as $key2 => $value2) {
-            if($key2 == $field) {
-                $result[$field] = $value2;
-                break;
-            }
-            if(gettype($value2) == 'array') $array2[] = $value2;
-            }
-        }
 
-        $array3 = [];
-        foreach($array2 as $key => $value) {
-            foreach($value as $key2 => $value2) {
-            if($key2 == $field) {
-                $result[$field] = $value2;
-                break;
-            }
-            if(gettype($value2) == 'array') $array3[] = $value2;
-            }
-        }
 
-        $array4 = [];
-        foreach($array3 as $key => $value) {
-            
-            foreach($value as $key2 => $value2) {
-                if($key2 == $field) {
-                $result[$field] = $value2;
-                break;
-            }
-            if(gettype($value2) == 'array') $array4[] = $value2;
-            }
-        }
-
-        $array5 = [];
-        foreach($array4 as $key => $value) {
-            foreach($value as $key2 => $value2) {
-            if($key2 == $field) {
-                $result[$field] = $value2;
-                break;
-            }
-            if(gettype($value2) == 'array') $array5[] = $value2;
-            }
-        }
-
-     
-        
-    dd($result);
-
-}
- 
-       
 
 
     /**
@@ -167,8 +123,8 @@ class AmoAuthController extends Controller
 
   
             
-            $result = $this->getField($data, 'subdomain');
-            // dd($result);
+            $result = $this->getField($data, 'value');
+            dd($result);
         
         // $data = $request->all();
         // Storage::put('request.txt', json_encode($data));
