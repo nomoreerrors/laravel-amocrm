@@ -15,6 +15,9 @@ use App\Http\classes\AmoConnectionInitialize;
 use Illuminate\Http\RedirectResponse;
 use AmoCRM\Collections\BaseApiCollection;
 use AmoCRM\Collections\CustomFields\CustomFieldsCollection;
+use AmoCRM\Models\BaseApiModel;
+use AmoCRM\Models\LeadModel;
+use AmoCRM\Models\CustomFields\CustomFieldModel;
 
 class AmoAuthController extends Controller
 {   
@@ -44,45 +47,15 @@ class AmoAuthController extends Controller
     public function getField(array $data, string $field): array
     {
     //    $this->field = $field;
+
+    // function (array $item) use ($itemClass) {
     // Попробую убрать вложенность. Из каждого массива сделать отдельный объект и проверять
+    // или раскрыть скобки массивов внутри, запушить все в один массив, потом фильтр
+    // или просто добраться до элемента массива вручную и получать кастомные окна по названию аргумента
+
     dd($field);
-       $result = array_filter($data, function($obj) {
-           foreach($obj as $key) {
-               if($key ==  $this->field) {
-                        dd($this->field);
-                        
-                        return $key;
-                        die;
-                    };
-                    if(gettype($key) == 'array') {
+        
 
-                        foreach($key as $key2) {
-                            if($key2 == $this->field) {
-                                
-                                
-                                return $key2;
-                                die;
-                            }
-                            if(gettype($key2) == 'array') {
-                                foreach($key2 as $key3) {
-                                    if($key2 == $this->field) {
-                                        return $key2;
-                                    };
-                                    if(gettype($key3) == 'array') {
-                                        foreach($key3 as $key4) {
-                                            if($key4 == $this->field) {
-                                                return $key4;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } 
-                }
-
-       });
-       return $result;
     }
  
        
@@ -134,24 +107,15 @@ class AmoAuthController extends Controller
                 ]
             ];
 
-            $result = new CustomFieldsCollection($data);
-
-
-            dd($result);
-            $result->getBy('update', 'namem');
+            
 
   
             
-
-
-        // $filtered = array_filter($data, function($el) {
-        //      return !empty($el['last_name']);
-        //     });
-        // $account = $request->only('account');
-        // $leads = $request->only('leads');
-        // $account_id = $account[0]['id'];
+            // $result = $this->getField($data, 'update');
+            // dd($result);
         
-        // Storage::put('request.txt', json_encode($costPrice));
+        $request->all();
+        Storage::put('request.txt', json_encode($request));
         
 
            
