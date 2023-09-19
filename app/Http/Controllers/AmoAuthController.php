@@ -13,6 +13,8 @@ use \AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueColle
 use Illuminate\Support\Facades\Storage;
 use App\Http\classes\AmoConnectionInitialize;
 use Illuminate\Http\RedirectResponse;
+use AmoCRM\Collections\BaseApiCollection;
+use AmoCRM\Collections\CustomFields\CustomFieldsCollection;
 
 class AmoAuthController extends Controller
 {   
@@ -132,8 +134,11 @@ class AmoAuthController extends Controller
                 ]
             ];
 
-            dd($this->getField($data, 'id'));
+            $result = new CustomFieldsCollection($data);
 
+
+            dd($result);
+            $result->getBy('update', 'namem');
 
   
             
