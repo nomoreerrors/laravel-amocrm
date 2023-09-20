@@ -10,23 +10,16 @@ use stdClass;
 class WebhookRequestHandler extends BaseRequestHandler
 {
     private array $data;
-    private array $account;
-    private array $leads;
-    private array $update;
-    private array $custom_fields;
-
+  
 
     public function __construct(array $data)
     {
-         $this->data = $data;
-         $this->custom_fields = $this->getFieldByName($data, 'custom_fields');
-         $this->account = $this->getFieldByName($data, 'account');
-         $this->leads = $this->getFieldByName($data, 'leads');
-         $this->update = $this->getFieldByName($data, 'update');
-        
+        $this->data = $data;
     }
 
-    public function getFieldByName(array $data, string $field): array
+
+
+    private function getFieldByName(array $data, string $field): array
     {
         static $a = [];
         static $c = [];
@@ -43,17 +36,54 @@ class WebhookRequestHandler extends BaseRequestHandler
                 };
                 };
             };
-        if(count($a) == 0) {
-            $this->getFieldByName($c, $field);
-        } 
-        //throw exception?
-      return $a;
+            if(count($a) == 0) {
+                $this->getFieldByName($c, $field);
+            } 
+            //throw exception?
+        return $a;
     }
+
 
 
     public function getCustomFields(): array
     {
-        return $this->custom_fields;
+        return $this->getFieldByName($this->data, 'custom_fields')['custom_fields'];
+    }
+
+    /**
+     * Добавить параметр получения конкретного свойства или нескольких из поля update
+     */
+    public function getUpdate(string $value): array
+    {
+        return $this->getFieldByName($this->data, 'update')['update'];
+        //parameters ['id', 'account_id', 'custom_fields'];
+        // $c = $this->getFieldByName($this->data, 'update');
+        // foreach($c as $key){
+        // $c[$key]
+        //return all parameters
+        // }
+
+    }
+
+
+    public function getLeads(): array
+    {
+        return $this->getFieldByName($this->data, 'leads')['leads'];
+
+    }
+
+
+    public function getAccount(): array
+    {
+        return $this->getFieldByName($this->data, 'account')['account'];
+
+    }
+
+
+    public function getValues(): array
+    {
+        return $this->getFieldByName($this->data, 'values')['values'];
+
     }
 
  

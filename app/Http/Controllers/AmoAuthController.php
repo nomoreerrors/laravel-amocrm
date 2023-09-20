@@ -127,8 +127,9 @@ class AmoAuthController extends Controller
             
          
         $a = new WebhookRequestHandler($data);
+        // dd($a);
         // $b = $a->getFieldByName($data, 'custom_fields');
-        $b = $a->getCustomFields();
+        $b = $a->getValues();
         dd($b);
        
         // return back();
