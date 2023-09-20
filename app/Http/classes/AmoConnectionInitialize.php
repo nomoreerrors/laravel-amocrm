@@ -4,6 +4,7 @@ namespace App\Http\classes;
 
 use AmoCRM\Client\AmoCRMApiClient;
 use League\OAuth2\Client\Token\AccessToken;
+use App\Http\classes\AccessTokenHandler;
 
 
 /**
@@ -12,32 +13,46 @@ use League\OAuth2\Client\Token\AccessToken;
 class AmoConnectionInitialize 
 {
 
-    public static function apiRequest(array $config): void
+    private $baseDomain;
+    private $client_id;
+    private $client_secret;
+    private $auth_code;
+    private $redirect_uri;
+
+
+    public function __construct(array $config)
     {
-        list('client_id' => $client_id,
-            'client_secret' => $client_secret,
-            'redirect_uri' => $redirect_uri,
-            'auth_code' => $auth_code,
-            'baseDomain' => $baseDomain) = $config;
+        $this->client_id = $config['client_id'];
+        $this->client_secret = $config['client_secret'];
+        $this->redirect_uri = $config['redirect_uri'];
+        $this->auth_code = $config['auth_code'];
+        $this->baseDomain = $config['baseDomain'];
+
+        $this->apiRequest($this->client_id, $this->client_secret, $this->redirect_uri, $this->baseDomain, $this->auth_code);
+    }
 
 
-        
+
+
+    private function apiRequest($client_id, $client_secret, $redirect_uri, $baseDomain, $auth_code)
+    {
         $apiClient = new AmoCRMApiClient($client_id, $client_secret, $redirect_uri);
         $accessToken = $apiClient->setAccountBaseDomain($baseDomain)
                                  ->getOAuthClient()
                                  ->getAccessTokenByCode($auth_code);
 
+        
 
 
         $apiClient->setAccessToken($accessToken)
                   ->onAccessTokenRefresh(
                     function (AccessToken $accessToken, string $baseDomain) {
-                        AccessTokenStorage::saveToken($accessToken, $baseDomain);
+                        AccessTokenHandler::saveTokenToStorage($accessToken, $baseDomain);
                     });
                     
 
 
-        AccessTokenStorage::saveToken($accessToken, $baseDomain);
+        AccessTokenHandler::saveTokenToStorage($accessToken, $baseDomain);
     }
  
 }

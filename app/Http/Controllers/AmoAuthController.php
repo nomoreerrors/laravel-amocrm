@@ -32,13 +32,13 @@ class AmoAuthController extends Controller
     {
         $config = [
         'baseDomain' => "gingersnaps.amocrm.ru", 
-        'client_id' => 'd7424ba2-7070-4a5b-9124-dcdea55b6197',
-        'client_secret' => 'GIKKv84w9uNqnhO1rUTIbkIkhJhMUxDu62d4CYqBTyuP7gw61idW8iR9Vkw6bg4I',
-        'auth_code' => 'def5020077d3f5f9a1d0051f5492396f44ea30b734ed9c5c8b0c93d67fd6891e2382f3e28acd6a384360c07afe97af75e1cf4eb66a65291028e661f01531f72314963432a43f9fbd535dc397cbf4c1876a03d91534c4e6e1132c8b98fd585582582687cb1cae0a2da3bead92509764e1a3775fa28db362fc1cc268080b35bc8e8199db885acba83e83096521211928a74d5d1ca74bc11d58ac290bf7ab46c098e30da6c18ee6e28ff3f58bd224cef1ba79ac16724316c31793986456a53480786f808b4dccd3e3afcffa2b1931264b3db56a2dd2949fb50b3f2ebf898e492c23782ea153cf038296e700f0b041d2b229ab93492e38081781de3a7ef9ee35dbc3af9e61afb76458f8da44a914cdbc0f9df80f048634b343fa3705fc383f71d42098371b11bbc6450c86d053ebead76b2cafe92468537de84e27415d76b9f779d230d4d8f35fe249744c6d409794b300dbce561288951652f31b961609aa83eb4c34a627a7576529a04fd8d7d090f068a869db462a5a4eee478d8d85487fd74666689abaa75a49865b36b90b26844d86cc48d2b45b3b4a2fb1bdc3067c9fda72f2e5c45042807ca7f3f56d6da85ca8ccfe370ba97cc74b85633c85800effd718e5b06f7acc5b3288e41c8f6d35f33ce1bd342fca55e0dfe1b778fce94e8b58f5e52989e9b2af657d2294e9a3',
+        'client_id' => 'd6b82438-952d-4558-ae25-9c1588ddbf2c',
+        'client_secret' => 'yMhFfxrrtvcIf75564N8QEeH7G3CartHAq8joQYPuFKjyQiSI541uHA2rNdcMVWL',
+        'auth_code' => 'def502004dec37cee30f1fe777a5de488882b4e34ab6f1a34b73de07d312c4d5c092900b55f5127c1af0d3481543d0a4bde4e482dfb64add0e2e42805ed8e874aa936ef25604144c4fdd48dfba8144f76f2a22b8f4c8b3797625ed5b8bc58eee614087a86da51b5c18e8822b87a796aceee7b2e807c9edf67ed107a547867b75a01b7304a82903c395246e444ce09654d6b45d69241e010a2fa27141231b64ed360e79f7be343479ea421ac28695bb8f5345a8bfc3d43e0fd133bbd7e8c0247fdc9acf9fe612337bdf2bf54e6b27d2d32035faa15ddf9efa305e683395d61728d254989623c855bd67568ccef49a0e8b8587a1ebe18504ee6c2196fd450400babacf9e62d4b6ece67dd8d17ca4eda7c983fb01eda5f517aae6eec38350dcd168f1387334291628ba108b12d07fd5cd22c1db34547129b70261d1efd103adb5d37afedd39ad17f67328c152cdc12417d865a1b92f7d38d353879d32387defcc577da5e18db5ba1657c3d5fc90715efc2e51d837b7f8c987e3e7db1eda286dbcb162d6876f929371ed7a06d6ba2ecf39cd31d5d6b1a4f3ac8389610464c511a48f001d9a05c7212cea48da0b8302bbe6b96515f1782c28d4486aad62ec1a6012de11e7303621d3c0f798dd1adf62c9053133c92f1aa4ac7460649ffd46f714637315261b83e4ec5e74b37fb7',
         'redirect_uri' => 'http://gingerbw.beget.tech'
         ];
         
-        AmoConnectionInitialize::apiRequest($config);
+        $connect = new AmoConnectionInitialize($config);
 
      
     }
@@ -62,7 +62,7 @@ class AmoAuthController extends Controller
                 if(count($a) == 0) {
                     $this->getField($c, $field);
                 } 
-
+                //throw exception?
               return $a;
                  
     }

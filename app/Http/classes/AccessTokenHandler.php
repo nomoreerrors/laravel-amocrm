@@ -6,13 +6,13 @@ use Illuminate\Support\Facades\Storage;
 use League\OAuth2\Client\Token\AccessToken;
 
 
-class AccessTokenStorage
+class AccessTokenHandler extends AccessToken
 
 /**
  * Put token to Laravel storage
  */
 {
-    public static function saveToken(AccessToken $accessToken, string $baseDomain): void
+    public static function saveTokenToStorage(AccessToken $accessToken, string $baseDomain): void
     {
         if (
             $accessToken->getToken() &&
@@ -42,7 +42,7 @@ class AccessTokenStorage
      * Get token from Laravel storage
      */
 
-    public static function getToken(): AccessToken
+    public static function getTokenFromStorage(): AccessToken
     {
         if (!Storage::get('access_token.txt')) {
             exit('Access token file not found');
@@ -57,7 +57,7 @@ class AccessTokenStorage
             && isset($accessToken['expires'])
             && isset($accessToken['baseDomain'])
         ) {
-            return new AccessToken([
+            return new AccessTokenHandler([
                 'access_token' => $accessToken['accessToken'],
                 'refresh_token' => $accessToken['refreshToken'],
                 'expires' => $accessToken['expires'],
