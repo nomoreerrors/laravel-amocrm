@@ -2,25 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use AmoCRM\Client\AmoCRMApiRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use AmoCRM\Collections\CustomFieldsValuesCollection;
-use AmoCRM\EntitiesServices\Webhooks;
-use AmoCRM\Models\CustomFieldsValues\TextCustomFieldValuesModel;
-use AmoCRM\Models\CustomFieldsValues\ValueModels\TextCustomFieldValueModel;
-use \AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueCollection;
-use Illuminate\Support\Facades\Storage;
 use App\Http\classes\AmoConnectionInitialize;
-use Illuminate\Http\RedirectResponse;
-use AmoCRM\Collections\BaseApiCollection;
-use AmoCRM\Collections\CustomFields\CustomFieldsCollection;
-use AmoCRM\Models\BaseApiModel;
-use AmoCRM\Models\LeadModel;
-use Illuminate\Support\Arr;
-use stdClass;
-use AmoCRM\Models\CustomFields\CustomFieldModel;
 use App\Http\Classes\WebhookRequestHandler;
+use Illuminate\Support\Facades\Storage;
 
 class AmoAuthController extends Controller
 {   
@@ -50,88 +36,19 @@ class AmoAuthController extends Controller
      * Получить новую сделку или изменения в сделке с AmoCRM
      */
     public function getUpdatesByHook(Request $request)
-    {
-        // $data = $request->all();
-        // $account_id = $data['account']['account_id'];
-        // $costPrice = $data['leads']['update'][0]['custom_fields'][0]['values']['value'];
-        $data = [
-            "account" => 
-                [
-                    "subdomain" => "gingersnaps",
-                    "id" => "31285798",
-                    "_links" => ["self" => "https => \/\/gingersnaps.amocrm.ru"]
-                ],
-            "leads" => 
-                [
-                    "update" => 
-                    [
-                        [
-                            "id" => "38138155",
-                            "name" => "\u041f\u043e\u043a\u0443\u043f\u043a\u0430 \u0444\u0443\u0442\u0431\u043e\u043b\u044c\u043d\u044b\u0445 \u043c\u044f\u0447\u0435\u0439",
-                            "status_id" => "60307670",
-                            "price" => "177000",
-                            "responsible_user_id" => "10067946",
-                            "last_modified" => "1694964742",
-                            "modified_user_id" => "10067946",
-                            "created_user_id" => "10067946",
-                            "date_create" => "1694964733",
-                            "pipeline_id" => "7227930",
-                            "account_id" => "31285798",
-                            "custom_fields" => 
-                                    [
-                                        [
-                                        "id" => "1122224",
-                                        "name" => "\u0421\u0435\u0431\u0435\u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c",
-                                        "values" => [["value" => "120000"]]
-                                        ],
-                                        [
-                                        "id" => "21294045",
-                                        "name" => " u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c",
-                                        "values" => [["value" => "1320000"]]
-                                        ]
-                                    ],
-                                    "created_at" => "1694964733",
-                                    "updated_at" => "1694964742"
-                        ],
-                        [
-                                    "id" => "44444155",
-                                    "1name" => "  \u0444\u0443\u0442\u0431\u043e\u043b\u044c\u043d\u044b\u0445 \u043c\u044f\u0447\u0435\u0439",
-                                    "1status_id" => "60307670",
-                                    "1price" => "177000",
-                                    "1responsible_user_id" => "10067946",
-                                    "1last_modified" => "1694964742",
-                                    "1modified_user_id" => "10067946",
-                                    "1created_user_id" => "10067946",
-                                    "1date_create" => "1694964733",
-                                    "1pipeline_id" => "7227930",
-                                    "1account_id" => "31285798",
-                                    "1buustom_fields" => 
-                                    [
-                                        [
-                                        "id" => "2129045",
-                                        "name" => "\u0421\u0435\u0431\u0435\u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c",
-                                        "values" => [["value" => "120000"]]
-                                        ],
-                                        [
-                                        "id" => "21294045",
-                                        "name" => " u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c",
-                                        "values" => [["value" => "120000"]]
-                                        ]
-                                    ],
-                                    "created_at" => "1694964733",
-                                    "updated_at" => "1694964742"
-                                ],
-                    ]
-                ]
-            ];
+    {   
+        // pprism pprosm ppubm СНИППЕТЫ
 
-            
-         
-        $a = new WebhookRequestHandler($data);
-        $b = $a->getCustomFields(21294045);
-        dd($b);
+        //ПОЛУЧИ ДАНННЫЕ НОВОЙ СДЕЛКИ
+
+        // $data = $request->all();
+        
+        $testData = json_decode(Storage::get('updates.txt'), true);
+        dd($testData);
+        // $a = new WebhookRequestHandler($testData);
+        // $b = $a->getUpdate(38138155);
+        // dd($b);
        
-        // return back();
 
     }
 }

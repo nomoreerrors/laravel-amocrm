@@ -37,23 +37,21 @@ class WebhookRequestHandler extends BaseRequestHandler
         }
 
     }
-   
+    
 
     /**
      * Возвращает поле webhook - update или один из его объектов по id
      */
     public function getUpdate(int $id = null): array
     {
-        $c = [];
+        $c = $this->getFieldByName($this->data, 'update')['update'];
         if(!$id) {
-            $c = $this->getFieldByName($this->data, 'update')['update'];
             return $c;
+        };
 
-        } else {
-            $array = $this->getFieldByName($this->data, 'update')['update'];
-            $c = $this->getFieldById($array, $id);
-            return $c;
-        }
+        $d = $this->getFieldById($c, $id);
+        return $d;
+        
     }
 
     
