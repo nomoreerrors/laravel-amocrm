@@ -2,7 +2,9 @@
 
 namespace App\Http\Classes;
 
-use stdClass;
+use App\Http\Classes\BaseRequestHandler;
+use Exception;
+
 
 /**
  * Обработка полей полученных данных 
@@ -19,74 +21,85 @@ class WebhookRequestHandler extends BaseRequestHandler
 
 
 
-    private function getFieldByName(array $data, string $field): array
-    {
-        static $a = [];
-        static $c = [];
-            foreach($data as $key => $value) {
-                if($key == $field) {
-                    $a[$key] = $value;
-                }
-                foreach($value as $key2 => $value2) {
-                    if($key2 == $field) {
-                    $a[$key2] = $value2;
-                }
-                if(gettype($value2) == 'array') {
-                    $c[$key2] = $value2;
-                };
-                };
-            };
-            if(count($a) == 0) {
-                $this->getFieldByName($c, $field);
-            } 
-            //throw exception?
-        return $a;
+    /**
+     * Возвращает всё поле - custom_fields или один из его объектов по id
+     */
+    public function getCustomFields(?int $id = null): array
+    {   
+        $c = $this->getFieldByName($this->data, 'custom_fields')['custom_fields'];
+
+        if(!$id) {
+            return $c;
+            
+        } else {
+            $d = $this->getFieldById($c, $id);
+            return $d;
+        }
+
     }
-
-
-
-    public function getCustomFields(): array
-    {
-        return $this->getFieldByName($this->data, 'custom_fields')['custom_fields'];
-    }
+   
 
     /**
-     * Добавить параметр получения конкретного свойства или нескольких из поля update
+     * Возвращает поле webhook - update или один из его объектов по id
      */
-    public function getUpdate(string $value): array
+    public function getUpdate(int $id = null): array
     {
-        return $this->getFieldByName($this->data, 'update')['update'];
-        //parameters ['id', 'account_id', 'custom_fields'];
-        // $c = $this->getFieldByName($this->data, 'update');
-        // foreach($c as $key){
-        // $c[$key]
-        //return all parameters
-        // }
+        $c = [];
+        if(!$id) {
+            $c = $this->getFieldByName($this->data, 'update')['update'];
+            return $c;
 
+        } else {
+            $array = $this->getFieldByName($this->data, 'update')['update'];
+            $c = $this->getFieldById($array, $id);
+            return $c;
+        }
     }
 
+    
 
+    /**
+     * Возвращает поле webhook - leads 
+     */
     public function getLeads(): array
-    {
-        return $this->getFieldByName($this->data, 'leads')['leads'];
-
+    {       
+         return $this->getFieldByName($this->data, 'leads')['leads'];
     }
 
 
-    public function getAccount(): array
-    {
-        return $this->getFieldByName($this->data, 'account')['account'];
 
+    /**
+     * Возвращает поле webhook - update или один из его элементов по ключу
+     */
+    public function getAccount(string $key = null): array | string 
+    {
+        $c = $this->getFieldByName($this->data, 'account')['account'];
+        if(!$key) {
+            return $c;
+        }
+        if(isset($c[$key])) {
+            return $c[$key];
+        }
+        else throw new Exception('Account не содержит объект с таким ключом');
     }
 
+    
 
-    public function getValues(): array
+    /**
+     * Возвращает все значения values или по id содержащего это значение объекта
+     */
+    public function getCustomFieldsValues(int $id = null): array | string
     {
-        return $this->getFieldByName($this->data, 'values')['values'];
-
+        $c = $this->getCustomFields();
+        if(!$id) {
+            return $c;
+        } else {
+            $d = $this->getFieldById($c, $id);
+            return $d['values'];
+        }
     }
 
- 
+     
  
 
 

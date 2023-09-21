@@ -94,6 +94,7 @@ return array(
     'Cron\\' => array($vendorDir . '/dragonmantank/cron-expression/src/Cron'),
     'Carbon\\' => array($vendorDir . '/nesbot/carbon/src/Carbon'),
     'Brick\\Math\\' => array($vendorDir . '/brick/math/src'),
+    'App\\Http\\Classes\\' => array($baseDir . '/app/Http/classes'),
     'App\\' => array($baseDir . '/app', $vendorDir . '/laravel/pint/app'),
     'AmoCRM\\Support\\' => array($vendorDir . '/amocrm/amocrm-api-library/src/AmoCRM/Support'),
     'AmoCRM\\OAuth\\' => array($vendorDir . '/amocrm/amocrm-api-library/src/AmoCRM/OAuth'),

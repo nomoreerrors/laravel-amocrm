@@ -42,40 +42,8 @@ class AmoAuthController extends Controller
         
         $connect = new AmoConnectionInitialize($config);
 
-     
     }
-    /**
-     * Рекурсия возвращает любое поле массива, полученного из webhooks
-     */
-    public function getField(array $data, string $field): array
-    {
-                static $a = [];
-                static $c = [];
-                    foreach($data as $key => $value) {
-                        if($key == $field) {
-                            $a[$key] = $value;
-                        }
-                        foreach($value as $key2 => $value2) {
-                            if($key2 == $field) {
-                            $a[$key2] = $value2;
-                        }
-                        if(gettype($value2) == 'array') {
-                            $c[$key2] = $value2;
-                        };
-                        };
-                    };
-                if(count($a) == 0) {
-                    $this->getField($c, $field);
-                } 
-                //throw exception?
-              return $a;
-                 
-    }
-        
-
-
-
-
+  
 
 
     /**
@@ -110,16 +78,49 @@ class AmoAuthController extends Controller
                             "pipeline_id" => "7227930",
                             "account_id" => "31285798",
                             "custom_fields" => 
-                            [
-                                [
-                                "id" => "2129045",
-                                "name" => "\u0421\u0435\u0431\u0435\u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c",
-                                "values" => [["value" => "120000"]]
-                                ]
-                             ],
-                            "created_at" => "1694964733",
-                            "updated_at" => "1694964742"
-                        ]
+                                    [
+                                        [
+                                        "id" => "1122224",
+                                        "name" => "\u0421\u0435\u0431\u0435\u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c",
+                                        "values" => [["value" => "120000"]]
+                                        ],
+                                        [
+                                        "id" => "21294045",
+                                        "name" => " u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c",
+                                        "values" => [["value" => "1320000"]]
+                                        ]
+                                    ],
+                                    "created_at" => "1694964733",
+                                    "updated_at" => "1694964742"
+                        ],
+                        [
+                                    "id" => "44444155",
+                                    "1name" => "  \u0444\u0443\u0442\u0431\u043e\u043b\u044c\u043d\u044b\u0445 \u043c\u044f\u0447\u0435\u0439",
+                                    "1status_id" => "60307670",
+                                    "1price" => "177000",
+                                    "1responsible_user_id" => "10067946",
+                                    "1last_modified" => "1694964742",
+                                    "1modified_user_id" => "10067946",
+                                    "1created_user_id" => "10067946",
+                                    "1date_create" => "1694964733",
+                                    "1pipeline_id" => "7227930",
+                                    "1account_id" => "31285798",
+                                    "1buustom_fields" => 
+                                    [
+                                        [
+                                        "id" => "2129045",
+                                        "name" => "\u0421\u0435\u0431\u0435\u0441\u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c",
+                                        "values" => [["value" => "120000"]]
+                                        ],
+                                        [
+                                        "id" => "21294045",
+                                        "name" => " u0442\u043e\u0438\u043c\u043e\u0441\u0442\u044c",
+                                        "values" => [["value" => "120000"]]
+                                        ]
+                                    ],
+                                    "created_at" => "1694964733",
+                                    "updated_at" => "1694964742"
+                                ],
                     ]
                 ]
             ];
@@ -127,9 +128,7 @@ class AmoAuthController extends Controller
             
          
         $a = new WebhookRequestHandler($data);
-        // dd($a);
-        // $b = $a->getFieldByName($data, 'custom_fields');
-        $b = $a->getValues();
+        $b = $a->getCustomFields(21294045);
         dd($b);
        
         // return back();

@@ -178,6 +178,7 @@ class ComposerStaticInit21eb009b6e6d761e9f9599ef116b5d56
         ),
         'A' => 
         array (
+            'App\\Http\\Classes\\' => 17,
             'App\\' => 4,
             'AmoCRM\\Support\\' => 15,
             'AmoCRM\\OAuth\\' => 13,
@@ -552,6 +553,10 @@ class ComposerStaticInit21eb009b6e6d761e9f9599ef116b5d56
         'Brick\\Math\\' => 
         array (
             0 => __DIR__ . '/..' . '/brick/math/src',
+        ),
+        'App\\Http\\Classes\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/app/Http/classes',
         ),
         'App\\' => 
         array (
@@ -1015,6 +1020,8 @@ class ComposerStaticInit21eb009b6e6d761e9f9599ef116b5d56
         'AmoCRM\\Support\\Str' => __DIR__ . '/..' . '/amocrm/amocrm-api-library/src/AmoCRM/Support/Str.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
+        'App\\Http\\Classes\\BaseRequestHandler' => __DIR__ . '/../..' . '/app/Http/classes/BaseRequestHandler.php',
+        'App\\Http\\Classes\\WebhookRequestHandler' => __DIR__ . '/../..' . '/app/Http/classes/WebhookRequestHandler.php',
         'App\\Http\\Controllers\\AmoAuthController' => __DIR__ . '/../..' . '/app/Http/Controllers/AmoAuthController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
@@ -1027,7 +1034,8 @@ class ComposerStaticInit21eb009b6e6d761e9f9599ef116b5d56
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\ValidateSignature' => __DIR__ . '/../..' . '/app/Http/Middleware/ValidateSignature.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
-        'App\\Http\\classes\\AccessTokenStorage' => __DIR__ . '/../..' . '/app/Http/classes/AccessTokenStorage.php',
+        'App\\Http\\classes\\AccessTokenHandler' => __DIR__ . '/../..' . '/app/Http/classes/AccessTokenHandler.php',
+        'App\\Http\\classes\\AmoConnectionInitialize' => __DIR__ . '/../..' . '/app/Http/classes/AmoConnectionInitialize.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
@@ -3262,6 +3270,7 @@ class ComposerStaticInit21eb009b6e6d761e9f9599ef116b5d56
         'Laravel\\Prompts\\SelectPrompt' => __DIR__ . '/..' . '/laravel/prompts/src/SelectPrompt.php',
         'Laravel\\Prompts\\Spinner' => __DIR__ . '/..' . '/laravel/prompts/src/Spinner.php',
         'Laravel\\Prompts\\SuggestPrompt' => __DIR__ . '/..' . '/laravel/prompts/src/SuggestPrompt.php',
+        'Laravel\\Prompts\\Table' => __DIR__ . '/..' . '/laravel/prompts/src/Table.php',
         'Laravel\\Prompts\\Terminal' => __DIR__ . '/..' . '/laravel/prompts/src/Terminal.php',
         'Laravel\\Prompts\\TextPrompt' => __DIR__ . '/..' . '/laravel/prompts/src/TextPrompt.php',
         'Laravel\\Prompts\\Themes\\Contracts\\Scrolling' => __DIR__ . '/..' . '/laravel/prompts/src/Themes/Contracts/Scrolling.php',
@@ -3276,6 +3285,7 @@ class ComposerStaticInit21eb009b6e6d761e9f9599ef116b5d56
         'Laravel\\Prompts\\Themes\\Default\\SelectPromptRenderer' => __DIR__ . '/..' . '/laravel/prompts/src/Themes/Default/SelectPromptRenderer.php',
         'Laravel\\Prompts\\Themes\\Default\\SpinnerRenderer' => __DIR__ . '/..' . '/laravel/prompts/src/Themes/Default/SpinnerRenderer.php',
         'Laravel\\Prompts\\Themes\\Default\\SuggestPromptRenderer' => __DIR__ . '/..' . '/laravel/prompts/src/Themes/Default/SuggestPromptRenderer.php',
+        'Laravel\\Prompts\\Themes\\Default\\TableRenderer' => __DIR__ . '/..' . '/laravel/prompts/src/Themes/Default/TableRenderer.php',
         'Laravel\\Prompts\\Themes\\Default\\TextPromptRenderer' => __DIR__ . '/..' . '/laravel/prompts/src/Themes/Default/TextPromptRenderer.php',
         'Laravel\\Sail\\Console\\AddCommand' => __DIR__ . '/..' . '/laravel/sail/src/Console/AddCommand.php',
         'Laravel\\Sail\\Console\\Concerns\\InteractsWithDockerComposeServices' => __DIR__ . '/..' . '/laravel/sail/src/Console/Concerns/InteractsWithDockerComposeServices.php',
@@ -5345,6 +5355,7 @@ class ComposerStaticInit21eb009b6e6d761e9f9599ef116b5d56
         'Psy\\CodeCleaner\\ValidFunctionNamePass' => __DIR__ . '/..' . '/psy/psysh/src/CodeCleaner/ValidFunctionNamePass.php',
         'Psy\\Command\\BufferCommand' => __DIR__ . '/..' . '/psy/psysh/src/Command/BufferCommand.php',
         'Psy\\Command\\ClearCommand' => __DIR__ . '/..' . '/psy/psysh/src/Command/ClearCommand.php',
+        'Psy\\Command\\CodeArgumentParser' => __DIR__ . '/..' . '/psy/psysh/src/Command/CodeArgumentParser.php',
         'Psy\\Command\\Command' => __DIR__ . '/..' . '/psy/psysh/src/Command/Command.php',
         'Psy\\Command\\DocCommand' => __DIR__ . '/..' . '/psy/psysh/src/Command/DocCommand.php',
         'Psy\\Command\\DumpCommand' => __DIR__ . '/..' . '/psy/psysh/src/Command/DumpCommand.php',
