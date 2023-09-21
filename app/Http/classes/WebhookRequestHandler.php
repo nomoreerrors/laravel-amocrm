@@ -30,7 +30,7 @@ class WebhookRequestHandler extends BaseRequestHandler
 
         if(!$id) {
             return $c;
-            
+
         } else {
             $d = $this->getFieldById($c, $id);
             return $d;
@@ -63,7 +63,13 @@ class WebhookRequestHandler extends BaseRequestHandler
      */
     public function getLeads(): array
     {       
-         return $this->getFieldByName($this->data, 'leads')['leads'];
+         $c = $this->getFieldByName($this->data, 'leads')['leads'];
+         if(!$c) {
+            throw new Exception('Поле Leads не существует');
+
+         } else {
+            return $c;
+         }
     }
 
 
