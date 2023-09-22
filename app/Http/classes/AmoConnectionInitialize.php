@@ -1,23 +1,35 @@
 <?php
 
 namespace App\Http\classes;
-
-use AmoCRM\Client\AmoCRMApiClient;
-use League\OAuth2\Client\Token\AccessToken;
+ 
 use App\Http\classes\AccessTokenHandler;
+use AmoCRM\Models\BaseApiModel;
+use AmoCRM\Models\LeadModel;
+use AmoCRM\Collections\CustomFieldsValuesCollection;
+use AmoCRM\Models\CustomFieldsValues\TextCustomFieldValuesModel;
+use AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueCollection;
+use AmoCRM\Models\CustomFieldsValues\ValueModels\TextCustomFieldValueModel;
+use AmoCRM\Client\AmoCRMApiClient;
+use AmoCRM\Client\AmoCRMApiRequest;
+use AmoCRM\Models\CustomFields\CustomFieldModel;
+use AmoCRM\OAuth\AmoCRMOAuth;
+use League\OAuth2\Client\Token\AccessToken;
 
 
 /**
  * Авторизация и сохранение access token в Laravel storage
  */
-class AmoConnectionInitialize 
+class AmoConnectionInitialize
 {
 
-    private $baseDomain;
-    private $client_id;
-    private $client_secret;
-    private $auth_code;
-    private $redirect_uri;
+    private string $baseDomain;
+    private string $client_id;
+    private string $client_secret;
+    private string $auth_code;
+    private string $redirect_uri;
+    private $apiClient;
+    private $oAuthClient;
+    private $accessToken;
 
 
     public function __construct(array $config)
@@ -28,32 +40,66 @@ class AmoConnectionInitialize
         $this->auth_code = $config['auth_code'];
         $this->baseDomain = $config['baseDomain'];
 
-        $this->apiRequest($this->client_id, $this->client_secret, $this->redirect_uri, $this->baseDomain, $this->auth_code);
+        $this->apiClient = new AmoCRMApiClient($this->client_id, 
+                                               $this->client_secret, 
+                                               $this->redirect_uri);
+        $this->oAuthClient = $this->apiClient->getOAuthClient();
+        $this->apiOAuthRequest($this->baseDomain, $this->auth_code);
     }
 
 
 
 
-    private function apiRequest($client_id, $client_secret, $redirect_uri, $baseDomain, $auth_code)
+    private function apiOAuthRequest($baseDomain, $auth_code)
     {
-        $apiClient = new AmoCRMApiClient($client_id, $client_secret, $redirect_uri);
-        $accessToken = $apiClient->setAccountBaseDomain($baseDomain)
-                                 ->getOAuthClient()
-                                 ->getAccessTokenByCode($auth_code);
-
         
+        $this->apiClient->setAccountBaseDomain($baseDomain);
+        $a = AccessTokenHandler::getTokenFromStorage();
+        if(!$a) {
+            $this->accessToken = $this->apiClient
+                                      ->getOAuthClient()
+                                      ->getAccessTokenByCode($auth_code);
+        } else {
+            $this->accessToken =  $a;
+            
+        }   
 
 
-        $apiClient->setAccessToken($accessToken)
+
+
+        $this->apiClient->setAccessToken($this->accessToken)
                   ->onAccessTokenRefresh(
                     function (AccessToken $accessToken, string $baseDomain) {
                         AccessTokenHandler::saveTokenToStorage($accessToken, $baseDomain);
                     });
-                    
 
-
-        AccessTokenHandler::saveTokenToStorage($accessToken, $baseDomain);
+        if(!$a) {
+         AccessTokenHandler::saveTokenToStorage($this->accessToken, $baseDomain);
+        }
+            
     }
+
+
+    
+    public function getAccessToken(): AccessToken
+    {
+        return $this->accessToken;
+    }
+
+
+
+    public function getOauthClient(): AmoCRMOAuth
+    {
+        return $this->oAuthClient;
+    }
+
+
+
+
+
+
+
+    
  
 }
     

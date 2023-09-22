@@ -2,15 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\classes\AccessTokenHandler;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\classes\AmoConnectionInitialize;
 use App\Http\Classes\WebhookRequestHandler;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Arr;
+use AmoCRM\Models\CustomFieldsValues\BaseCustomFieldValuesModel;
+use stdClass;
+use AmoCRM\Models\BaseApiModel;
+use AmoCRM\Models\LeadModel;
+use AmoCRM\Collections\CustomFieldsValuesCollection;
+use AmoCRM\Models\CustomFieldsValues\TextCustomFieldValuesModel;
+use AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueCollection;
+use AmoCRM\Models\CustomFieldsValues\ValueModels\TextCustomFieldValueModel;
+use AmoCRM\Client\AmoCRMApiClient;
+use AmoCRM\Client\AmoCRMApiRequest;
+use AmoCRM\Collections\Leads\LeadsCollection;
+use AmoCRM\Models\CustomFields\CustomFieldModel;
+use League\OAuth2\Client\Token\AccessToken;
+
+
 
 class AmoAuthController extends Controller
 {   
 
+    private $config = [
+        'baseDomain' => "gingersnaps.amocrm.ru", 
+        'client_id' => 'd6b82438-952d-4558-ae25-9c1588ddbf2c',
+        'client_secret' => 'yMhFfxrrtvcIf75564N8QEeH7G3CartHAq8joQYPuFKjyQiSI541uHA2rNdcMVWL',
+        'auth_code' => 'def502008f6871f69ce34a52782631f465ea8777595a06e3d525919454f22cab279a4c6024d7021625af56f7dbca0b89efdb181b2d00ef8bca959c252f11cd84f37b108d27393d1074c1830ff0a0f3960b81ff207aa7afaa68b8628a45636fa007b7583f5e2bcf037b851d236b9bfc08aebc1301bdd471e6d7bdb9ddf83d3e502d31cb33a16cd0f05383ddeb29df35fca931f4d90d81cbe5cf2231eee1b3512475c64c18cddfde789dbf9effc3221e1ca448a87f3f448e99fdf856c193946ad7387a66ad1c7c69ac8a3f480d9e54cce3552c34a6a84f0637510c42f29db1b936c5b1cb81bc5a716b733457d8f34efa608d385341ca246a9455c9fd9eee4e8eafac6e572a50a13b9c58acbda699fcad52e8a0ba5a9b33aa57bee0ebb38416985e78150371516544856b33ffb5fccb5663c23b85756fae8af9fb23d0698054a2934992e18b7720e180a01339c79c07b15479a34a8519d1d5837073520669a3e06dc4ea9a100e9b87577bcba118e62f53d819e6d40be0b605a5b68b87be641ef184e99e024adee8d38b39bfb92c6369ee75b09b88b066d91d59190db17e1422ccf0b65b74b896d367109668d81be53c8302241faf6ab9dcdeaba7a583d1de91a2645f10b2386e9c2fbe5f430c5694eb43ea784c29d062d5d6bfd557c88aaac335f1bedd8ae52dcaa1a9d7665a',
+        'redirect_uri' => 'http://gingerbw.beget.tech'
+        ];
 
 
     /**
@@ -18,15 +42,10 @@ class AmoAuthController extends Controller
      */
     protected function authByCode(): void
     {
-        $config = [
-        'baseDomain' => "gingersnaps.amocrm.ru", 
-        'client_id' => 'd7424ba2-7070-4a5b-9124-dcdea55b6197',
-        'client_secret' => 'GIKKv84w9uNqnhO1rUTIbkIkhJhMUxDu62d4CYqBTyuP7gw61idW8iR9Vkw6bg4I',
-        'auth_code' => 'def5020077d3f5f9a1d0051f5492396f44ea30b734ed9c5c8b0c93d67fd6891e2382f3e28acd6a384360c07afe97af75e1cf4eb66a65291028e661f01531f72314963432a43f9fbd535dc397cbf4c1876a03d91534c4e6e1132c8b98fd585582582687cb1cae0a2da3bead92509764e1a3775fa28db362fc1cc268080b35bc8e8199db885acba83e83096521211928a74d5d1ca74bc11d58ac290bf7ab46c098e30da6c18ee6e28ff3f58bd224cef1ba79ac16724316c31793986456a53480786f808b4dccd3e3afcffa2b1931264b3db56a2dd2949fb50b3f2ebf898e492c23782ea153cf038296e700f0b041d2b229ab93492e38081781de3a7ef9ee35dbc3af9e61afb76458f8da44a914cdbc0f9df80f048634b343fa3705fc383f71d42098371b11bbc6450c86d053ebead76b2cafe92468537de84e27415d76b9f779d230d4d8f35fe249744c6d409794b300dbce561288951652f31b961609aa83eb4c34a627a7576529a04fd8d7d090f068a869db462a5a4eee478d8d85487fd74666689abaa75a49865b36b90b26844d86cc48d2b45b3b4a2fb1bdc3067c9fda72f2e5c45042807ca7f3f56d6da85ca8ccfe370ba97cc74b85633c85800effd718e5b06f7acc5b3288e41c8f6d35f33ce1bd342fca55e0dfe1b778fce94e8b58f5e52989e9b2af657d2294e9a3',
-        'redirect_uri' => 'http://gingerbw.beget.tech'
-        ];
         
-        $connect = new AmoConnectionInitialize($config);
+
+        $connect = new AmoConnectionInitialize($this->config);
+
 
     }
   
@@ -35,20 +54,43 @@ class AmoAuthController extends Controller
     /**
      * Получить новую сделку или изменения в сделке с AmoCRM
      */
-    public function getUpdatesByHook(Request $request)
+    public function getWebHookUpdates(Request $request)
     {   
-        // pprism pprosm ppubm СНИППЕТЫ
+         
+        $connect = new AmoConnectionInitialize($this->config);
+        $accessToken = $connect->getAccessToken();
+        $oAuthClient = $connect->getOauthClient();
 
-        //ПОЛУЧИ ДАНННЫЕ НОВОЙ СДЕЛКИ
 
-        // $data = $request->all();
-        
-        $testData = json_decode(Storage::get('updates.txt'), true);
-        dd($testData);
+        $lead = new LeadModel();
+        $lead->setId(22);
+        $leadCustomFieldsValues = new CustomFieldsValuesCollection();
+         
+        $textCustomFieldValuesModel = new TextCustomFieldValuesModel();
+        $textCustomFieldValuesModel->setFieldId(442211);
+        $textCustomFieldValuesModel->setValues(
+            (new TextCustomFieldValueCollection())
+                ->add((new TextCustomFieldValueModel())->setValue('Текст'))
+        );
+        $leadCustomFieldsValues->add($textCustomFieldValuesModel);
+        $lead->setCustomFieldsValues($leadCustomFieldsValues);
+        $c = $lead->toArray();
+
+
+        $apiRequest = new AmoCRMApiRequest($accessToken, $oAuthClient);
+        $apiRequest->post('post', $c, [1],  [ 'Content-Type' => 'application/json',
+                                                'Authorization: Bearer ' . $accessToken
+                                                ]);
+
+
+        // pprim pprosm ppubm СНИППЕТЫ
+        // pif pifel
+
+        // $testData = json_decode(Storage::get('updates.txt'), true);
         // $a = new WebhookRequestHandler($testData);
-        // $b = $a->getUpdate(38138155);
-        // dd($b);
+        // $c = $a->getCustomFieldsValues();
+        // dd($c);
        
-
+        
     }
 }
