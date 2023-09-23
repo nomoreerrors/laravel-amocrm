@@ -29,7 +29,7 @@ class AccessTokenHandler extends AccessToken
                 ]
                 ));
 
-            echo 'Token is saved';
+            // echo 'Token is saved';
             
         } else {
             exit('Invalid access token ' . var_export($accessToken, true));
@@ -42,10 +42,10 @@ class AccessTokenHandler extends AccessToken
      * Get token from Laravel storage
      */
 
-    public static function getTokenFromStorage(): AccessToken
+    public static function getTokenFromStorage(): AccessToken | bool
     {
         if (!Storage::get('access_token.txt')) {
-            exit('Access token file not found');
+            return false;
         }
 
         $accessToken = json_decode(Storage::get('access_token.txt'), true);
@@ -66,7 +66,7 @@ class AccessTokenHandler extends AccessToken
             
         } 
         else {
-            exit('Invalid access token ' . var_export($accessToken, true));
+            return false;
         }
     }
 }

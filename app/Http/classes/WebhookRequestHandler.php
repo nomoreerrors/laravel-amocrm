@@ -10,7 +10,11 @@ use Exception;
  * Обработка полей полученных данных 
  */
 class WebhookRequestHandler extends BaseRequestHandler
-{
+{   
+    /**
+     * Полученные данные с webhook.
+     * @var array
+     */
     private array $data;
 
 
@@ -23,7 +27,8 @@ class WebhookRequestHandler extends BaseRequestHandler
 
 
     /**
-     * Возвращает всё поле - custom_fields или один из его объектов по id
+     * Возвращает всё поле - custom_fields или один из его объектов по id.
+     * @throws Exception
      */
     public function getCustomFields(?int $id = null): array
     {   
@@ -41,7 +46,8 @@ class WebhookRequestHandler extends BaseRequestHandler
     
 
     /**
-     * Возвращает поле webhook - update или один из его объектов по id
+     * Возвращает поле webhook - update или один из его объектов по id.
+     * @throws Exception
      */
     public function getUpdate(int $id = null): array
     {
@@ -58,7 +64,7 @@ class WebhookRequestHandler extends BaseRequestHandler
     
 
     /**
-     * Возвращает поле webhook - leads 
+     * Возвращает поле webhook - leads.
      */
     public function getLeads(): array
     {       
@@ -74,7 +80,7 @@ class WebhookRequestHandler extends BaseRequestHandler
 
 
     /**
-     * Возвращает поле webhook - update или один из его элементов по ключу
+     * Возвращает поле webhook - update, или один из его элементов по ключу.
      */
     public function getAccount(string $key = null): array | string 
     {
@@ -91,7 +97,8 @@ class WebhookRequestHandler extends BaseRequestHandler
     
 
     /**
-     * Возвращает все значения values или по id содержащего это значение объекта
+     * Возвращает все значения values или по id содержащего это значение объекта. 
+     * @throws Exception
      */
     public function getCustomFieldsValues(int $id = null): array | string
     {

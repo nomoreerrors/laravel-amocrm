@@ -27,7 +27,7 @@ class AmoConnectionInitialize
     private string $client_secret;
     private string $auth_code;
     private string $redirect_uri;
-    private $apiClient;
+    public $apiClient;
     private $oAuthClient;
     private $accessToken;
 
@@ -55,13 +55,14 @@ class AmoConnectionInitialize
         
         $this->apiClient->setAccountBaseDomain($baseDomain);
         $a = AccessTokenHandler::getTokenFromStorage();
+        // dd($a);
         if(!$a) {
             $this->accessToken = $this->apiClient
                                       ->getOAuthClient()
                                       ->getAccessTokenByCode($auth_code);
         } else {
             $this->accessToken =  $a;
-            
+          
         }   
 
 
@@ -72,6 +73,7 @@ class AmoConnectionInitialize
                     function (AccessToken $accessToken, string $baseDomain) {
                         AccessTokenHandler::saveTokenToStorage($accessToken, $baseDomain);
                     });
+                    // dd($this->apiClient); //////////////////////ЗДЕСЬ
 
         if(!$a) {
          AccessTokenHandler::saveTokenToStorage($this->accessToken, $baseDomain);

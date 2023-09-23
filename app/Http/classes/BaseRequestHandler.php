@@ -16,6 +16,7 @@ class BaseRequestHandler
  
     /**
      * Возвращает любой элемент вложенного массива по ключу
+     * @throws Exception
      */
     protected function getFieldByName(array $data, string $field): array
     {
@@ -54,7 +55,8 @@ class BaseRequestHandler
                 $c = $value;
             }
         }
-        return $c;
+        return count($c) == 0 ? throw new Exception('Ключ с id ' .$id. ' не существует') : $c;
+
     }
 
 
