@@ -76,8 +76,7 @@ class AmoConnectionInitialize
                     function (AccessToken $accessToken, string $baseDomain) {
                         AccessTokenHandler::saveTokenToStorage($accessToken, $baseDomain);
                     });
-                    // dd($this->apiClient); //////////////////////ЗДЕСЬ
-
+ 
         if(!$a) {
          AccessTokenHandler::saveTokenToStorage($this->accessToken, $baseDomain);
         }

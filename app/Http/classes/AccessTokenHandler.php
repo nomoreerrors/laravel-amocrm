@@ -4,6 +4,7 @@ namespace App\Http\classes;
 
 use Illuminate\Support\Facades\Storage;
 use League\OAuth2\Client\Token\AccessToken;
+use Illuminate\Support\Facades\App;
 
 
 class AccessTokenHandler extends AccessToken
@@ -45,6 +46,7 @@ class AccessTokenHandler extends AccessToken
     public static function getTokenFromStorage(): AccessToken | bool
     {
         if (!Storage::get('access_token.txt')) {
+            App::log('Token does not exist' . __CLASS__ . __LINE__);
             return false;
         }
 
@@ -66,6 +68,7 @@ class AccessTokenHandler extends AccessToken
             
         } 
         else {
+            App::log('Invalid access token' . __CLASS__ . __LINE__);
             return false;
         }
     }
