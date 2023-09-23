@@ -10,6 +10,7 @@ use App\Http\Classes\WebhookRequestHandler;
 use Illuminate\Support\Facades\Storage;
 use AmoCRM\Models\LeadModel;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\App;
 use AmoCRM\Collections\CustomFieldsValuesCollection;
 use AmoCRM\Models\CustomFieldsValues\TextCustomFieldValuesModel;
 use AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueCollection;
@@ -56,6 +57,7 @@ class AmoAuthController extends Controller
         $state = $request->state;
 
         if((int)($state) !== (int)($this->config['state'])) {
+            App::error('Ошибка авторизации state вэбхука');
             throw new Exception('Ошибка авторизации state вэбхука');
             die;
         }
