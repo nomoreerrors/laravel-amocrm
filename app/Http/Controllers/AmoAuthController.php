@@ -61,11 +61,9 @@ class AmoAuthController extends Controller
             throw new Exception('Ошибка авторизации state вэбхука');
             die;
         }
-
+        Storage::put('auth_success.txt');
 
         $connect = new AmoConnectionInitialize($this->config);
-        $accessToken = $connect->getAccessToken();
-        $oAuthClient = $connect->getOauthClient();
 
 
         $leadsService = $connect->apiClient->leads();
