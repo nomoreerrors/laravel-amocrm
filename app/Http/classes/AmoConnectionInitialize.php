@@ -3,15 +3,7 @@
 namespace App\Http\classes;
  
 use App\Http\classes\AccessTokenHandler;
-use AmoCRM\Models\BaseApiModel;
-use AmoCRM\Models\LeadModel;
-use AmoCRM\Collections\CustomFieldsValuesCollection;
-use AmoCRM\Models\CustomFieldsValues\TextCustomFieldValuesModel;
-use AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueCollection;
-use AmoCRM\Models\CustomFieldsValues\ValueModels\TextCustomFieldValueModel;
 use AmoCRM\Client\AmoCRMApiClient;
-use AmoCRM\Client\AmoCRMApiRequest;
-use AmoCRM\Models\CustomFields\CustomFieldModel;
 use AmoCRM\OAuth\AmoCRMOAuth;
 use League\OAuth2\Client\Token\AccessToken;
 

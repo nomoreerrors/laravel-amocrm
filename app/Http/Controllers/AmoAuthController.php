@@ -31,8 +31,8 @@ class AmoAuthController extends Controller
     private $config = [
         'baseDomain' => "nomoreerrors.amocrm.ru", 
         'client_id' => '25f51d4a-e345-4696-bb12-7be346232d40',
-        'client_secret' => 'DIuW58Sy6OCnoFAoI5mVz89ofy5y8NK6azqRwOwsKv7VC6zRhAuuRbNXYXRWHeC4',
-        'auth_code' => 'def502004b05b6046b9f52d541056293a60fecc0393be86261808f327ad10bf930a7445505009e269a5f68f9fe48b7381506371e7b72ed43beaaf483adcc60dcbfa76fd1f1d764124e35c1c63138da0c2d11483495502f97005a0172964aaa5d4a3612ab7b6d868f176762837c1d628a5b99a1f82ef5a4b76f13942d97b5f40771cfc9ed04677cfeae60ea5144638c825626e5f4de2003c6202c7f25e13d199b7ce665c75b68b10c259359c296319b5d0f84bd3952ff851af23a0a334df22e5eadb89815b995a06ac96a12e6acc760f79ab977661e9f0c214fb83b84584d5d44841b43aa5557562092a47fc76c7a2820faf7683bcb3759a373eec02090f7946772f7e2dfd2c5903ed5f1510ec62ee6f2cbcfe793989c40232cf1294317228a165fd43b3536bf7f006ee4003b85272e22fb920981cc66a79a0bf55fb8b2d8890b2efbc69cb39d1add21958c8d1b671b49022bbb9c0388bbef35c660a41df85f86425b9d46e3ff84293bd980548b56b6be4980317ef552818c7918cf6f1a77de83694952f88658704364eb9e6cb5d518416ac6efb264997889a6fb15c5e6848f53fb8386d6f3438c25a361fcf154b74f09157f8a60c17758f44e46a7d4ad81222b46b42ef0213e3a849f8fc81e0b0250a43b8779c4fa94a0fea1930e279db2fa2dd30eb239c17bbed984f092',
+        'client_secret' => 'eH1ULgHUSEi9oi94fhn4MI8qrhQOba1zxYijQQAS01q6TpM8I3n9jeAz3ar1yMfc',
+        'auth_code' => 'def502005751799cfcbf2182050206f200da6c5d483135fa5d1e0ddfbf16546b358ad8cf069114c655c63fb0f01ab4f93d23d03d87586df0ef3ec7d69544f08f453c5e8177a9fce3ad70f04f6cdf1d3089640ab53913607ff25cac9ede9545fafd62d88bb542b3e841b824b9620874070fe490c81c0d9c251151bf63adf8d198bcf5e065670ebe8cd8ea98018bdfee1397ca452c992c348025dbd2a68ee7f7282c1789e7fd18ec8d3271726550283110172fa84334a55a8de80360a701fa4ed28a2511307c5d1b89c8868c836f62c245e82b1e4cc2b7bbcd0aefed911abeaa5f914788f3315e8f82644b0e3eb94b016a23b2382c91ad2bd6423a576ca032ae839b1277e4f5e0a6b8d7e25eb48cda8490085eca0555f71b531c155846241033ac9e96ee808308ae063a7ffbb80d6d20df2af8355b0dd5a28274f469d463effcbf7a17949dd820a89f7dd1e6a750d7bc2d8ace87c6e5a713ba976597138128f36f812fd6a52ed600762d810a90f2c32ababd4ac758f203f0678be73623b8dffd24c05b5dfb4d99f18dd917529430ac7cb44c951f0ee56a03e49988658b25f2c01fdd2a11c90333744eb7c1d413af3910c3975ebab8617dbc551259ad8499512c9c96d45c48f23a8d0aee9f6979e2ef2507de01bfd49ab18a3d80db70ac74df98eb9e280afed771f10b1a37e4',
         'redirect_uri' => 'http://gingerbw.beget.tech',
         'state' => '08269884f9a9a4b8a7c166da58bdd6a3'
         ];
@@ -49,7 +49,7 @@ class AmoAuthController extends Controller
 
 
     /**
-     * Получить новую сделку или изменения в сделке с AmoCRM
+     * Получить новую или измененную сделку с webhook AmoCRM
      */
     public function getWebHookUpdates(Request $request)
     {   
@@ -57,9 +57,7 @@ class AmoAuthController extends Controller
         $state = $request->state;
 
         if((int)($state) !== (int)($this->config['state'])) {
-            App::error('Ошибка авторизации state вэбхука');
-            throw new Exception('Ошибка авторизации state вэбхука');
-            die;
+            throw new Exception('Неверный state в параметре запроса webhook');
         }
         
        
