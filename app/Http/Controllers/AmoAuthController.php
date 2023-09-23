@@ -60,7 +60,7 @@ class AmoAuthController extends Controller
             throw new Exception('Неверный state в параметре запроса webhook');
         }
         
-       
+       //пробуем изменить сделку и читаем логи на сервере
 
         $connect = new AmoConnectionInitialize($this->config);
 
@@ -77,7 +77,7 @@ class AmoAuthController extends Controller
         $leadCustomFieldsValues->add($textCustomFieldValueModel);
         $lead->setCustomFieldsValues($leadCustomFieldsValues);
         $lead->setName('Example');
-        dd($lead);
+        // dd($lead);
         try {
             $lead = $leadsService->addOne($lead);
         } catch (AmoCRMApiException $e) {
