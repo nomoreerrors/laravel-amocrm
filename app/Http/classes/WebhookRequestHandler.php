@@ -28,10 +28,11 @@ class WebhookRequestHandler extends BaseRequestHandler
 
     /**
      * Возвращает всё поле - custom_fields или один из его объектов по id.
-     * @throws Exception
+     *  @throws Exception
      */
     public function getCustomFields(?int $id = null): array
     {   
+        dd($this->data);
         $c = $this->getFieldByName($this->data, 'custom_fields')['custom_fields'];
 
         if(!$id) {

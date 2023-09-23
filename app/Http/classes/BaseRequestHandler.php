@@ -3,6 +3,7 @@
 namespace App\Http\Classes;
 
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Обработка полей полученных данных 
@@ -10,10 +11,9 @@ use Exception;
 class BaseRequestHandler
 {
 
-    private array $data;
+    
 
 
- 
     /**
      * Возвращает любой элемент вложенного массива по ключу
      * @throws Exception
@@ -26,16 +26,21 @@ class BaseRequestHandler
                 if($key == $field) {
                     $a[$key] = $value;
                 }
-                foreach($value as $key2 => $value2) {
-                    if($key2 == $field) {
-                    $a[$key2] = $value2;
+                try { 
+                        foreach($value as $key2 => $value2) {
+                            if($key2 == $field) {
+                            $a[$key2] = $value2;
+                        }
+                        if(gettype($value2) == 'array') {
+                            $c[$key2] = $value2;
+                        };
+                        };
+                } catch(Exception $e) {
+                    Log::error(__METHOD__ . gettype($value) .' '. $value .' ' . __CLASS__);
                 }
-                if(gettype($value2) == 'array') {
-                    $c[$key2] = $value2;
                 };
-                };
-            };
-            if(count($a) == 0 && $c !== []) {
+                if(count($a) == 0 && $c !== []) {
+              
                 $this->getFieldByName($c, $field);
             } 
             

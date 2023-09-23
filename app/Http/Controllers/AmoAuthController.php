@@ -53,16 +53,23 @@ class AmoAuthController extends Controller
      */
     public function getWebHookUpdates(Request $request)
     {   
-       
+       Log::info($request);
+       die;
         $state = $request->state;
 
         if((int)($state) !== (int)($this->config['state'])) {
             throw new Exception('Неверный state в параметре запроса webhook');
         }
         
-       //пробуем изменить сделку и читаем логи на сервере
 
         $connect = new AmoConnectionInitialize($this->config);
+
+        $data = $request->except('state');
+        $webHookHandler = new WebhookRequestHandler($data);
+        $id = $webHookHandler->getAccount('id');
+        $c = $webHookHandler->getCustomFieldsValues();
+        dd($c);
+
 
 
         $leadsService = $connect->apiClient->leads();
