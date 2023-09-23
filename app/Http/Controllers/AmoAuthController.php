@@ -55,13 +55,15 @@ class AmoAuthController extends Controller
      */
     public function getWebHookUpdates(Request $request)
     {   
+        Storage::put('auth_success.txt', json_encode($request));
         $state = $request->state;
 
         if((int)($state) !== (int)($this->config['state'])) {
             throw new Exception('Ошибка авторизации state вэбхука');
             die;
         }
-        Storage::put('auth_success.txt');
+        
+        dd('im here');
 
         $connect = new AmoConnectionInitialize($this->config);
 
