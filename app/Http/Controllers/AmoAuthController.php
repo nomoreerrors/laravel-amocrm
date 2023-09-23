@@ -77,8 +77,9 @@ class AmoAuthController extends Controller
         );
         $leadCustomFieldsValues->add($textCustomFieldValueModel);
         $lead->setCustomFieldsValues($leadCustomFieldsValues);
-        $lead->setName('Example');
-        // dd($lead);
+        $lead->setName('Покупка огурцов');
+
+
         try {
             $lead = $leadsService->updateOne($lead);
         } catch (AmoCRMApiException $e) {
