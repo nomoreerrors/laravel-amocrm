@@ -67,6 +67,7 @@ class AmoAuthController extends Controller
 
         $leadsService = $connect->apiClient->leads();
         $lead = new LeadModel();
+        $lead->setId(38752853);
         $leadCustomFieldsValues = new CustomFieldsValuesCollection();
         $textCustomFieldValueModel = new TextCustomFieldValuesModel();
         $textCustomFieldValueModel->setFieldId(2505835);
