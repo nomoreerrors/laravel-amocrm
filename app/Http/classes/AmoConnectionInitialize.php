@@ -17,7 +17,10 @@ use League\OAuth2\Client\Token\AccessToken;
 
 
 /**
- * Авторизация и сохранение access token в Laravel storage
+ * Class AmoConnectionInitialize
+ * 
+ * Авторизация и сохранение access token в Laravel storage.
+ * @package App\Http\classes
  */
 class AmoConnectionInitialize
 {

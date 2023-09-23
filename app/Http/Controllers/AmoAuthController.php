@@ -22,6 +22,7 @@ use AmoCRM\Client\AmoCRMApiRequest;
 use AmoCRM\Collections\Leads\LeadsCollection;
 use AmoCRM\Exceptions\AmoCRMApiException;
 use AmoCRM\Models\CustomFields\CustomFieldModel;
+use Exception;
 use League\OAuth2\Client\Token\AccessToken;
 
 
@@ -44,11 +45,7 @@ class AmoAuthController extends Controller
      */
     protected function authByCode(): void
     {
-        
-
         $connect = new AmoConnectionInitialize($this->config);
-
-
     }
   
 
@@ -58,35 +55,38 @@ class AmoAuthController extends Controller
      */
     public function getWebHookUpdates(Request $request)
     {   
-        // dd($request->state);
-        Storage::put('state.txt', json_encode($request->state));
-        // $connect = new AmoConnectionInitialize($this->config);
-        // // dd($connect);
-        // $accessToken = $connect->getAccessToken();
-        // $oAuthClient = $connect->getOauthClient();
+        $state = $request->state;
 
-        //смотри examples !!!!
-        //Проверку хука
+        if((int)($state) !== (int)($this->config['state'])) {
+            throw new Exception('Ошибка авторизации state вэбхука');
+            die;
+        }
 
-        // $leadsService = $connect->apiClient->leads();
-        // $lead = new LeadModel();
-        // $leadCustomFieldsValues = new CustomFieldsValuesCollection();
-        // $textCustomFieldValueModel = new TextCustomFieldValuesModel();
-        // $textCustomFieldValueModel->setFieldId(2129045);
-        // $textCustomFieldValueModel->setValues(
-        //     (new TextCustomFieldValueCollection())
-        //         ->add((new TextCustomFieldValueModel())->setValue(30000))
-        // );
-        // $leadCustomFieldsValues->add($textCustomFieldValueModel);
-        // $lead->setCustomFieldsValues($leadCustomFieldsValues);
-        // $lead->setName('Example');
-        // dd($lead);
-        // try {
-        //     $lead = $leadsService->addOne($lead);
-        // } catch (AmoCRMApiException $e) {
-        //     dd($e);
-        //     die;
-        // }
+
+        $connect = new AmoConnectionInitialize($this->config);
+        $accessToken = $connect->getAccessToken();
+        $oAuthClient = $connect->getOauthClient();
+
+
+        $leadsService = $connect->apiClient->leads();
+        $lead = new LeadModel();
+        $leadCustomFieldsValues = new CustomFieldsValuesCollection();
+        $textCustomFieldValueModel = new TextCustomFieldValuesModel();
+        $textCustomFieldValueModel->setFieldId(2505835);
+        $textCustomFieldValueModel->setValues(
+            (new TextCustomFieldValueCollection())
+                ->add((new TextCustomFieldValueModel())->setValue(40000))
+        );
+        $leadCustomFieldsValues->add($textCustomFieldValueModel);
+        $lead->setCustomFieldsValues($leadCustomFieldsValues);
+        $lead->setName('Example');
+        dd($lead);
+        try {
+            $lead = $leadsService->addOne($lead);
+        } catch (AmoCRMApiException $e) {
+            dd($e);
+            die;
+        }
 
 
          
