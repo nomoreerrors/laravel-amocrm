@@ -36,19 +36,16 @@ class AmoCrmController extends BaseController
      */
     protected function authByCode(AmoCrmConnectionModel $crm): void
     {
-        // $crm->connect($this->config);
         $crm->connect($this->config);
-        // singleton????
     }
   
 
 
     /**
-     * Получить новую или измененную сделку с webhook AmoCRM
+     * Обработка входящих данных с webhook
      */
     public function getWebHookUpdates(Request $request, AmoCrmConnectionModel $crm)
     {   
-        Log::info($request->all());
         $state = $request->state;
 
         if((int)($state) !== (int)($this->config['state'])) {
@@ -61,11 +58,11 @@ class AmoCrmController extends BaseController
         $data = $request->except('state');
         $webHookHandler = new WebhookRequestHandler($data);
         
-        $c = $webHookHandler->getCustomFieldsValues();
+        $c = $webHookHandler->getCustomFieldsValue(2129045);
         $id = $webHookHandler->getAccount('id');
-        dd($id, $c);
       
 
+        
 
         $leadsService = $crm->apiClient->leads();
         $lead = new LeadModel();

@@ -16,7 +16,8 @@ class BaseRequestHandler
      * @throws Exception
      */
     protected function getFieldByName(array $data, string $field): array
-    {
+    {   
+        // dd($data);
         static $a = [];
         $c = [];
             foreach($data as $key => $value) {

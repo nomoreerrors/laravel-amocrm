@@ -98,12 +98,14 @@ class WebhookRequestHandler extends BaseRequestHandler
     
 
     /**
-     * Возвращает все значения values или по id содержащего это значение объекта. 
+     * Возвращает значение custom_fields value объекта webhook
+     * @var int $id custom_fields object id
      * @throws Exception
+     * @return string
      */
-    public function getCustomFieldsValues(): array
+    public function getCustomFieldsValue(int $id): string
     {
-        $c = $this->getFieldByName($this->data, 'value');
+        $c = $this->getCustomFields($id)['values'][0]['value'];
         return $c;
     }
 
