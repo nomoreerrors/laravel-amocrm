@@ -46,6 +46,7 @@ class AmoCrmController extends BaseController
      */
     public function getWebHookUpdates(Request $request, AmoCrmConnectionModel $crm)
     {   
+        Log::info($request->all());
         $state = $request->state;
 
         if((int)($state) !== (int)($this->config['state'])) {
@@ -62,7 +63,7 @@ class AmoCrmController extends BaseController
         $id = $webHookHandler->getAccount('id');
       
 
-        
+
 
         $leadsService = $crm->apiClient->leads();
         $lead = new LeadModel();
