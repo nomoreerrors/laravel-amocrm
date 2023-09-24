@@ -33,13 +33,19 @@ class AmoCrmController extends BaseController
      * id поля "Себестоимость" (value). 
      * @var int costPriceId
      */
-    private const primeCostId = 2129045;
+    private const primeCostId = 2505835;
 
     /**
      * id поля "Прибыль"
      * @var int $profit
      */
-    private const profit = 2505837;
+    private const profitId = 2505837;
+
+    /**
+     * id объекта webhook leads:update
+     * @var int updateId
+     */
+    private const updateId = 38725615;
 
     
 
@@ -59,29 +65,99 @@ class AmoCrmController extends BaseController
      */
     public function getWebHookUpdates(Request $request, AmoCrmConnectionModel $crm)
     {   
-        Log::info($request->all());
+
+
+        $testData = array (
+            'account' => 
+            array (
+              'subdomain' => 'nomoreerrors',
+              'id' => '31310398',
+              '_links' => 
+              array (
+                'self' => 'https://nomoreerrors.amocrm.ru',
+              ),
+            ),
+            'leads' => 
+            array (
+              'update' => 
+              array (
+                0 => 
+                array (
+                  'id' => '38725615',
+                  'name' => 'Покупка бананов',
+                  'status_id' => '60650182',
+                  'price' => '332000',
+                  'responsible_user_id' => '10121570',
+                  'last_modified' => '1695571197',
+                  'modified_user_id' => '10121570',
+                  'created_user_id' => '10121570',
+                  'date_create' => '1695459225',
+                  'pipeline_id' => '7277538',
+                  'account_id' => '31310398',
+                  'custom_fields' => 
+                  array (
+                    0 => 
+                    array (
+                      'id' => '2505835',
+                      'name' => 'Себестоимость',
+                      'values' => 
+                      array (
+                        0 => 
+                        array (
+                          'value' => '123000',
+                        ),
+                      ),
+                    ),
+                    1 => 
+                    array (
+                      'id' => '2524423',
+                      'name' => 'Test field',
+                      'values' => 
+                      array (
+                        0 => 
+                        array (
+                          'value' => '2132',
+                        ),
+                      ),
+                    ),
+                  ),
+                  'created_at' => '1695459225',
+                  'updated_at' => '1695571197',
+                ),
+              ),
+            ),
+        );
+
+
+
+        // Log::info($request->all());
 
         $state = $request->state;
 
-        // if((int)($state) !== (int)($this->config['state'])) {
-        //     throw new Exception('Неверный state в параметре запроса webhook');
-        // }
+        if((int)($state) !== (int)($this->config['state'])) {
+            throw new Exception('Неверный state в параметре запроса webhook');
+        }
         
         // $testData = json_decode(Storage::get('updates.txt'), true);
         // $data = $request->except('state');
-        // $crm->connect($this->config);
-        // $webHookHandler = new WebhookRequestHandler($data);
-        // // $c = $webHookHandler->getCustomFieldsValue(self::primeCostId);
-        // // $fieldId = $webHookHandler->getUpdate();
-        // // dd($fieldId);
-        // $price = $webHookHandler->getUpdate(38324215, 'price');
-        // $id = $webHookHandler->getAccount('id');
-        // dd($price);
+        $crm->connect($this->config);
+        $webHookHandler = new WebhookRequestHandler($testData);
+        $primeCost = $webHookHandler->getCustomFieldsValue(self::primeCostId);
+        $price = $webHookHandler->getUpdate(self::updateId, 'price');
+        $lastModified = $webHookHandler->getUpdate(self::updateId, 'last_modified');
+        $id = $webHookHandler->getAccount('id');
+        $profit = (int)$price - (int)$primeCost;
 
 
-      
-        //можно настроить отправку данных с хука себе на почту 
-        //обновляем поля сделки
+
+
+        //добавляем поле прибыль в объект и отправляем
+        //добавляем поле прибыль в объект и отправляем
+        //добавляем поле прибыль в объект и отправляем
+        dd($price, $id, $primeCost, $lastModified, $profit);
+
+
+       
 
 
 
