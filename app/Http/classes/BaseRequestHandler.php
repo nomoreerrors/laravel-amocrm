@@ -18,7 +18,7 @@ class BaseRequestHandler
     protected function getFieldByName(array $data, string $field): array
     {   
         static $a = [];
-        // $c = [];
+        $c = [];
         // dd($a, $c);
             foreach($data as $key => $value) {
                 Log:info($key);

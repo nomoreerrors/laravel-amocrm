@@ -59,23 +59,24 @@ class AmoCrmController extends BaseController
      */
     public function getWebHookUpdates(Request $request, AmoCrmConnectionModel $crm)
     {   
-        // Log::info($request->all());
+        Log::info($request->all());
 
         $state = $request->state;
 
-        if((int)($state) !== (int)($this->config['state'])) {
-            throw new Exception('Неверный state в параметре запроса webhook');
-        }
+        // if((int)($state) !== (int)($this->config['state'])) {
+        //     throw new Exception('Неверный state в параметре запроса webhook');
+        // }
         
         // $testData = json_decode(Storage::get('updates.txt'), true);
-        $crm->connect($this->config);
-
-        $data = $request->except('state');
-        $webHookHandler = new WebhookRequestHandler($data);
-        $c = $webHookHandler->getCustomFieldsValue(self::primeCostId);
-        $price = $webHookHandler->getUpdate(38324215, 'price');
-        $id = $webHookHandler->getAccount('id');
-        // dd($c, $id, $price);
+        // $data = $request->except('state');
+        // $crm->connect($this->config);
+        // $webHookHandler = new WebhookRequestHandler($data);
+        // // $c = $webHookHandler->getCustomFieldsValue(self::primeCostId);
+        // // $fieldId = $webHookHandler->getUpdate();
+        // // dd($fieldId);
+        // $price = $webHookHandler->getUpdate(38324215, 'price');
+        // $id = $webHookHandler->getAccount('id');
+        // dd($price);
 
 
       
