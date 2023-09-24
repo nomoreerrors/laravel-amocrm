@@ -32,6 +32,7 @@ class WebhookRequestHandler extends BaseRequestHandler
      */
     public function getCustomFields(?int $id = null): array
     {   
+        
         $c = $this->getFieldByName($this->data, 'custom_fields')['custom_fields'];
 
         if(!$id) {
@@ -82,7 +83,7 @@ class WebhookRequestHandler extends BaseRequestHandler
     /**
      * Возвращает поле webhook - update, или один из его элементов по ключу.
      */
-    public function getAccount(string $key = null): array | string 
+    public function getAccount(?string $key = null): array | string 
     {
         $c = $this->getFieldByName($this->data, 'account')['account'];
         if(!$key) {
@@ -100,15 +101,10 @@ class WebhookRequestHandler extends BaseRequestHandler
      * Возвращает все значения values или по id содержащего это значение объекта. 
      * @throws Exception
      */
-    public function getCustomFieldsValues(int $id = null): array | string
+    public function getCustomFieldsValues(): array
     {
-        $c = $this->getCustomFields();
-        if(!$id) {
-            return $c;
-        } else {
-            $d = $this->getFieldById($c, $id);
-            return $d['values'];
-        }
+        $c = $this->getFieldByName($this->data, 'value');
+        return $c;
     }
 
      

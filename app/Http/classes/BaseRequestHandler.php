@@ -11,9 +11,6 @@ use Illuminate\Support\Facades\Log;
 class BaseRequestHandler
 {
 
-    
-
-
     /**
      * Возвращает любой элемент вложенного массива по ключу
      * @throws Exception
@@ -23,9 +20,11 @@ class BaseRequestHandler
         static $a = [];
         $c = [];
             foreach($data as $key => $value) {
+                
                 if($key == $field) {
                     $a[$key] = $value;
-                }
+                    Log::info($field);
+                }  
                 try { 
                         foreach($value as $key2 => $value2) {
                             if($key2 == $field) {
@@ -33,17 +32,18 @@ class BaseRequestHandler
                         }
                         if(gettype($value2) == 'array') {
                             $c[$key2] = $value2;
+                            Log::info($a);
                         };
                         };
                 } catch(Exception $e) {
                     Log::error(__METHOD__ . gettype($value) .' '. $value .' ' . __CLASS__);
-                }
+                    
+                } 
                 };
                 if(count($a) == 0 && $c !== []) {
-              
                 $this->getFieldByName($c, $field);
             } 
-            
+
         return count($a) == 0 ? throw new Exception('Ключ с именем ' .$field. ' не существует') : $a;
     }
 

@@ -13,8 +13,7 @@ use AmoCRM\Models\CustomFieldsValues\ValueModels\TextCustomFieldValueModel;
 use AmoCRM\Exceptions\AmoCRMApiException;
 use Exception;
 use App\Http\Controllers\AmoCRM\BaseController;
-use Illuminate\Support\Facades\App;
-
+use Illuminate\Support\Facades\Log;
 
 
 class AmoCrmController extends BaseController
@@ -24,18 +23,22 @@ class AmoCrmController extends BaseController
         'baseDomain' => "nomoreerrors.amocrm.ru", 
         'client_id' => '25f51d4a-e345-4696-bb12-7be346232d40',
         'client_secret' => 'eH1ULgHUSEi9oi94fhn4MI8qrhQOba1zxYijQQAS01q6TpM8I3n9jeAz3ar1yMfc',
-        'auth_code' => 'def502005751799cfcbf2182050206f200da6c5d483135fa5d1e0ddfbf16546b358ad8cf069114c655c63fb0f01ab4f93d23d03d87586df0ef3ec7d69544f08f453c5e8177a9fce3ad70f04f6cdf1d3089640ab53913607ff25cac9ede9545fafd62d88bb542b3e841b824b9620874070fe490c81c0d9c251151bf63adf8d198bcf5e065670ebe8cd8ea98018bdfee1397ca452c992c348025dbd2a68ee7f7282c1789e7fd18ec8d3271726550283110172fa84334a55a8de80360a701fa4ed28a2511307c5d1b89c8868c836f62c245e82b1e4cc2b7bbcd0aefed911abeaa5f914788f3315e8f82644b0e3eb94b016a23b2382c91ad2bd6423a576ca032ae839b1277e4f5e0a6b8d7e25eb48cda8490085eca0555f71b531c155846241033ac9e96ee808308ae063a7ffbb80d6d20df2af8355b0dd5a28274f469d463effcbf7a17949dd820a89f7dd1e6a750d7bc2d8ace87c6e5a713ba976597138128f36f812fd6a52ed600762d810a90f2c32ababd4ac758f203f0678be73623b8dffd24c05b5dfb4d99f18dd917529430ac7cb44c951f0ee56a03e49988658b25f2c01fdd2a11c90333744eb7c1d413af3910c3975ebab8617dbc551259ad8499512c9c96d45c48f23a8d0aee9f6979e2ef2507de01bfd49ab18a3d80db70ac74df98eb9e280afed771f10b1a37e4',
+        'auth_code' => 'def50200ad487cc0b9053ec133b32cd7db87dc88051197f375728a3dc529fe5960bf8dedb93f967894f237eed778f7623d5cb4c4ce3886980fda1f957ee28e4226720df15e261f6da36a4addc0d0f9479104d8b021e397fc7af18f9d863e084c71d475b6b4545e68d00934b492b10ec48560c30027f768254799e16644c4f29f2c3419a0271fba1cb9805963d1e6cb1f5ed942894e533f9f480356d0843e9f80aabc6e270cde8f25c224ef7ac57faeea3964f2b012a177547cf301536ccb95df516a3d98f6ee983f311dbd06aad8c2fa33bf677fc989e8fcb582a29d99311495a1337b215be647f7933b1bccdc92cfa9369102aa91c322ef9f7f863e300c96db4719b7049fc748472c78659420a71716dcfcfb3c5919ea2b563cd8630938ad0eff20e369900a23fd40fc00a5f87454c50cc32a0174ce1244212ee537572d8a04b19f5261e531101663f861127bdeba47c1390de630a6f88c73b665998543dff2d4b0e999c258ea73ca617a847f862b993b5f3e620f6c70c83f2fc329ffa046daf86e446e2ccf93430fb803d75034df2cccfbb37035f1f6daa164c914af4d19ecc89fd90be81051a5cb317c2a121557d7e297c016b2aa4336248221bb9f8906aaa343d0d7d9b4467049ee0c6ab0a30cd4131db4ef6c9df550b08d40167ac681506f4acffa5499dc23e3e1be',
         'redirect_uri' => 'http://gingerbw.beget.tech',
         'state' => '08269884f9a9a4b8a7c166da58bdd6a3'
         ];
+
+    
 
 
     /**
      * Аутентификация по коду авторизации и получение access token
      */
-    protected function authByCode(): void
+    protected function authByCode(AmoCrmConnectionModel $crm): void
     {
-        $connect = new AmoCrmConnectionModel($this->config);
+        // $crm->connect($this->config);
+        $crm->connect($this->config);
+        // singleton????
     }
   
 
@@ -43,9 +46,9 @@ class AmoCrmController extends BaseController
     /**
      * Получить новую или измененную сделку с webhook AmoCRM
      */
-    public function getWebHookUpdates(Request $request)
+    public function getWebHookUpdates(Request $request, AmoCrmConnectionModel $crm)
     {   
-        
+        Log::info($request->all());
         $state = $request->state;
 
         if((int)($state) !== (int)($this->config['state'])) {
@@ -53,18 +56,18 @@ class AmoCrmController extends BaseController
         }
         
 
-        $connect = new AmoCrmConnectionModel($this->config);
+        $crm->connect($this->config);
 
         $data = $request->except('state');
         $webHookHandler = new WebhookRequestHandler($data);
+        
+        $c = $webHookHandler->getCustomFieldsValues();
         $id = $webHookHandler->getAccount('id');
-        // dd($data);
-        $c = $webHookHandler->getCustomFields();
-        dd($c);
-        //пытаемся понять почему не находит поле custom_fields
+        dd($id, $c);
+      
 
 
-        $leadsService = $connect->apiClient->leads();
+        $leadsService = $crm->apiClient->leads();
         $lead = new LeadModel();
         $lead->setId(38725615);
         $leadCustomFieldsValues = new CustomFieldsValuesCollection();

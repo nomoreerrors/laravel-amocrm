@@ -2,10 +2,13 @@
 
 namespace App\Models\AmoCRM;
 
-use App\Models\CrmConnectionModel;
+use App\Models\CrmConnectionInterface;
 
 
-class BaseAmoCrmConnectionModel extends CrmConnectionModel
+class BaseAmoCrmConnectionModel implements CrmConnectionInterface
 {
-    //
+    public function connect($config): void
+    {
+        //
+    }
 }

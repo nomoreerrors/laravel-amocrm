@@ -18,31 +18,19 @@ use App\Models\AmoCRM\BaseAmoCrmConnectionModel;
 class AmoCrmConnectionModel extends BaseAmoCrmConnectionModel
 {
 
-    private string $baseDomain;
-    private string $client_id;
-    private string $client_secret;
-    private string $auth_code;
-    private string $redirect_uri;
     public $apiClient;
     private $oAuthClient;
     private $accessToken;
 
 
-    public function __construct(array $config)
+    
+
+    public function connect($config): void
     {
-        $this->client_id = $config['client_id'];
-        $this->client_secret = $config['client_secret'];
-        $this->redirect_uri = $config['redirect_uri'];
-        $this->auth_code = $config['auth_code'];
-        $this->baseDomain = $config['baseDomain'];
-
-        $this->apiClient = new AmoCRMApiClient($this->client_id, 
-                                               $this->client_secret, 
-                                               $this->redirect_uri);
+        $this->apiClient = new AmoCRMApiClient($config['client_id'], $config['client_secret'], $config['redirect_uri']);
         $this->oAuthClient = $this->apiClient->getOAuthClient();
-        $this->apiOAuthRequest($this->baseDomain, $this->auth_code);
+        $this->apiOAuthRequest($config['baseDomain'], $config['auth_code']);
     }
-
 
 
 
@@ -60,7 +48,6 @@ class AmoCrmConnectionModel extends BaseAmoCrmConnectionModel
             $this->accessToken =  $a;
           
         }   
-
 
 
 
