@@ -47,6 +47,7 @@ class AmoCrmController extends BaseController
     public function getWebHookUpdates(Request $request, AmoCrmConnectionModel $crm)
     {   
         Log::info($request->all());
+        die;
         $state = $request->state;
 
         if((int)($state) !== (int)($this->config['state'])) {
