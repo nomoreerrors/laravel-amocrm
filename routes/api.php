@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AmoCrm\AmoCrmController;
+use App\Http\Controllers\AmoCRM\AmoCrmController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
