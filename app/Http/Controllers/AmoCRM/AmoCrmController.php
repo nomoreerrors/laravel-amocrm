@@ -12,6 +12,7 @@ use AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueCollec
 use AmoCRM\Models\CustomFieldsValues\ValueModels\TextCustomFieldValueModel;
 use AmoCRM\Exceptions\AmoCRMApiException;
 use Exception;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\AmoCRM\BaseController;
 use Illuminate\Support\Facades\Log;
 
@@ -27,6 +28,18 @@ class AmoCrmController extends BaseController
         'redirect_uri' => 'http://gingerbw.beget.tech',
         'state' => '08269884f9a9a4b8a7c166da58bdd6a3'
         ];
+    
+    /**
+     * id поля "себестоимость" (value). 
+     * @var int costPriceId
+     */
+    private const primeCostId = 2129045;
+
+    /**
+     * id поля "прибыль"
+     * @var int $profit
+     */
+    private const profit = 2505837;
 
     
 
@@ -46,47 +59,49 @@ class AmoCrmController extends BaseController
      */
     public function getWebHookUpdates(Request $request, AmoCrmConnectionModel $crm)
     {   
-        Log::info($request->all());
-        die;
+        // Log::info($request->all());
+
         $state = $request->state;
 
         if((int)($state) !== (int)($this->config['state'])) {
             throw new Exception('Неверный state в параметре запроса webhook');
         }
         
-
+        $testData = json_decode(Storage::get('updates.txt'), true);
         $crm->connect($this->config);
 
         $data = $request->except('state');
-        $webHookHandler = new WebhookRequestHandler($data);
+        $webHookHandler = new WebhookRequestHandler($testData);
         
-        $c = $webHookHandler->getCustomFieldsValue(2129045);
+        $c = $webHookHandler->getCustomFieldsValue(self::primeCostId);
+        $price = $webHookHandler->getUpdate(38324215, 'price');
         $id = $webHookHandler->getAccount('id');
+        dd($c, $id, $price);
       
 
 
 
-        $leadsService = $crm->apiClient->leads();
-        $lead = new LeadModel();
-        $lead->setId(38725615);
-        $leadCustomFieldsValues = new CustomFieldsValuesCollection();
-        $textCustomFieldValueModel = new TextCustomFieldValuesModel();
-        $textCustomFieldValueModel->setFieldId(2505835);
-        $textCustomFieldValueModel->setValues(
-            (new TextCustomFieldValueCollection())
-                ->add((new TextCustomFieldValueModel())->setValue(477000))
-        );
-        $leadCustomFieldsValues->add($textCustomFieldValueModel);
-        $lead->setCustomFieldsValues($leadCustomFieldsValues);
-        $lead->setName('Покупка огурцов');
+        // $leadsService = $crm->apiClient->leads();
+        // $lead = new LeadModel();
+        // $lead->setId(38725615);
+        // $leadCustomFieldsValues = new CustomFieldsValuesCollection();
+        // $textCustomFieldValueModel = new TextCustomFieldValuesModel();
+        // $textCustomFieldValueModel->setFieldId(2505835);
+        // $textCustomFieldValueModel->setValues(
+        //     (new TextCustomFieldValueCollection())
+        //         ->add((new TextCustomFieldValueModel())->setValue(477000))
+        // );
+        // $leadCustomFieldsValues->add($textCustomFieldValueModel);
+        // $lead->setCustomFieldsValues($leadCustomFieldsValues);
+        // $lead->setName('Покупка огурцов');
 
 
-        try {
-            $lead = $leadsService->updateOne($lead);
-        } catch (AmoCRMApiException $e) {
-            dd($e);
-            die;
-        }
+        // try {
+        //     $lead = $leadsService->updateOne($lead);
+        // } catch (AmoCRMApiException $e) {
+        //     dd($e);
+        //     die;
+        // }
 
 
          

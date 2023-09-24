@@ -17,17 +17,17 @@ class BaseRequestHandler
      */
     protected function getFieldByName(array $data, string $field): array
     {   
-        // dd($data);
         static $a = [];
-        $c = [];
+        // $c = [];
+        // dd($a, $c);
             foreach($data as $key => $value) {
-                
+                Log:info($key);
                 if($key == $field) {
                     $a[$key] = $value;
-                    Log::info($field);
                 }  
                 try { 
                         foreach($value as $key2 => $value2) {
+                            // Log::info('errors: ', [$value, $key2, $value2]);
                             if($key2 == $field) {
                             $a[$key2] = $value2;
                         }

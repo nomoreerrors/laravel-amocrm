@@ -47,15 +47,23 @@ class WebhookRequestHandler extends BaseRequestHandler
     
 
     /**
-     * Возвращает поле webhook - update или один из его объектов по id.
+     * Возвращает update или один из его объектов по id/objec id + key .
+     * @param int $id update field's nested array id
+     * @param string $key update field's nested array key
      * @throws Exception
      */
-    public function getUpdate(int $id = null): array
+    public function getUpdate(?int $id = null, ?string $key = null): array | string
     {
         $c = $this->getFieldByName($this->data, 'update')['update'];
         if(!$id) {
             return $c;
         };
+
+        if($id && $key) {
+            $d = $this->getFieldById($c, $id);
+            $result = $d[$key];
+            return $result;
+        }
 
         $d = $this->getFieldById($c, $id);
         return $d;
