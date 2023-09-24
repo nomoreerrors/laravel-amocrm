@@ -30,13 +30,13 @@ class AmoCrmController extends BaseController
         ];
     
     /**
-     * id поля "себестоимость" (value). 
+     * id поля "Себестоимость" (value). 
      * @var int costPriceId
      */
     private const primeCostId = 2129045;
 
     /**
-     * id поля "прибыль"
+     * id поля "Прибыль"
      * @var int $profit
      */
     private const profit = 2505837;
@@ -67,26 +67,32 @@ class AmoCrmController extends BaseController
             throw new Exception('Неверный state в параметре запроса webhook');
         }
         
-        $testData = json_decode(Storage::get('updates.txt'), true);
+        // $testData = json_decode(Storage::get('updates.txt'), true);
         $crm->connect($this->config);
 
         $data = $request->except('state');
-        $webHookHandler = new WebhookRequestHandler($testData);
-        
+        $webHookHandler = new WebhookRequestHandler($data);
         $c = $webHookHandler->getCustomFieldsValue(self::primeCostId);
         $price = $webHookHandler->getUpdate(38324215, 'price');
         $id = $webHookHandler->getAccount('id');
-        dd($c, $id, $price);
+        // dd($c, $id, $price);
+
+
       
+        //можно настроить отправку данных с хука себе на почту 
+        //обновляем поля сделки
+
+
+
 
 
 
         // $leadsService = $crm->apiClient->leads();
         // $lead = new LeadModel();
-        // $lead->setId(38725615);
+        // $lead->setId($id);
         // $leadCustomFieldsValues = new CustomFieldsValuesCollection();
         // $textCustomFieldValueModel = new TextCustomFieldValuesModel();
-        // $textCustomFieldValueModel->setFieldId(2505835);
+        // $textCustomFieldValueModel->setFieldId(self::profit);
         // $textCustomFieldValueModel->setValues(
         //     (new TextCustomFieldValueCollection())
         //         ->add((new TextCustomFieldValueModel())->setValue(477000))
