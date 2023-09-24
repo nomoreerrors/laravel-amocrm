@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "amocrm/amocrm-api-library",
-            "version": "1.1.1",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amocrm/amocrm-api-php.git",
-                "reference": "2fbd2e394b29777d95d78fd57e5215fda51337cc"
+                "reference": "cd123d01d6f94a4417957d8a96b6369622bd3aaa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amocrm/amocrm-api-php/zipball/2fbd2e394b29777d95d78fd57e5215fda51337cc",
-                "reference": "2fbd2e394b29777d95d78fd57e5215fda51337cc",
+                "url": "https://api.github.com/repos/amocrm/amocrm-api-php/zipball/cd123d01d6f94a4417957d8a96b6369622bd3aaa",
+                "reference": "cd123d01d6f94a4417957d8a96b6369622bd3aaa",
                 "shasum": ""
             },
             "require": {
@@ -76,9 +76,9 @@
             ],
             "support": {
                 "issues": "https://github.com/amocrm/amocrm-api-php/issues",
-                "source": "https://github.com/amocrm/amocrm-api-php/tree/1.1.1"
+                "source": "https://github.com/amocrm/amocrm-api-php/tree/1.2.0"
             },
-            "time": "2023-09-18T11:39:58+00:00"
+            "time": "2023-09-22T15:27:55+00:00"
         },
         {
             "name": "amocrm/oauth2-amocrm",
@@ -2975,16 +2975,16 @@
         },
         {
             "name": "psr/http-client",
-            "version": "1.0.2",
+            "version": "1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/http-client.git",
-                "reference": "0955afe48220520692d2d09f7ab7e0f93ffd6a31"
+                "reference": "bb5906edc1c324c9a05aa0873d40117941e5fa90"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/http-client/zipball/0955afe48220520692d2d09f7ab7e0f93ffd6a31",
-                "reference": "0955afe48220520692d2d09f7ab7e0f93ffd6a31",
+                "url": "https://api.github.com/repos/php-fig/http-client/zipball/bb5906edc1c324c9a05aa0873d40117941e5fa90",
+                "reference": "bb5906edc1c324c9a05aa0873d40117941e5fa90",
                 "shasum": ""
             },
             "require": {
@@ -3021,9 +3021,9 @@
                 "psr-18"
             ],
             "support": {
-                "source": "https://github.com/php-fig/http-client/tree/1.0.2"
+                "source": "https://github.com/php-fig/http-client"
             },
-            "time": "2023-04-10T20:12:12+00:00"
+            "time": "2023-09-23T14:17:50+00:00"
         },
         {
             "name": "psr/http-factory",

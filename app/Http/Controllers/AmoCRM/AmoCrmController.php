@@ -1,31 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\AmoCRM;
 
-use App\Http\classes\AccessTokenHandler;
+use App\Models\AmoCRM\AmoCrmConnectionModel;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Http\classes\AmoConnectionInitialize;
 use App\Http\Classes\WebhookRequestHandler;
-use Illuminate\Support\Facades\Storage;
 use AmoCRM\Models\LeadModel;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\App;
 use AmoCRM\Collections\CustomFieldsValuesCollection;
 use AmoCRM\Models\CustomFieldsValues\TextCustomFieldValuesModel;
 use AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueCollection;
 use AmoCRM\Models\CustomFieldsValues\ValueModels\TextCustomFieldValueModel;
-use AmoCRM\Client\AmoCRMApiClient;
-use AmoCRM\Client\AmoCRMApiRequest;
-use AmoCRM\Collections\Leads\LeadsCollection;
 use AmoCRM\Exceptions\AmoCRMApiException;
-use AmoCRM\Models\CustomFields\CustomFieldModel;
 use Exception;
-use League\OAuth2\Client\Token\AccessToken;
+use App\Http\Controllers\AmoCRM\BaseController;
+use Illuminate\Support\Facades\App;
 
 
 
-class AmoAuthController extends Controller
+class AmoCrmController extends BaseController
 {   
 
     private $config = [
@@ -43,7 +35,7 @@ class AmoAuthController extends Controller
      */
     protected function authByCode(): void
     {
-        $connect = new AmoConnectionInitialize($this->config);
+        $connect = new AmoCrmConnectionModel($this->config);
     }
   
 
@@ -53,8 +45,7 @@ class AmoAuthController extends Controller
      */
     public function getWebHookUpdates(Request $request)
     {   
-       Log::info($request);
-       die;
+        
         $state = $request->state;
 
         if((int)($state) !== (int)($this->config['state'])) {
@@ -62,14 +53,15 @@ class AmoAuthController extends Controller
         }
         
 
-        $connect = new AmoConnectionInitialize($this->config);
+        $connect = new AmoCrmConnectionModel($this->config);
 
         $data = $request->except('state');
         $webHookHandler = new WebhookRequestHandler($data);
         $id = $webHookHandler->getAccount('id');
-        $c = $webHookHandler->getCustomFieldsValues();
+        // dd($data);
+        $c = $webHookHandler->getCustomFields();
         dd($c);
-
+        //пытаемся понять почему не находит поле custom_fields
 
 
         $leadsService = $connect->apiClient->leads();

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AmoAuthController;
+use App\Http\Controllers\AmoCrm\AmoCrmController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +19,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/getupdates', [AmoAuthController::class, 'getWebHookUpdates'])->name('getupdates');
+Route::post('/getupdates', [AmoCrmController::class, 'getWebHookUpdates'])->name('getupdates');
 
 //Пробуем api middleware, чтобы избежать аутентификации по csrf-токену

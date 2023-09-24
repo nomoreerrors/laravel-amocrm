@@ -1,7 +1,6 @@
 <?php
 
-use App\Http\Controllers\AmoAuthController;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\AmoCRM\AmoCrmController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,7 +19,7 @@ Route::get('/', function () {
 }); 
 
 
-Route::controller(AmoAuthController::class)->group(function () {
+Route::controller(AmoCrmController::class)->group(function () {
     Route::get('/token', 'authByCode')->name('token');
 
 });

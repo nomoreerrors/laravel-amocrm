@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\classes;
+namespace App\Models\AmoCRM;
  
 use App\Http\classes\AccessTokenHandler;
 use AmoCRM\Client\AmoCRMApiClient;
 use AmoCRM\OAuth\AmoCRMOAuth;
 use League\OAuth2\Client\Token\AccessToken;
+use App\Models\AmoCRM\BaseAmoCrmConnectionModel;
 
 
 /**
@@ -14,7 +15,7 @@ use League\OAuth2\Client\Token\AccessToken;
  * Авторизация и сохранение access token в Laravel storage.
  * @package App\Http\classes
  */
-class AmoConnectionInitialize
+class AmoCrmConnectionModel extends BaseAmoCrmConnectionModel
 {
 
     private string $baseDomain;

@@ -32,7 +32,6 @@ class WebhookRequestHandler extends BaseRequestHandler
      */
     public function getCustomFields(?int $id = null): array
     {   
-        dd($this->data);
         $c = $this->getFieldByName($this->data, 'custom_fields')['custom_fields'];
 
         if(!$id) {
