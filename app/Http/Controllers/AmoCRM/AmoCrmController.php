@@ -37,7 +37,7 @@ class AmoCrmController extends BaseController
 
     /**
      * id поля "Прибыль"
-     * @var int $profit
+     * @var int $profitId
      */
     private const profitId = 2505837;
 
@@ -67,81 +67,80 @@ class AmoCrmController extends BaseController
     {   
 
 
-        $testData = array (
-            'account' => 
-            array (
-              'subdomain' => 'nomoreerrors',
-              'id' => '31310398',
-              '_links' => 
-              array (
-                'self' => 'https://nomoreerrors.amocrm.ru',
-              ),
-            ),
-            'leads' => 
-            array (
-              'update' => 
-              array (
-                0 => 
-                array (
-                  'id' => '38725615',
-                  'name' => 'Покупка бананов',
-                  'status_id' => '60650182',
-                  'price' => '332000',
-                  'responsible_user_id' => '10121570',
-                  'last_modified' => '1695571197',
-                  'modified_user_id' => '10121570',
-                  'created_user_id' => '10121570',
-                  'date_create' => '1695459225',
-                  'pipeline_id' => '7277538',
-                  'account_id' => '31310398',
-                  'custom_fields' => 
-                  array (
-                    0 => 
-                    array (
-                      'id' => '2505835',
-                      'name' => 'Себестоимость',
-                      'values' => 
-                      array (
-                        0 => 
-                        array (
-                          'value' => '123000',
-                        ),
-                      ),
-                    ),
-                    1 => 
-                    array (
-                      'id' => '2524423',
-                      'name' => 'Test field',
-                      'values' => 
-                      array (
-                        0 => 
-                        array (
-                          'value' => '2132',
-                        ),
-                      ),
-                    ),
-                  ),
-                  'created_at' => '1695459225',
-                  'updated_at' => '1695571197',
-                ),
-              ),
-            ),
-        );
+        // $testData = array (
+        //     'account' => 
+        //     array (
+        //       'subdomain' => 'nomoreerrors',
+        //       'id' => '31310398',
+        //       '_links' => 
+        //       array (
+        //         'self' => 'https://nomoreerrors.amocrm.ru',
+        //       ),
+        //     ),
+        //     'leads' => 
+        //     array (
+        //       'update' => 
+        //       array (
+        //         0 => 
+        //         array (
+        //           'id' => '38725615',
+        //           'name' => 'Покупка бананов',
+        //           'status_id' => '60650182',
+        //           'price' => '332000',
+        //           'responsible_user_id' => '10121570',
+        //           'last_modified' => '1695571197',
+        //           'modified_user_id' => '10121570',
+        //           'created_user_id' => '10121570',
+        //           'date_create' => '1695459225',
+        //           'pipeline_id' => '7277538',
+        //           'account_id' => '31310398',
+        //           'custom_fields' => 
+        //           array (
+        //             0 => 
+        //             array (
+        //               'id' => '2505835',
+        //               'name' => 'Себестоимость',
+        //               'values' => 
+        //               array (
+        //                 0 => 
+        //                 array (
+        //                   'value' => '123000',
+        //                 ),
+        //               ),
+        //             ),
+        //             1 => 
+        //             array (
+        //               'id' => '2524423',
+        //               'name' => 'Test field',
+        //               'values' => 
+        //               array (
+        //                 0 => 
+        //                 array (
+        //                   'value' => '2132',
+        //                 ),
+        //               ),
+        //             ),
+        //           ),
+        //           'created_at' => '1695459225',
+        //           'updated_at' => '1695571197',
+        //         ),
+        //       ),
+        //     ),
+        // );
 
 
 
         // Log::info($request->all());
-
+        $data = $request->except('state');
         $state = $request->state;
 
         if((int)($state) !== (int)($this->config['state'])) {
             throw new Exception('Неверный state в параметре запроса webhook');
         }
         
-        // $testData = json_decode(Storage::get('updates.txt'), true);
-        // $data = $request->except('state');
+
         $crm->connect($this->config);
-        $webHookHandler = new WebhookRequestHandler($testData);
+        $webHookHandler = new WebhookRequestHandler($data);
         $primeCost = $webHookHandler->getCustomFieldsValue(self::primeCostId);
         $price = $webHookHandler->getUpdate(self::updateId, 'price');
         $lastModified = $webHookHandler->getUpdate(self::updateId, 'last_modified');
@@ -150,41 +149,31 @@ class AmoCrmController extends BaseController
 
 
 
-
-        //добавляем поле прибыль в объект и отправляем
-        //добавляем поле прибыль в объект и отправляем
-        //добавляем поле прибыль в объект и отправляем
+        
         dd($price, $id, $primeCost, $lastModified, $profit);
 
 
-       
-
-
-
-
-
-
-        // $leadsService = $crm->apiClient->leads();
-        // $lead = new LeadModel();
-        // $lead->setId($id);
-        // $leadCustomFieldsValues = new CustomFieldsValuesCollection();
-        // $textCustomFieldValueModel = new TextCustomFieldValuesModel();
-        // $textCustomFieldValueModel->setFieldId(self::profit);
-        // $textCustomFieldValueModel->setValues(
-        //     (new TextCustomFieldValueCollection())
-        //         ->add((new TextCustomFieldValueModel())->setValue(477000))
-        // );
-        // $leadCustomFieldsValues->add($textCustomFieldValueModel);
-        // $lead->setCustomFieldsValues($leadCustomFieldsValues);
+        $leadsService = $crm->apiClient->leads();
+        $lead = new LeadModel();
+        $lead->setId($id);
+        $leadCustomFieldsValues = new CustomFieldsValuesCollection();
+        $textCustomFieldValueModel = new TextCustomFieldValuesModel();
+        $textCustomFieldValueModel->setFieldId(self::profitId);
+        $textCustomFieldValueModel->setValues(
+            (new TextCustomFieldValueCollection())
+                ->add((new TextCustomFieldValueModel())->setValue($profit))
+        );
+        $leadCustomFieldsValues->add($textCustomFieldValueModel);
+        $lead->setCustomFieldsValues($leadCustomFieldsValues);
         // $lead->setName('Покупка огурцов');
 
 
-        // try {
-        //     $lead = $leadsService->updateOne($lead);
-        // } catch (AmoCRMApiException $e) {
-        //     dd($e);
-        //     die;
-        // }
+        try {
+            $lead = $leadsService->updateOne($lead);
+        } catch (AmoCRMApiException $e) {
+            Log::info($e);
+            die;
+        }
 
 
          
