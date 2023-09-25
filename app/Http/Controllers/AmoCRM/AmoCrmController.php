@@ -33,19 +33,19 @@ class AmoCrmController extends BaseController
      * id поля "Себестоимость" (value). 
      * @var int costPriceId
      */
-    private const primeCostFieldId = 2505835;
+    private $primeCostFieldId = 2505835;
 
     /**
      * id поля "Прибыль"
      * @var int $profitId
      */
-    private const profitFieldId = 2505837;
+    private $profitFieldId = 2505837;
 
     /**
      * id объекта webhook leads:update
      * @var int updateId
      */
-    private const updateFieldId = 38845173;
+    private $updateFieldId = 38845173;
 
     
 
@@ -74,7 +74,13 @@ class AmoCrmController extends BaseController
       
         $data = $request->except('state');
         $state = $request->state;
-        // dd($data);
+        $webHookHandler = new WebhookRequestHandler($data);
+        $last_modified = $webHookHandler->getUpdate($this->updateFieldId, 'last_modified');
+
+
+        if($last_modified >= time() - 5) {
+            Log::error('Поле недавно было изменено. Слишком много попыток');
+        }
 
         if((int)($state) !== (int)($this->config['state'])) {
             throw new Exception('Неверный state в параметре запроса webhook');
@@ -82,11 +88,13 @@ class AmoCrmController extends BaseController
         
 
         $crm->connect($this->config);
-        $webHookHandler = new WebhookRequestHandler($data);
 
 
-        $primeCost = $webHookHandler->getCustomFieldsValue(self::primeCostFieldId);
-        $price = $webHookHandler->getUpdate(self::updateFieldId, 'price');
+        $primeCost = $webHookHandler->getCustomFieldsValue($this->primeCostFieldId);
+        $price = $webHookHandler->getUpdate($this->updateFieldId, 'price');
+        
+        dd(time());
+        dd($last_modified);
 
         $id = $webHookHandler->getAccount('id');
         // dd($id);
@@ -102,7 +110,7 @@ class AmoCrmController extends BaseController
         $lead = new LeadModel();
         $leadCustomFieldsValues = new CustomFieldsValuesCollection();
         $textCustomFieldValueModel = new TextCustomFieldValuesModel();
-        $textCustomFieldValueModel->setFieldId(self::profitFieldId);
+        $textCustomFieldValueModel->setFieldId($this->profitFieldId);
      
 
         
@@ -112,7 +120,7 @@ class AmoCrmController extends BaseController
         );
         $leadCustomFieldsValues->add($textCustomFieldValueModel);
         $lead->setCustomFieldsValues($leadCustomFieldsValues);
-        $lead->setId(self::updateFieldId);
+        $lead->setId($this->updateFieldId);
         // dd($lead);
         // dd($lead);
 
