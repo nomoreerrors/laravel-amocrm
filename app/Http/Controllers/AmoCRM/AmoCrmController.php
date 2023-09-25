@@ -82,7 +82,7 @@ class AmoCrmController extends BaseController
 
 
      
-        if((int)$last_modified >= (time() - 5)) {
+        if((int)$last_modified >= (time() - 20)) {
             Log::error('Поле недавно было изменено. Слишком много попыток');
             die;
         }
