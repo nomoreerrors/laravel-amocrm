@@ -171,7 +171,7 @@ class AmoCrmController extends BaseController
         try {
             $lead = $leadsService->updateOne($lead);
         } catch (AmoCRMApiException $e) {
-            Log::info($e);
+            Log::info('lol');
             die;
         }
 
