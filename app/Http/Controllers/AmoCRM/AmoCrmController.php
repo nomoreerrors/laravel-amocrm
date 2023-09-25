@@ -66,7 +66,7 @@ class AmoCrmController extends BaseController
     public function getWebHookUpdates(Request $request, AmoCrmConnectionModel $crm)
     {   
         /** Сохранить на сервере request */
-        // Storage::put('HOOK.txt', json_encode($request->all()));
+        Storage::put('HOOK.txt', json_encode($request->all()));
 
 
         // dd($request);
