@@ -80,10 +80,10 @@ class AmoCrmController extends BaseController
         $price = $webHookHandler->getUpdate($this->updateFieldId, 'price');
         $profit = (int)$price - (int)$primeCost;
 
-
+        
 
         if((int)$last_modified >= (time() - 20)) {
-            dd('lol');
+            response('Остановка запросов с хука');
             Log::error('Поле недавно было изменено. Слишком много попыток');
             die;
         }
@@ -116,13 +116,12 @@ class AmoCrmController extends BaseController
         $leadCustomFieldsValues->add($textCustomFieldValueModel);
         $lead->setCustomFieldsValues($leadCustomFieldsValues);
         $lead->setId($this->updateFieldId);
-        // dd($lead);
-        // dd($lead);
-
+      
 
 
         try {
             $lead = $leadsService->updateOne($lead);
+            Log::info('Запрос к хуку');
         } catch (AmoCRMApiException $e) {
             dd($e);
             die;
