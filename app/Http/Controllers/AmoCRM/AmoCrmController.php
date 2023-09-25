@@ -72,57 +72,57 @@ class AmoCrmController extends BaseController
 
 
       
-        // $data = $request->except('state');
-        // $state = $request->state;
-        // $webHookHandler = new WebhookRequestHandler($data);
-        // $primeCost = $webHookHandler->getCustomFieldsValue($this->primeCostFieldId);
-        // $last_modified = $webHookHandler->getUpdate($this->updateFieldId, 'last_modified');
-        // $price = $webHookHandler->getUpdate($this->updateFieldId, 'price');
-        // $profit = (int)$price - (int)$primeCost;
+        $data = $request->except('state');
+        $state = $request->state;
+        $webHookHandler = new WebhookRequestHandler($data);
+        $primeCost = $webHookHandler->getCustomFieldsValue($this->primeCostFieldId);
+        $last_modified = $webHookHandler->getUpdate($this->updateFieldId, 'last_modified');
+        $price = $webHookHandler->getUpdate($this->updateFieldId, 'price');
+        $profit = (int)$price - (int)$primeCost;
 
 
 
     
 
-        // Log::info('still here');
-        // if((int)($state) !== (int)($this->config['state'])) {
-        //     throw new Exception('Неверный state в параметре запроса webhook');
-        // }
 
-        // $crm->connect($this->config);
+        if((int)($state) !== (int)($this->config['state'])) {
+            throw new Exception('Неверный state в параметре запроса webhook');
+        }
+
+        $crm->connect($this->config);
         
 
-        // // dd('ok');
+
 
         
-        // // dd($price, $id, $primeCost, $lastModified, $profit);
+        // dd($price, $id, $primeCost, $lastModified, $profit);
       
         
-        // $leadsService = $crm->apiClient->leads();
-        // $lead = new LeadModel();
-        // $leadCustomFieldsValues = new CustomFieldsValuesCollection();
-        // $textCustomFieldValueModel = new TextCustomFieldValuesModel();
-        // $textCustomFieldValueModel->setFieldId($this->profitFieldId);
+        $leadsService = $crm->apiClient->leads();
+        $lead = new LeadModel();
+        $leadCustomFieldsValues = new CustomFieldsValuesCollection();
+        $textCustomFieldValueModel = new TextCustomFieldValuesModel();
+        $textCustomFieldValueModel->setFieldId($this->profitFieldId);
      
 
         
-        // $textCustomFieldValueModel->setValues(
-        //     (new TextCustomFieldValueCollection())
-        //         ->add((new TextCustomFieldValueModel())->setValue($profit))
-        // );
-        // $leadCustomFieldsValues->add($textCustomFieldValueModel);
-        // $lead->setCustomFieldsValues($leadCustomFieldsValues);
-        // $lead->setId($this->updateFieldId);
+        $textCustomFieldValueModel->setValues(
+            (new TextCustomFieldValueCollection())
+                ->add((new TextCustomFieldValueModel())->setValue($profit))
+        );
+        $leadCustomFieldsValues->add($textCustomFieldValueModel);
+        $lead->setCustomFieldsValues($leadCustomFieldsValues);
+        $lead->setId($this->updateFieldId);
       
 
 
-        // try {
-        //     $lead = $leadsService->updateOne($lead);
-        //     Log::info('Запрос к хуку');
-        // } catch (AmoCRMApiException $e) {
-        //     dd($e);
-        //     die;
-        // }
+        try {
+            $lead = $leadsService->updateOne($lead);
+            Log::info('Запрос к хуку');
+        } catch (AmoCRMApiException $e) {
+            dd($e);
+            die;
+        }
 
 
          
