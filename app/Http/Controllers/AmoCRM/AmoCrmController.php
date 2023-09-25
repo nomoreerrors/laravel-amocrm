@@ -29,6 +29,8 @@ class AmoCrmController extends BaseController
         'state' => '08269884f9a9a4b8a7c166da58bdd6a3'
         ];
     
+    
+
     /**
      * id поля "Себестоимость" (value). 
      * @var int costPriceId
@@ -67,11 +69,23 @@ class AmoCrmController extends BaseController
     {   
         /** Сохранить на сервере request */
         Storage::put('HOOK.txt', json_encode($request->all()));
-        Log::info('Request from webhook');
- 
+
+        $lastRequestTime = (int) Storage::get('lastRequestTime.txt');
 
 
-      
+        if(!$lastRequestTime) {
+            $lastRequestTime = time();
+            Storage::put('lastRequestTime.txt', $lastRequestTime);
+
+        } elseif($lastRequestTime > time() - 5) {
+            response('Остановка цикла запросов');
+            die;
+        }
+
+
+        
+
+        
         $data = $request->except('state');
         $state = $request->state;
         $webHookHandler = new WebhookRequestHandler($data);
@@ -81,7 +95,8 @@ class AmoCrmController extends BaseController
         $profit = (int)$price - (int)$primeCost;
 
 
-
+      
+        
     
 
 
