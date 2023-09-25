@@ -47,7 +47,7 @@ class WebhookRequestHandler extends BaseRequestHandler
     
 
     /**
-     * Возвращает update или один из его объектов по id/objec id + key .
+     * Возвращает update или один из его объектов по id/object id + key .
      * @param int $id update field's nested array id
      * @param string $key update field's nested array key
      * @throws Exception
