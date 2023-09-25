@@ -67,7 +67,7 @@ class AmoCrmController extends BaseController
     {   
         /** Сохранить на сервере request */
         Storage::put('HOOK.txt', json_encode($request->all()));
-
+        Log::info('Request from webhook');
  
 
 
