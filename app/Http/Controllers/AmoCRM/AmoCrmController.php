@@ -65,8 +65,11 @@ class AmoCrmController extends BaseController
      */
     public function getWebHookUpdates(Request $request, AmoCrmConnectionModel $crm)
     {   
+        /** Сохранить на сервере request */
+        // Storage::put('HOOK.txt', json_encode($request->all()));
 
-        Storage::put('HOOK.txt', json_encode($request->all()));
+
+
         // $testData = array (
         //     'account' => 
         //     array (
@@ -127,25 +130,25 @@ class AmoCrmController extends BaseController
         //       ),
         //     ),
         // );
+            // dd($request->all());
 
 
+      
+        $data = $request->except('state');
+        $state = $request->state;
 
-        // Log::info($request->all());
-        // $data = $request->except('state');
-        // $state = $request->state;
-
-        // if((int)($state) !== (int)($this->config['state'])) {
-        //     throw new Exception('Неверный state в параметре запроса webhook');
-        // }
+        if((int)($state) !== (int)($this->config['state'])) {
+            throw new Exception('Неверный state в параметре запроса webhook');
+        }
         
 
-        // $crm->connect($this->config);
-        // $webHookHandler = new WebhookRequestHandler($data);
-        // $primeCost = $webHookHandler->getCustomFieldsValue(self::primeCostId);
-        // $price = $webHookHandler->getUpdate(self::updateId, 'price');
-        // $lastModified = $webHookHandler->getUpdate(self::updateId, 'last_modified');
-        // $id = $webHookHandler->getAccount('id');
-        // $profit = (int)$price - (int)$primeCost;
+        $crm->connect($this->config);
+        $webHookHandler = new WebhookRequestHandler($data);
+        $primeCost = $webHookHandler->getCustomFieldsValue(self::primeCostId);
+        $price = $webHookHandler->getUpdate(self::updateId, 'price');
+        $lastModified = $webHookHandler->getUpdate(self::updateId, 'last_modified');
+        $id = $webHookHandler->getAccount('id');
+        $profit = (int)$price - (int)$primeCost;
 
 
 
@@ -153,37 +156,33 @@ class AmoCrmController extends BaseController
         // dd($price, $id, $primeCost, $lastModified, $profit);
 
 
-        // $leadsService = $crm->apiClient->leads();
-        // $lead = new LeadModel();
-        // $lead->setId($id);
-        // $leadCustomFieldsValues = new CustomFieldsValuesCollection();
-        // $textCustomFieldValueModel = new TextCustomFieldValuesModel();
-        // $textCustomFieldValueModel->setFieldId(self::profitId);
-        // $textCustomFieldValueModel->setValues(
-        //     (new TextCustomFieldValueCollection())
-        //         ->add((new TextCustomFieldValueModel())->setValue($profit))
-        // );
-        // $leadCustomFieldsValues->add($textCustomFieldValueModel);
-        // $lead->setCustomFieldsValues($leadCustomFieldsValues);
-        // // $lead->setName('Покупка огурцов');
+        $leadsService = $crm->apiClient->leads();
+        $lead = new LeadModel();
+        $lead->setId($id);
+        $leadCustomFieldsValues = new CustomFieldsValuesCollection();
+        $textCustomFieldValueModel = new TextCustomFieldValuesModel();
+        $textCustomFieldValueModel->setFieldId(self::profitId);
+        $textCustomFieldValueModel->setValues(
+            (new TextCustomFieldValueCollection())
+                ->add((new TextCustomFieldValueModel())->setValue($profit))
+        );
+        $leadCustomFieldsValues->add($textCustomFieldValueModel);
+        $lead->setCustomFieldsValues($leadCustomFieldsValues);
+        $lead->setName('Покупка огурцов');
 
 
-        // try {
-        //     $lead = $leadsService->updateOne($lead);
-        // } catch (AmoCRMApiException $e) {
-        //     Log::info('lol');
-        //     die;
-        // }
+        try {
+            $lead = $leadsService->updateOne($lead);
+        } catch (AmoCRMApiException $e) {
+            Log::info($e);
+            die;
+        }
 
 
          
 
  
-
-        // $testData = json_decode(Storage::get('updates.txt'), true);
-        // $a = new WebhookRequestHandler($testData);
-        // $c = $a->getCustomFields(21292045);
-        // dd($c);
+ 
        
         
     }
