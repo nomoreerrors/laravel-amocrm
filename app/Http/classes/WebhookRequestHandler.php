@@ -55,12 +55,15 @@ class WebhookRequestHandler extends BaseRequestHandler
     public function getUpdate(?int $id = null, ?string $key = null): array | string
     {
         $c = $this->getFieldByName($this->data, 'update')['update'];
+        // dd($c);
         if(!$id) {
             return $c;
         };
 
         if($id && $key) {
+            // dd($this->data);
             $d = $this->getFieldById($c, $id);
+            // dd($d[$key]);
             $result = $d[$key];
             return $result;
         }

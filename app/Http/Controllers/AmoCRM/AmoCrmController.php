@@ -33,19 +33,19 @@ class AmoCrmController extends BaseController
      * id поля "Себестоимость" (value). 
      * @var int costPriceId
      */
-    private const primeCostId = 2505835;
+    private const primeCostFieldId = 2505835;
 
     /**
      * id поля "Прибыль"
      * @var int $profitId
      */
-    private const profitId = 2505837;
+    private const profitFieldId = 2505837;
 
     /**
      * id объекта webhook leads:update
      * @var int updateId
      */
-    private const updateId = 38725615;
+    private const updateFieldId = 38845173;
 
     
 
@@ -68,74 +68,13 @@ class AmoCrmController extends BaseController
         /** Сохранить на сервере request */
         Storage::put('HOOK.txt', json_encode($request->all()));
 
-
-        // dd($request);
-        // $testData = array (
-        //     'account' => 
-        //     array (
-        //       'subdomain' => 'nomoreerrors',
-        //       'id' => '31310398',
-        //       '_links' => 
-        //       array (
-        //         'self' => 'https://nomoreerrors.amocrm.ru',
-        //       ),
-        //     ),
-        //     'leads' => 
-        //     array (
-        //       'update' => 
-        //       array (
-        //         0 => 
-        //         array (
-        //           'id' => '38725615',
-        //           'name' => 'Покупка бананов',
-        //           'status_id' => '60650182',
-        //           'price' => '332000',
-        //           'responsible_user_id' => '10121570',
-        //           'last_modified' => '1695571197',
-        //           'modified_user_id' => '10121570',
-        //           'created_user_id' => '10121570',
-        //           'date_create' => '1695459225',
-        //           'pipeline_id' => '7277538',
-        //           'account_id' => '31310398',
-        //           'custom_fields' => 
-        //           array (
-        //             0 => 
-        //             array (
-        //               'id' => '2505835',
-        //               'name' => 'Себестоимость',
-        //               'values' => 
-        //               array (
-        //                 0 => 
-        //                 array (
-        //                   'value' => '123000',
-        //                 ),
-        //               ),
-        //             ),
-        //             1 => 
-        //             array (
-        //               'id' => '2524423',
-        //               'name' => 'Test field',
-        //               'values' => 
-        //               array (
-        //                 0 => 
-        //                 array (
-        //                   'value' => '2132',
-        //                 ),
-        //               ),
-        //             ),
-        //           ),
-        //           'created_at' => '1695459225',
-        //           'updated_at' => '1695571197',
-        //         ),
-        //       ),
-        //     ),
-        // );
-            // dd($request->all());
+ 
 
 
       
         $data = $request->except('state');
         $state = $request->state;
+        // dd($data);
 
         if((int)($state) !== (int)($this->config['state'])) {
             throw new Exception('Неверный state в параметре запроса webhook');
@@ -146,33 +85,37 @@ class AmoCrmController extends BaseController
         $webHookHandler = new WebhookRequestHandler($data);
 
 
-        $primeCost = $webHookHandler->getCustomFieldsValue(self::primeCostId);
-        $price = $webHookHandler->getUpdate(self::updateId, 'price');
-        // $lastModified = $webHookHandler->getUpdate(self::updateId, 'last_modified');
+        $primeCost = $webHookHandler->getCustomFieldsValue(self::primeCostFieldId);
+        $price = $webHookHandler->getUpdate(self::updateFieldId, 'price');
+
         $id = $webHookHandler->getAccount('id');
+        // dd($id);
         $profit = (int)$price - (int)$primeCost;
 
 
 
         
         // dd($price, $id, $primeCost, $lastModified, $profit);
-        // смотрим examples
-        // смотрим examples
-        // смотрим examples
-        // смотрим examples
+      
+        
         $leadsService = $crm->apiClient->leads();
         $lead = new LeadModel();
         $leadCustomFieldsValues = new CustomFieldsValuesCollection();
         $textCustomFieldValueModel = new TextCustomFieldValuesModel();
-        $textCustomFieldValueModel->setFieldId(self::profitId);
+        $textCustomFieldValueModel->setFieldId(self::profitFieldId);
+        $lead->setId($id);
+
+        
         $textCustomFieldValueModel->setValues(
             (new TextCustomFieldValueCollection())
                 ->add((new TextCustomFieldValueModel())->setValue($profit))
         );
         $leadCustomFieldsValues->add($textCustomFieldValueModel);
         $lead->setCustomFieldsValues($leadCustomFieldsValues);
-        $lead->setId($id);
         // dd($lead);
+
+
+
         try {
             $lead = $leadsService->updateOne($lead);
         } catch (AmoCRMApiException $e) {
