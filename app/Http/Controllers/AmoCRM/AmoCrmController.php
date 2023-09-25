@@ -69,19 +69,30 @@ class AmoCrmController extends BaseController
     {   
         /** Сохранить на сервере request */
         Storage::put('HOOK.txt', json_encode($request->all()));
+        $lastRequestTime = (int) Storage::get('lastRequestTime');
+        Log::info('Запрос');
 
-        $lastRequestTime = (int) Storage::get('lastRequestTime.txt');
 
-
-        if(!$lastRequestTime) {
-            $lastRequestTime = time();
-            Storage::put('lastRequestTime.txt', $lastRequestTime);
-
-        } elseif($lastRequestTime > time() - 5) {
-            response('Остановка цикла запросов');
+        if($lastRequestTime > 0 && $lastRequestTime > time() - 7) {
+            Log::info('Остановка цикла запросов');
             die;
         }
+        
+        
+         
+        
 
+
+        // if(!$lastRequestTime) {
+        //     Storage::put('lastRequestTime.txt', time());
+
+        // } elseif($lastRequestTime > time() - 100) {
+        //     Storage::put('lastRequestTime.txt', time());
+        //     response('Остановка цикла запросов');
+        //     die;
+        // }
+
+        // dd($lastRequestTime, time());
 
         
 
@@ -108,7 +119,6 @@ class AmoCrmController extends BaseController
         
 
 
-
         
         // dd($price, $id, $primeCost, $lastModified, $profit);
       
@@ -133,6 +143,7 @@ class AmoCrmController extends BaseController
 
         try {
             $lead = $leadsService->updateOne($lead);
+            Storage::put('lastRequestTime', time());
             Log::info('Запрос к хуку');
         } catch (AmoCRMApiException $e) {
             dd($e);
