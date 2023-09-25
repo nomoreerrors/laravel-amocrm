@@ -21,7 +21,7 @@ class BaseRequestHandler
         $c = [];
         // dd($a, $c);
             foreach($data as $key => $value) {
-                Log:info($key);
+                // Log:info($key);
                 if($key == $field) {
                     $a[$key] = $value;
                 }  
