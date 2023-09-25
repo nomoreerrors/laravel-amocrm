@@ -87,7 +87,7 @@ class AmoCrmController extends BaseController
             Log::error('Поле недавно было изменено. Слишком много попыток');
             die;
         }
-      
+        Log::info('still here');
         if((int)($state) !== (int)($this->config['state'])) {
             throw new Exception('Неверный state в параметре запроса webhook');
         }
