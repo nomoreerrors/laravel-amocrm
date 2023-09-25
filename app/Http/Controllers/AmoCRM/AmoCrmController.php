@@ -80,16 +80,16 @@ class AmoCrmController extends BaseController
         $price = $webHookHandler->getUpdate($this->updateFieldId, 'price');
         $profit = (int)$price - (int)$primeCost;
 
+
      
-        if((int)$last_modified >= time() - 5) {
+        if((int)$last_modified >= (time() - 5)) {
             Log::error('Поле недавно было изменено. Слишком много попыток');
             die;
         }
-
+      
         if((int)($state) !== (int)($this->config['state'])) {
             throw new Exception('Неверный state в параметре запроса webhook');
         }
-
 
         $crm->connect($this->config);
         
