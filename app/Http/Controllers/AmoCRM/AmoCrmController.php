@@ -103,7 +103,7 @@ class AmoCrmController extends BaseController
         $leadCustomFieldsValues = new CustomFieldsValuesCollection();
         $textCustomFieldValueModel = new TextCustomFieldValuesModel();
         $textCustomFieldValueModel->setFieldId(self::profitFieldId);
-        $lead->setId($id);
+     
 
         
         $textCustomFieldValueModel->setValues(
@@ -112,6 +112,8 @@ class AmoCrmController extends BaseController
         );
         $leadCustomFieldsValues->add($textCustomFieldValueModel);
         $lead->setCustomFieldsValues($leadCustomFieldsValues);
+        $lead->setId(self::updateFieldId);
+        // dd($lead);
         // dd($lead);
 
 
