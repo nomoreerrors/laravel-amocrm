@@ -81,7 +81,7 @@ class AmoCrmController extends BaseController
         $profit = (int)$price - (int)$primeCost;
 
      
-        if($last_modified >= time() - 5) {
+        if((int)$last_modified >= time() - 5) {
             Log::error('Поле недавно было изменено. Слишком много попыток');
             die;
         }
