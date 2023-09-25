@@ -19,21 +19,17 @@ class BaseRequestHandler
     {   
         static $a = [];
         $c = [];
-        // dd($a, $c);
             foreach($data as $key => $value) {
-                // Log:info($key);
                 if($key == $field) {
                     $a[$key] = $value;
                 }  
                 try { 
                         foreach($value as $key2 => $value2) {
-                            // Log::info('errors: ', [$value, $key2, $value2]);
                             if($key2 == $field) {
                             $a[$key2] = $value2;
                         }
                         if(gettype($value2) == 'array') {
                             $c[$key2] = $value2;
-                            Log::info($a);
                         };
                         };
                 } catch(Exception $e) {
