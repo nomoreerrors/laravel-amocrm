@@ -10,16 +10,15 @@ use App\Models\AmoCRM\BaseAmoCrmConnectionModel;
 
 
 /**
- * Class AmoConnectionInitialize
- * 
  * Авторизация и сохранение access token в Laravel storage.
- * @package App\Http\classes
  */
 class AmoCrmConnectionModel extends BaseAmoCrmConnectionModel
 {
-
+    /** @var AmoCRMApiClient */
     public $apiClient;
+
     private $oAuthClient;
+    
     private $accessToken;
 
 
@@ -33,7 +32,7 @@ class AmoCrmConnectionModel extends BaseAmoCrmConnectionModel
     }
 
 
-
+    
     private function apiOAuthRequest($baseDomain, $auth_code)
     {
         

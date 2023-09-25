@@ -69,7 +69,7 @@ class AmoCrmController extends BaseController
         // Storage::put('HOOK.txt', json_encode($request->all()));
 
 
-
+        // dd($request);
         // $testData = array (
         //     'account' => 
         //     array (
@@ -144,9 +144,11 @@ class AmoCrmController extends BaseController
 
         $crm->connect($this->config);
         $webHookHandler = new WebhookRequestHandler($data);
+
+
         $primeCost = $webHookHandler->getCustomFieldsValue(self::primeCostId);
         $price = $webHookHandler->getUpdate(self::updateId, 'price');
-        $lastModified = $webHookHandler->getUpdate(self::updateId, 'last_modified');
+        // $lastModified = $webHookHandler->getUpdate(self::updateId, 'last_modified');
         $id = $webHookHandler->getAccount('id');
         $profit = (int)$price - (int)$primeCost;
 
@@ -154,11 +156,12 @@ class AmoCrmController extends BaseController
 
         
         // dd($price, $id, $primeCost, $lastModified, $profit);
-
-
+        // смотрим examples
+        // смотрим examples
+        // смотрим examples
+        // смотрим examples
         $leadsService = $crm->apiClient->leads();
         $lead = new LeadModel();
-        $lead->setId($id);
         $leadCustomFieldsValues = new CustomFieldsValuesCollection();
         $textCustomFieldValueModel = new TextCustomFieldValuesModel();
         $textCustomFieldValueModel->setFieldId(self::profitId);
@@ -168,13 +171,12 @@ class AmoCrmController extends BaseController
         );
         $leadCustomFieldsValues->add($textCustomFieldValueModel);
         $lead->setCustomFieldsValues($leadCustomFieldsValues);
-        $lead->setName('Покупка огурцов');
-
-
+        $lead->setId($id);
+        // dd($lead);
         try {
             $lead = $leadsService->updateOne($lead);
         } catch (AmoCRMApiException $e) {
-            Log::info($e);
+            dd($e);
             die;
         }
 
