@@ -75,25 +75,11 @@ class AmoCrmController extends BaseController
 
         if($lastRequestTime > 0 && $lastRequestTime > time() - 7) {
             Log::info('Остановка цикла запросов');
+            response('ok');
             die;
         }
         
         
-         
-        
-
-
-        // if(!$lastRequestTime) {
-        //     Storage::put('lastRequestTime.txt', time());
-
-        // } elseif($lastRequestTime > time() - 100) {
-        //     Storage::put('lastRequestTime.txt', time());
-        //     response('Остановка цикла запросов');
-        //     die;
-        // }
-
-        // dd($lastRequestTime, time());
-
         
 
         
