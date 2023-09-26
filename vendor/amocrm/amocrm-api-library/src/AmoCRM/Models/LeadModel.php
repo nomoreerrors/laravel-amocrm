@@ -931,7 +931,7 @@ class LeadModel extends BaseApiModel implements
         if (!is_null($this->getCreatedAt())) {
             $result['created_at'] = $this->getCreatedAt();
         }
-        //Изменено
+        //Добавлено
         if (!is_null($this->getUpdatedAt())) {
             $result['updated_at'] = $this->getUpdatedAt();
         }

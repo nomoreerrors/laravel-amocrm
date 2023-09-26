@@ -57,7 +57,13 @@ class BaseRequestHandler
                 $c = $value;
             }
         }
-        return count($c) == 0 ? throw new Exception('Ключ с id ' .$id. ' не существует') : $c;
+        if(count($c) == 0) {
+            Log::error('Ключ с id ' .$id. ' не существует' . __METHOD__);
+            return null;
+        } else {
+            return $c;
+        }
+         
 
     }
 

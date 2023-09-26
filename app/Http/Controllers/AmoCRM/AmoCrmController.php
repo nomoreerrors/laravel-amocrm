@@ -89,7 +89,7 @@ class AmoCrmController extends BaseController
 
 
         if($updated_at >= time()) {
-            Log::info('Остановка цикла запросов. Слишком частые попытки обновить сделку');
+            Log::info('Остановка цикла запросов. Слишком частые попытки обновить сделку ' . $updated_at . time());
             response('ok');
             die;
         }
