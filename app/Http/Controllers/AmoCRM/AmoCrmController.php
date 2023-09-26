@@ -69,20 +69,19 @@ class AmoCrmController extends BaseController
     {   
         /** Сохранить на сервере request */
         Storage::put('HOOK.txt', json_encode($request->all()));
+
         $lastRequestTime = (int) Storage::get('lastRequestTime');
         Log::info('Запрос');
 
 
-        if($lastRequestTime > 0 && $lastRequestTime > time() - 7) {
-            Log::info('Остановка цикла запросов');
-            response('ok');
-            die;
-        }
-        
-        
+
+        // if($lastRequestTime > 0 && $lastRequestTime > time() - 7) {
+        //     Log::info('Остановка цикла запросов');
+        //     response('ok');
+        //     die;
+        // }
         
 
-        
         $data = $request->except('state');
         $state = $request->state;
         $webHookHandler = new WebhookRequestHandler($data);
@@ -91,7 +90,7 @@ class AmoCrmController extends BaseController
         $price = $webHookHandler->getUpdate($this->updateFieldId, 'price');
         $profit = (int)$price - (int)$primeCost;
 
-
+        Log::info([$last_modified, time()]);
       
         
     
