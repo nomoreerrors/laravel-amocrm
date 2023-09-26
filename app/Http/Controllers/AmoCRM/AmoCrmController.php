@@ -85,18 +85,16 @@ class AmoCrmController extends BaseController
         $price = $webHookHandler->getUpdate($this->updateFieldId, 'price');
         $profit = (int)$price - (int)$primeCost;
 
-        Log::info(['from request: ' .$updated_at]);
 
 
-        // if($updated_at >= time()) {
-        //     Log::info('Остановка цикла запросов');
-        //     response('ok');
-        //     die;
-        // }
+
+        if($updated_at >= time()) {
+            Log::info('Остановка цикла запросов. Слишком частые попытки обновить сделку');
+            response('ok');
+            die;
+        }
       
         
-        
-    
 
 
         if((int)($state) !== (int)($this->config['state'])) {
@@ -127,19 +125,16 @@ class AmoCrmController extends BaseController
         $lead->setCustomFieldsValues($leadCustomFieldsValues);
         $lead->setId($this->updateFieldId);
      
-        $lead->setUpdatedAt(time() + 1000);
-        $lead->setPrice(120);
-        $lead->setName('Квашеная капуста');
-        Log::info(($lead->updated_at));
+        $lead->setUpdatedAt(time() + 5);
+
 
 
         
       
-        //попробуй что-то кроме времени добавить
+
 
         try {
             $lead = $leadsService->updateOne($lead);
-            dd($lead->updated_at, time());
             Log::info([$lead->updated_at, time()]);
             Log::info('Запрос к хуку');
 
