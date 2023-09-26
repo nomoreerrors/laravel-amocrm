@@ -126,16 +126,18 @@ class AmoCrmController extends BaseController
         $leadCustomFieldsValues->add($textCustomFieldValueModel);
         $lead->setCustomFieldsValues($leadCustomFieldsValues);
         $lead->setId($this->updateFieldId);
-        $lead->setUpdatedAt(time() + 100);
-        Log::info(['first: ' .$lead->updated_at, time()]);
+        $lead->setUpdatedAt(12);
+        $lead->setPrice(100000);
+        Log::info(['first: ' . $lead->price]);
+
         
       
-
+        //попробуй что-то кроме времени добавить
 
         try {
             $lead = $leadsService->updateOne($lead);
-           
-            Log::info(['last: ' .$lead->updated_at, time()]);
+            Log::info(['first: ' . $lead->price]);
+            // Log::info(['last: ' .$lead->updated_at, time()]);
             Log::info('Запрос к хуку');
         } catch (AmoCRMApiException $e) {
             dd($e);
