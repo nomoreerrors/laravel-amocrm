@@ -85,9 +85,9 @@ class AmoCrmController extends BaseController
         $price = $webHookHandler->getUpdate($this->updateFieldId, 'price');
         $profit = (int)$price - (int)$primeCost;
 
+        Log::info('updated_at at the top :' .$updated_at. 'time(): ' . time());
 
 
-        Log::info([$updated_at, time()]);
         if($updated_at >= time()) {
             Log::info('Остановка цикла запросов');
             response('ok');
@@ -127,12 +127,14 @@ class AmoCrmController extends BaseController
         $lead->setCustomFieldsValues($leadCustomFieldsValues);
         $lead->setId($this->updateFieldId);
         $lead->setUpdatedAt(time() + 100);
-
+        
       
 
 
         try {
             $lead = $leadsService->updateOne($lead);
+           
+            Log::info('updated_at at the bottom :' .$lead->updated_at);
             // Storage::put('lastRequestTime', time());
             Log::info('Запрос к хуку');
         } catch (AmoCRMApiException $e) {
