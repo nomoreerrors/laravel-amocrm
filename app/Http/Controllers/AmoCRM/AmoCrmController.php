@@ -124,7 +124,7 @@ class AmoCrmController extends BaseController
         $leadCustomFieldsValues->add($textCustomFieldValueModel);
         $lead->setCustomFieldsValues($leadCustomFieldsValues);
         $lead->setId($this->updateFieldId);
-        $lead->setUpdatedAt(time() + 5);
+        $lead->setUpdatedAt(time() + 100);
 
       
 
