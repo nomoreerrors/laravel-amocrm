@@ -43,12 +43,7 @@ class AmoCrmController extends BaseController
      */
     private $profitFieldId = 2505837;
 
-    /**
-     * id объекта webhook leads:update
-     * @var int updateId
-     */
-    private $updateFieldId = 38845173;
-
+ 
     
 
 
@@ -81,12 +76,12 @@ class AmoCrmController extends BaseController
         $state = $request->state;
         $webHookHandler = new WebhookRequestHandler($data);
         $primeCost = $webHookHandler->getCustomFieldsValue($this->primeCostFieldId);
-        $updated_at = (int)$webHookHandler->getUpdate($this->updateFieldId, 'updated_at');
-        $price = $webHookHandler->getUpdate($this->updateFieldId, 'price');
+        $updated_at = (int)$webHookHandler->getUpdate('updated_at');
+        $price = $webHookHandler->getUpdate('price');
+        $id = $webHookHandler->getUpdate('id');
         $profit = (int)$price - (int)$primeCost;
 
-
-
+        
 
         if($updated_at && $updated_at >= time()) {
             Log::info('Остановка цикла запросов. Слишком частые попытки обновить сделку ' . $updated_at . time());
@@ -122,10 +117,11 @@ class AmoCrmController extends BaseController
         );
         $leadCustomFieldsValues->add($textCustomFieldValueModel);
         $lead->setCustomFieldsValues($leadCustomFieldsValues);
-        $lead->setId($this->updateFieldId);
-     
+        $lead->setId($id);
         $lead->setUpdatedAt(time() + 5);
 
+
+        // dd($lead);
 
 
         

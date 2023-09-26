@@ -52,24 +52,20 @@ class WebhookRequestHandler extends BaseRequestHandler
      * @param string $key update field's nested array key
      * @throws Exception
      */
-    public function getUpdate(?int $id = null, ?string $key = null): array | string
+    public function getUpdate(?string $key = null): array | string
     {
-        $c = $this->getFieldByName($this->data, 'update')['update'];
-        if(!$id) {
+        $c = $this->getFieldByName($this->data, 'update')['update'][0];
+         
+        if(!$key) {
             return $c;
-        };
-
-        if($id && $key) {
-            $d = $this->getFieldById($c, $id);
-            if(!$d) {
-                return false;
-            } else {
-                return $d[$key];
-            }
+        } 
+        elseif(array_key_exists($key, $c)) {
+                return $c[$key];
+        } 
+        else {
+            return false;
         }
-
-        $d = $this->getFieldById($c, $id);
-        return $d;
+        
         
     }
 
