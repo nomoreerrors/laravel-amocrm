@@ -19,6 +19,8 @@ use AmoCRM\Models\Leads\LossReasons\LossReasonModel;
 use AmoCRM\Models\Traits\GetLinkTrait;
 use AmoCRM\Models\Traits\RequestIdTrait;
 use AmoCRM\Models\Unsorted\Interfaces\UnsortedMetadataInterface;
+use Error;
+use Illuminate\Support\Facades\Log;
 
 use function is_null;
 
@@ -399,6 +401,9 @@ class LeadModel extends BaseApiModel implements
      */
     public function setUpdatedAt(?int $timestamp): self
     {
+        // dd($timestamp, time());
+        // throw new Error('Моя ошибка');
+        // Log::info([__METHOD__ . $timestamp . time()]);
         $this->updatedAt = $timestamp;
 
         return $this;
@@ -925,6 +930,10 @@ class LeadModel extends BaseApiModel implements
 
         if (!is_null($this->getCreatedAt())) {
             $result['created_at'] = $this->getCreatedAt();
+        }
+        //Изменено
+        if (!is_null($this->getUpdatedAt())) {
+            $result['updated_at'] = $this->getUpdatedAt();
         }
 
         if (!is_null($this->getClosedAt())) {

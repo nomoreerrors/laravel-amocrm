@@ -10,7 +10,9 @@ use AmoCRM\Exceptions\InvalidArgumentException;
 use AmoCRM\Filters\BaseEntityFilter;
 use AmoCRM\Models\BaseApiModel;
 use AmoCRM\Models\Interfaces\HasIdInterface;
+use Error;
 use ReflectionClass;
+use Illuminate\Support\Facades\Log;
 use ReflectionException;
 
 use function is_null;
@@ -162,6 +164,7 @@ abstract class BaseEntity
      */
     protected function processUpdateOne(BaseApiModel $model, array $response): BaseApiModel
     {
+
         //override in child
         return $model;
     }
@@ -246,9 +249,10 @@ abstract class BaseEntity
         if (is_null($id)) {
             throw new AmoCRMApiException('Empty id in model ' . json_encode($apiModel->toApi(0)));
         }
-
+        
         $response = $this->request->patch($this->getMethod() . '/' . $apiModel->getId(), $apiModel->toApi(0));
         $apiModel = $this->processUpdateOne($apiModel, $response);
+        
 
         return $apiModel;
     }

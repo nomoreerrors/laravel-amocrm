@@ -72,6 +72,7 @@ class Leads extends BaseEntity implements HasLinkMethodInterface, HasPageMethods
      */
     protected function processUpdateOne(BaseApiModel $model, array $response): BaseApiModel
     {
+        // dd($response, time());
         $this->processModelAction($model, $response);
 
         return $model;
@@ -126,6 +127,7 @@ class Leads extends BaseEntity implements HasLinkMethodInterface, HasPageMethods
      */
     protected function processModelAction(BaseApiModel $apiModel, array $entity): void
     {
+        
         if (isset($entity['id'])) {
             $apiModel->setId($entity['id']);
         }

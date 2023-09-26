@@ -313,6 +313,7 @@ class AmoCRMApiRequest
         array $headers = [],
         bool $needToRefresh = false
     ): array {
+       
         if ($this->accessToken->hasExpired()) {
             $needToRefresh = true;
         }

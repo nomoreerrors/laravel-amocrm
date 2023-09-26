@@ -85,7 +85,7 @@ class AmoCrmController extends BaseController
         $price = $webHookHandler->getUpdate($this->updateFieldId, 'price');
         $profit = (int)$price - (int)$primeCost;
 
-        Log::info(['$variable: ' .$updated_at]);
+        Log::info(['from request: ' .$updated_at]);
 
 
         // if($updated_at >= time()) {
@@ -110,7 +110,7 @@ class AmoCrmController extends BaseController
         
         // dd($price, $id, $primeCost, $lastModified, $profit);
       
-        
+
         $leadsService = $crm->apiClient->leads();
         $lead = new LeadModel();
         $leadCustomFieldsValues = new CustomFieldsValuesCollection();
@@ -118,7 +118,7 @@ class AmoCrmController extends BaseController
         $textCustomFieldValueModel->setFieldId($this->profitFieldId);
      
 
-        
+      
         $textCustomFieldValueModel->setValues(
             (new TextCustomFieldValueCollection())
                 ->add((new TextCustomFieldValueModel())->setValue($profit))
@@ -126,9 +126,12 @@ class AmoCrmController extends BaseController
         $leadCustomFieldsValues->add($textCustomFieldValueModel);
         $lead->setCustomFieldsValues($leadCustomFieldsValues);
         $lead->setId($this->updateFieldId);
-        $lead->setUpdatedAt(12);
-        $lead->setPrice(100000);
-        Log::info(['first: ' . $lead->price]);
+     
+        $lead->setUpdatedAt(time() + 1000);
+        $lead->setPrice(120);
+        $lead->setName('Квашеная капуста');
+        Log::info(($lead->updated_at));
+
 
         
       
@@ -136,9 +139,10 @@ class AmoCrmController extends BaseController
 
         try {
             $lead = $leadsService->updateOne($lead);
-            Log::info(['first: ' . $lead->price]);
-            // Log::info(['last: ' .$lead->updated_at, time()]);
+            dd($lead->updated_at, time());
+            Log::info([$lead->updated_at, time()]);
             Log::info('Запрос к хуку');
+
         } catch (AmoCRMApiException $e) {
             dd($e);
             die;
