@@ -70,28 +70,29 @@ class AmoCrmController extends BaseController
         /** Сохранить на сервере request */
         Storage::put('HOOK.txt', json_encode($request->all()));
 
-        $lastRequestTime = (int) Storage::get('lastRequestTime');
-        Log::info('Запрос');
+        Log::info('Входящий запрос');
 
+        // dd($request);
 
-
-        // if($lastRequestTime > 0 && $lastRequestTime > time() - 7) {
-        //     Log::info('Остановка цикла запросов');
-        //     response('ok');
-        //     die;
-        // }
+     
         
 
         $data = $request->except('state');
         $state = $request->state;
         $webHookHandler = new WebhookRequestHandler($data);
         $primeCost = $webHookHandler->getCustomFieldsValue($this->primeCostFieldId);
-        $last_modified = $webHookHandler->getUpdate($this->updateFieldId, 'last_modified');
+        $updated_at = (int)$webHookHandler->getUpdate($this->updateFieldId, 'updated_at');
         $price = $webHookHandler->getUpdate($this->updateFieldId, 'price');
         $profit = (int)$price - (int)$primeCost;
 
-        Log::info([$last_modified, time()]);
+
+        if($updated_at >= time()) {
+            Log::info('Остановка цикла запросов');
+            response('ok');
+            die;
+        }
       
+        Log::info([$updated_at, time()]);
         
     
 
@@ -123,12 +124,14 @@ class AmoCrmController extends BaseController
         $leadCustomFieldsValues->add($textCustomFieldValueModel);
         $lead->setCustomFieldsValues($leadCustomFieldsValues);
         $lead->setId($this->updateFieldId);
+        $lead->setUpdatedAt(time() + 5);
+
       
 
 
         try {
             $lead = $leadsService->updateOne($lead);
-            Storage::put('lastRequestTime', time());
+            // Storage::put('lastRequestTime', time());
             Log::info('Запрос к хуку');
         } catch (AmoCRMApiException $e) {
             dd($e);
