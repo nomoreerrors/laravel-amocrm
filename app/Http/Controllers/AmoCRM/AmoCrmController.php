@@ -86,13 +86,15 @@ class AmoCrmController extends BaseController
         $profit = (int)$price - (int)$primeCost;
 
 
+
+        Log::info([$updated_at, time()]);
         if($updated_at >= time()) {
             Log::info('Остановка цикла запросов');
             response('ok');
             die;
         }
       
-        Log::info([$updated_at, time()]);
+        
         
     
 
@@ -124,7 +126,7 @@ class AmoCrmController extends BaseController
         $leadCustomFieldsValues->add($textCustomFieldValueModel);
         $lead->setCustomFieldsValues($leadCustomFieldsValues);
         $lead->setId($this->updateFieldId);
-        $lead->setUpdatedAt(time() + 100);
+        $lead->setUpdatedAt(time() + 10);
 
       
 
