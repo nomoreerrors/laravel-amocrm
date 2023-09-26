@@ -88,11 +88,11 @@ class AmoCrmController extends BaseController
         Log::info('updated_at at the top :' .$updated_at. 'time(): ' . time());
 
 
-        if($updated_at >= time()) {
-            Log::info('Остановка цикла запросов');
-            response('ok');
-            die;
-        }
+        // if($updated_at >= time()) {
+        //     Log::info('Остановка цикла запросов');
+        //     response('ok');
+        //     die;
+        // }
       
         
         
