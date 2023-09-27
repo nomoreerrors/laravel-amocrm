@@ -81,16 +81,14 @@ class AmoCrmController extends BaseController
 
 
 
-        if (!$lastRequestTime || !array_key_exists($accountId, $lastRequestTime)) {
-            $lastRequestTime[$accountId] = time() + 3;
-            Log::info('im in if block');
-            Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
-        } 
+       
+        
 
 
-
-        elseif($lastRequestTime[$accountId] >= time()) {
-            Log::info('Остановка цикла запросов. Слишком частые попытки обновить сделку '
+        if($lastRequestTime && 
+           array_key_exists($accountId, $lastRequestTime) &&
+           $lastRequestTime[$accountId] >= time()) {
+           Log::info('Остановка цикла запросов. Слишком частые попытки обновить сделку '
                                          . $lastRequestTime[$accountId] .' ' . time());
             response('ok');
             die;
@@ -151,7 +149,9 @@ class AmoCrmController extends BaseController
 
         try {
             $lead = $leadsService->updateOne($lead);
-
+            $lastRequestTime[$accountId] = time() + 10;
+            dd($lastRequestTime[$accountId], time());
+            Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
             Log::info('Запрос к хуку');
 
         } catch (AmoCRMApiException $e) {
