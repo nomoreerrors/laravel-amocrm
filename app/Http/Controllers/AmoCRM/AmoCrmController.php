@@ -72,40 +72,39 @@ class AmoCrmController extends BaseController
        
         
 
-        $data = $request->except('state');
-        $state = $request->state;
-        $webHookHandler = new WebhookRequestHandler($data);
-        $primeCost = $webHookHandler->getCustomFieldsValue($this->primeCostFieldId);
-        $accountId = strval($webHookHandler->getAccount('id'));
-        $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
+        // $data = $request->except('state');
+        // $state = $request->state;
+        // $webHookHandler = new WebhookRequestHandler($data);
+        // $primeCost = $webHookHandler->getCustomFieldsValue($this->primeCostFieldId);
+        // $accountId = strval($webHookHandler->getAccount('id'));
+        // $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
 
 
 
-        if (!$lastRequestTime || !array_key_exists($accountId, $lastRequestTime)) {
-            $lastRequestTime[$accountId] = time() + 3;
-            Log::info('im in if block');
-            Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
-        } 
+        // if (!$lastRequestTime || !array_key_exists($accountId, $lastRequestTime)) {
+        //     $lastRequestTime[$accountId] = time() + 3;
+        //     Log::info('im in if block');
+        //     Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
+        // } 
+
+        // if($lastRequestTime[$accountId] >= time()) {
+        //         Log::info('Остановка цикла запросов. Слишком частые попытки обновить сделку '
+        //         . $lastRequestTime[$accountId] .' ' . time());
+
+        //         response('ok');
+        //         die;
+        // }
 
 
-        if((int)$lastRequestTime[$accountId] >= time()) {
-                Log::info('Остановка цикла запросов. Слишком частые попытки обновить сделку '
-                . $lastRequestTime[$accountId] .' ' . time());
-
-                response('ok');
-                die;
-        }
-
-
-        Log::info('exited from if');
-        Log::info([$lastRequestTime[$accountId], ' ', time()]);
+        // Log::info('exited from if');
+        // Log::info([$lastRequestTime[$accountId], ' ', time()]);
 
 
 
 
-        $price = $webHookHandler->getUpdate('price');
-        $updateId = $webHookHandler->getUpdate('id');
-        $profit = (int)$price - (int)$primeCost;
+        // $price = $webHookHandler->getUpdate('price');
+        // $updateId = $webHookHandler->getUpdate('id');
+        // $profit = (int)$price - (int)$primeCost;
 
 
         
@@ -113,11 +112,11 @@ class AmoCrmController extends BaseController
         
 
 
-        if((int)($state) !== (int)($this->config['state'])) {
-            throw new Exception('Неверный state в параметре запроса webhook');
-        }
+        // if((int)($state) !== (int)($this->config['state'])) {
+        //     throw new Exception('Неверный state в параметре запроса webhook');
+        // }
 
-        $crm->connect($this->config);
+        // $crm->connect($this->config);
         
 
 
@@ -125,21 +124,21 @@ class AmoCrmController extends BaseController
 
       
 
-        $leadsService = $crm->apiClient->leads();
-        $lead = new LeadModel();
-        $leadCustomFieldsValues = new CustomFieldsValuesCollection();
-        $textCustomFieldValueModel = new TextCustomFieldValuesModel();
-        $textCustomFieldValueModel->setFieldId($this->profitFieldId);
+        // $leadsService = $crm->apiClient->leads();
+        // $lead = new LeadModel();
+        // $leadCustomFieldsValues = new CustomFieldsValuesCollection();
+        // $textCustomFieldValueModel = new TextCustomFieldValuesModel();
+        // $textCustomFieldValueModel->setFieldId($this->profitFieldId);
      
 
       
-        $textCustomFieldValueModel->setValues(
-            (new TextCustomFieldValueCollection())
-                ->add((new TextCustomFieldValueModel())->setValue($profit))
-        );
-        $leadCustomFieldsValues->add($textCustomFieldValueModel);
-        $lead->setCustomFieldsValues($leadCustomFieldsValues);
-        $lead->setId($updateId);
+        // $textCustomFieldValueModel->setValues(
+        //     (new TextCustomFieldValueCollection())
+        //         ->add((new TextCustomFieldValueModel())->setValue($profit))
+        // );
+        // $leadCustomFieldsValues->add($textCustomFieldValueModel);
+        // $lead->setCustomFieldsValues($leadCustomFieldsValues);
+        // $lead->setId($updateId);
 
 
 
@@ -150,15 +149,15 @@ class AmoCrmController extends BaseController
       
 
 
-        try {
-            $lead = $leadsService->updateOne($lead);
+        // try {
+        //     $lead = $leadsService->updateOne($lead);
 
-            Log::info('Запрос к хуку');
+        //     Log::info('Запрос к хуку');
 
-        } catch (AmoCRMApiException $e) {
-            dd($e);
-            die;
-        }
+        // } catch (AmoCRMApiException $e) {
+        //     dd($e);
+        //     die;
+        // }
 
 
          
