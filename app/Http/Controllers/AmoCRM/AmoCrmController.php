@@ -80,9 +80,8 @@ class AmoCrmController extends BaseController
         $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
 
 
-       
 
-        if ($lastRequestTime == null || !array_key_exists($lastRequestTime[$accountId], $lastRequestTime)) {
+        if (!$lastRequestTime || !array_key_exists($accountId, $lastRequestTime)) {
             $lastRequestTime[$accountId] = time() + 3;
             Log::info('im in if block');
             Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
