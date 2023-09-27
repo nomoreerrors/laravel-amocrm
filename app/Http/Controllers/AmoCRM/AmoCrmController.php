@@ -106,9 +106,6 @@ class AmoCrmController extends BaseController
 
 
         
- 
-        
-
 
         if((int)($state) !== (int)($this->config['state'])) {
             throw new Exception('Неверный state в параметре запроса webhook');
@@ -139,18 +136,13 @@ class AmoCrmController extends BaseController
         $lead->setId($updateId);
 
 
-
-        
-
-
         
       
 
 
         try {
-            $lead = $leadsService->updateOne($lead);
+            // $lead = $leadsService->updateOne($lead);
             $lastRequestTime[$accountId] = time() + 10;
-            dd($lastRequestTime[$accountId], time());
             Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
             Log::info('Запрос к хуку');
 
