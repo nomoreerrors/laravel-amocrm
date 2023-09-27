@@ -84,21 +84,21 @@ class AmoCrmController extends BaseController
 
         $webHookHandler = new WebhookRequestHandler($data);
         $accountId = $webHookHandler->getAccount('id'); 
-        $primeCost = $webHookHandler->getCustomFieldsValues($this->primeCostFieldId); 
+        $primeCost = $webHookHandler->getCustomFieldsValues($this->primeCostFieldId)[0]['value']; 
         $price = $webHookHandler->getUpdate('price');
         $updateId = $webHookHandler->getUpdate('id');
         $profit = (int)$price - (int)$primeCost;
         $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
+        dd($price, $profit, $primeCost);
 
-        
 
         if($lastRequestTime && 
            array_key_exists($accountId, $lastRequestTime) &&
            $lastRequestTime[$accountId] >= time()) {
-           Log::info('Остановка цикла запросов. Слишком частые попытки обновить сделку '
-                                         . $lastRequestTime[$accountId] .' ' . time());
-            response('ok');
-            die;
+                Log::info('Остановка цикла запросов. Слишком частые попытки обновить сделку '
+                                            . $lastRequestTime[$accountId] .' ' . time());
+                response('ok');
+                die;
         }
 
         Log::info('exited from if');
