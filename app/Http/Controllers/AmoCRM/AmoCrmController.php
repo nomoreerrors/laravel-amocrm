@@ -81,9 +81,9 @@ class AmoCrmController extends BaseController
 
 
         if (!$lastRequestTime || !array_key_exists($lastRequestTime[$accountId], $lastRequestTime)) {
+            Log::info(['lastrequesttime inside if ' .$lastRequestTime]);
             $lastRequestTime[$accountId] = time() + 3;
             Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
-            Log::info('inside if');
         } 
         elseif((int)$lastRequestTime[$accountId] >= time()) {
                 response('ok');
