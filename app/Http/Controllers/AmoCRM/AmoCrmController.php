@@ -95,7 +95,7 @@ class AmoCrmController extends BaseController
         }
 
         Log::info('exited from if');
-        Log::info([$lastRequestTime[$accountId], ' ', time()]);
+        Log::info([$lastRequestTime[$accountId] . ' ' . time()]);
 
 
 
