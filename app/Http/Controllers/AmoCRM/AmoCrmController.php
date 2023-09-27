@@ -57,6 +57,7 @@ class AmoCrmController extends BaseController
   
 
 
+
     /**
      * Обработка входящих данных с webhook
      */
@@ -67,27 +68,41 @@ class AmoCrmController extends BaseController
 
         Log::info('Входящий запрос');
 
-        // dd($request);
 
-     
+       
         
 
         $data = $request->except('state');
         $state = $request->state;
         $webHookHandler = new WebhookRequestHandler($data);
         $primeCost = $webHookHandler->getCustomFieldsValue($this->primeCostFieldId);
-        $updated_at = (int)$webHookHandler->getUpdate('updated_at');
-        $price = $webHookHandler->getUpdate('price');
-        $id = $webHookHandler->getUpdate('id');
-        $profit = (int)$price - (int)$primeCost;
+        $accountId = $webHookHandler->getAccount('id');
+        $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
 
+
+        if (!$lastRequestTime || !array_key_exists($lastRequestTime[$accountId], $lastRequestTime)) {
+            $lastRequestTime[$accountId] = time() + 3;
+            Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
+        } 
+        elseif((int)$lastRequestTime[$accountId] >= time()) {
+                response('ok');
+                Log::info('Остановка цикла запросов. Слишком частые попытки обновить сделку '
+                                             . $lastRequestTime[$accountId] .' ' . time());
+
+                die;
+        }
         
 
-        if($updated_at && $updated_at >= time()) {
-            Log::info('Остановка цикла запросов. Слишком частые попытки обновить сделку ' . $updated_at . time());
-            response('ok');
-            die;
-        }
+
+
+
+        $price = $webHookHandler->getUpdate('price');
+        $updateId = $webHookHandler->getUpdate('id');
+        $profit = (int)$price - (int)$primeCost;
+
+
+        
+ 
         
 
 
@@ -100,7 +115,7 @@ class AmoCrmController extends BaseController
 
 
         
-        // dd($price, $id, $primeCost, $lastModified, $profit);
+
       
 
         $leadsService = $crm->apiClient->leads();
@@ -117,8 +132,8 @@ class AmoCrmController extends BaseController
         );
         $leadCustomFieldsValues->add($textCustomFieldValueModel);
         $lead->setCustomFieldsValues($leadCustomFieldsValues);
-        $lead->setId($id);
-        $lead->setUpdatedAt(time() + 5);
+        $lead->setId($updateId);
+
 
 
         
@@ -130,7 +145,7 @@ class AmoCrmController extends BaseController
 
         try {
             $lead = $leadsService->updateOne($lead);
-            Log::info([$lead->updated_at, time()]);
+
             Log::info('Запрос к хуку');
 
         } catch (AmoCRMApiException $e) {
