@@ -95,8 +95,10 @@ class AmoCrmController extends BaseController
         }
 
         Log::info('exited from if');
-        Log::info([$lastRequestTime[$accountId] . ' ' . time()]);
 
+        if($lastRequestTime && array_key_exists($accountId, $lastRequestTime)) {
+            Log::info($lastRequestTime[$accountId] . ' ' . time());
+        }
 
 
 
