@@ -86,12 +86,14 @@ class AmoCrmController extends BaseController
             Log::info('im in if block');
             Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
         } 
-        elseif((int)$lastRequestTime[$accountId] >= time()) {
-                response('ok');
-                Log::info('Остановка цикла запросов. Слишком частые попытки обновить сделку '
-                                             . $lastRequestTime[$accountId] .' ' . time());
 
-                return;
+
+        if((int)$lastRequestTime[$accountId] >= time()) {
+                Log::info('Остановка цикла запросов. Слишком частые попытки обновить сделку '
+                . $lastRequestTime[$accountId] .' ' . time());
+
+                response('ok');
+                die;
         }
 
 
