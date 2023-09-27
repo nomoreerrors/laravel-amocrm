@@ -14,6 +14,7 @@ use AmoCRM\Exceptions\AmoCRMApiException;
 use Exception;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\AmoCRM\BaseController;
+use ErrorException;
 use Illuminate\Support\Facades\Log;
 
 
@@ -68,22 +69,28 @@ class AmoCrmController extends BaseController
 
         Log::info('Входящий запрос');
 
-
+        
        
         
 
         $data = $request->except('state');
         $state = $request->state;
+
+
+        if((int)($state) !== (int)($this->config['state'])) {
+            throw new Exception('Неверный state в параметре запроса webhook');
+        }
+
+
         $webHookHandler = new WebhookRequestHandler($data);
-        $primeCost = $webHookHandler->getCustomFieldsValue($this->primeCostFieldId);
-        $accountId = strval($webHookHandler->getAccount('id'));
+        $accountId = $webHookHandler->getAccount('id'); 
+        $primeCost = $webHookHandler->getCustomFieldsValues($this->primeCostFieldId); 
+        $price = $webHookHandler->getUpdate('price');
+        $updateId = $webHookHandler->getUpdate('id');
+        $profit = (int)$price - (int)$primeCost;
         $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
 
-
-
-       
         
-
 
         if($lastRequestTime && 
            array_key_exists($accountId, $lastRequestTime) &&
@@ -96,22 +103,14 @@ class AmoCrmController extends BaseController
 
         Log::info('exited from if');
 
-        if($lastRequestTime && array_key_exists($accountId, $lastRequestTime)) {
-            Log::info($lastRequestTime[$accountId] . ' ' . time());
-        }
+        
 
 
-
-        $price = $webHookHandler->getUpdate('price');
-        $updateId = $webHookHandler->getUpdate('id');
-        $profit = (int)$price - (int)$primeCost;
-
+       
 
         
 
-        if((int)($state) !== (int)($this->config['state'])) {
-            throw new Exception('Неверный state в параметре запроса webhook');
-        }
+        
 
         $crm->connect($this->config);
         
@@ -144,7 +143,7 @@ class AmoCrmController extends BaseController
 
         try {
             $lead = $leadsService->updateOne($lead);
-            $lastRequestTime[$accountId] = time() + 10;
+            $lastRequestTime[$accountId] = time() + 3;
             Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
             Log::info('Запрос к хуку');
 

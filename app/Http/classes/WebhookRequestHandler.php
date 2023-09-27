@@ -4,10 +4,11 @@ namespace App\Http\Classes;
 
 use App\Http\Classes\BaseRequestHandler;
 use Exception;
-
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 /**
- * Обработка полей полученных данных 
+ * Обработка полей полученных с webhook данных 
  */
 class WebhookRequestHandler extends BaseRequestHandler
 {   
@@ -30,90 +31,77 @@ class WebhookRequestHandler extends BaseRequestHandler
      * Возвращает всё поле - custom_fields или один из его объектов по id.
      *  @throws Exception
      */
-    public function getCustomFields(?int $id = null): array
+    public function getCustomFields()
     {   
-        
-        $c = $this->getFieldByName($this->data, 'custom_fields')['custom_fields'];
-
-        if(!$id) {
-            return $c;
-
-        } else {
-            $d = $this->getFieldById($c, $id);
-            return $d;
-        }
+        $result = Arr::get($this->data, 'leads.update.0.custom_fields');
+        return $result;
 
     }
     
 
     /**
-     * Возвращает update или один из его объектов по id/object id + key .
-     * @param int $id update field's nested array id
-     * @param string $key update field's nested array key
+     * Возвращает поле update или один из его объектов.
      * @throws Exception
      */
     public function getUpdate(?string $key = null): array | string
     {
-        $c = $this->getFieldByName($this->data, 'update')['update'][0];
-         
         if(!$key) {
-            return $c;
-        } 
-        elseif(array_key_exists($key, $c)) {
-                return $c[$key];
-        } 
-        else {
-            return false;
+            $result = Arr::get($this->data, 'leads.update' );
+            return $result;
         }
-        
-        
+        if($key) {
+            $result = Arr::get($this->data, 'leads.update.0.'.$key );
+            return $result;
+        };
+       
+
     }
 
     
-
     /**
-     * Возвращает поле webhook - leads.
+     * Возвращает поле leads из webhook object
      */
-    public function getLeads(): array
+    public function getLeads(): array 
     {       
-         $c = $this->getFieldByName($this->data, 'leads')['leads'];
-         if(!$c) {
-            throw new Exception('Поле Leads не существует');
-
-         } else {
-            return $c;
-         }
+           $result = Arr::get($this->data, 'leads');
+           return $result;
     }
 
 
 
+
     /**
-     * Возвращает поле webhook - update, или один из его элементов по ключу.
+     * Возвращает поле webhook - account.
      */
-    public function getAccount(?string $key = null): array | string 
+    public function getAccount(?string $key = ''): string | array
     {
-        $c = $this->getFieldByName($this->data, 'account')['account'];
-        if(!$key) {
-            return $c;
-        }
-        if(isset($c[$key])) {
-            return $c[$key];
-        }
-        else throw new Exception('Account не содержит объект с таким ключом');
+       if(!$key) {
+           $result = Arr::get($this->data, 'account');
+           return $result;
+       }
+       else {
+           $result = Arr::get($this->data, 'account.'.$key);
+           return $result;
+       }
+
     }
 
     
 
     /**
      * Возвращает значение custom_fields value объекта webhook
-     * @var int $id custom_fields object id
      * @throws Exception
      * @return string
      */
-    public function getCustomFieldsValue(int $id): string
+    public function getCustomFieldsValues(int $id): array
     {
-        $c = $this->getCustomFields($id)['values'][0]['value'];
-        return $c;
+        $c = Arr::get($this->data, 'leads.update.0.custom_fields');
+
+        foreach($c as $obj) {
+            if($obj['id'] == $id) {
+                return $obj['values'];
+            }
+        }
     }
 
      
