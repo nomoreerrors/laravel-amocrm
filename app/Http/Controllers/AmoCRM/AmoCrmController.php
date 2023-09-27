@@ -76,13 +76,15 @@ class AmoCrmController extends BaseController
         $state = $request->state;
         $webHookHandler = new WebhookRequestHandler($data);
         $primeCost = $webHookHandler->getCustomFieldsValue($this->primeCostFieldId);
-        $accountId = $webHookHandler->getAccount('id');
+        $accountId = strval($webHookHandler->getAccount('id'));
         $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
 
 
-        if (!$lastRequestTime || !array_key_exists($lastRequestTime[$accountId], $lastRequestTime)) {
-            Log::info(['lastrequesttime inside if ' .$lastRequestTime]);
+       
+
+        if ($lastRequestTime == null || !array_key_exists($lastRequestTime[$accountId], $lastRequestTime)) {
             $lastRequestTime[$accountId] = time() + 3;
+            Log::info('im in if block');
             Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
         } 
         elseif((int)$lastRequestTime[$accountId] >= time()) {
@@ -92,8 +94,11 @@ class AmoCrmController extends BaseController
 
                 die;
         }
-        
+
+
         Log::info('exited from if');
+
+
 
 
         $price = $webHookHandler->getUpdate('price');
