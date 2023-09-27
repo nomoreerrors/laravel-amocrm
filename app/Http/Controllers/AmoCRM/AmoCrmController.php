@@ -143,7 +143,7 @@ class AmoCrmController extends BaseController
 
 
         try {
-            // $lead = $leadsService->updateOne($lead);
+            $lead = $leadsService->updateOne($lead);
             $lastRequestTime[$accountId] = time() + 10;
             Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
             Log::info('Запрос к хуку');
