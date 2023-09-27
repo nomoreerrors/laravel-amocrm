@@ -89,7 +89,6 @@ class AmoCrmController extends BaseController
         $updateId = $webHookHandler->getUpdate('id');
         $profit = (int)$price - (int)$primeCost;
         $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
-        dd($price, $profit, $primeCost);
 
 
         if($lastRequestTime && 
