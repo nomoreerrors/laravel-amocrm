@@ -93,7 +93,7 @@ class AmoCrmController extends BaseController
                 die;
         }
         
-
+        Log::info('exited from if');
 
 
         $price = $webHookHandler->getUpdate('price');
