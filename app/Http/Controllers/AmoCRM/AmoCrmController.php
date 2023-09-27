@@ -91,7 +91,7 @@ class AmoCrmController extends BaseController
                 Log::info('Остановка цикла запросов. Слишком частые попытки обновить сделку '
                                              . $lastRequestTime[$accountId] .' ' . time());
 
-                die;
+                return;
         }
 
 
