@@ -88,8 +88,8 @@ class AmoCrmController extends BaseController
         } 
 
 
-        
-        if($lastRequestTime[$accountId] >= time()) {
+
+        elseif($lastRequestTime[$accountId] >= time()) {
             Log::info('Остановка цикла запросов. Слишком частые попытки обновить сделку '
                                          . $lastRequestTime[$accountId] .' ' . time());
             response('ok');
