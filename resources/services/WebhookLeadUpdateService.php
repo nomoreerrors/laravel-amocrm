@@ -143,7 +143,7 @@ class WebhookLeadUpdateService extends BaseWebhookService
 
         try {
             $lead = $leadsService->updateOne($lead);
-x
+
         } catch (AmoCRMApiException $e) {
             dd($e);
             die;
