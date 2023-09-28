@@ -12,7 +12,7 @@ class BaseWebhookService
     /**
      * Остановка цикла запросов с webhook
      */
-    public function checkRequestLimit(array $lastRequestTime, string $accountId)
+    public function checkRequestLimit(?array $lastRequestTime, string $accountId)
     {
          if($lastRequestTime && 
            array_key_exists($accountId, $lastRequestTime) &&
