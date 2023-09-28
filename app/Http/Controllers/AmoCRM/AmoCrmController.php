@@ -46,14 +46,12 @@ class AmoCrmController extends BaseController
      */
     public function getWebHookLeadUpdates(Request $request)
     {   
-         
         $data = $request->except('state');
 
         $webHookHandler = new WebhookLeadUpdateService($data);
         $accountId = $webHookHandler->getAccount('id'); 
-       
-
         $updateData = new stdClass();
+
 
         try {
         $updateData->primeCost = $webHookHandler->getCustomFieldsValues($this->primeCostFieldId)[0]['value']; 
