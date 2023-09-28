@@ -14,14 +14,7 @@ use App\Models\AmoCRM\BaseAmoCrmConnectionModel;
  */
 class AmoCrmConnectionModel extends BaseAmoCrmConnectionModel
 {
-    /** @var AmoCRMApiClient */
-    public $apiClient;
-
-    private $oAuthClient;
-    
-    private $accessToken;
-
-
+  
     
 
     public function connect($config): void

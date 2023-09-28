@@ -26,12 +26,15 @@ class WebhookLeadUpdateService extends BaseWebhookService
      * @var array
      */
     private array $data;
+    private $crm;
 
 
     
     public function __construct(array $data)
     {
         $this->data = $data;
+        $this->crm = new AmoCrmConnectionModel();
+        $this->crm->connect(new AmoCRMConfig());
     }
 
 
@@ -117,11 +120,10 @@ class WebhookLeadUpdateService extends BaseWebhookService
 
     public function updateProfitField(object $updateData): void
     {
-        $crm = new AmoCrmConnectionModel();
-        $crm->connect(new AmoCRMConfig());
+       
 
 
-        $leadsService = $crm->apiClient->leads();
+        $leadsService = $this->crm->apiClient->leads();
         $lead = new LeadModel();
         $leadCustomFieldsValues = new CustomFieldsValuesCollection();
         $textCustomFieldValueModel = new TextCustomFieldValuesModel();
