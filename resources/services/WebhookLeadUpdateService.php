@@ -1,16 +1,23 @@
 <?php
 
-namespace App\Http\Classes;
+namespace Resources\Services;
 
-use App\Http\Classes\BaseRequestHandler;
+use Resources\Services\BaseWebhookService;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use AmoCRM\Models\LeadModel;
+use AmoCRM\Collections\CustomFieldsValuesCollection;
+use AmoCRM\Models\CustomFieldsValues\TextCustomFieldValuesModel;
+use AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueCollection;
+use AmoCRM\Models\CustomFieldsValues\ValueModels\TextCustomFieldValueModel;
+use AmoCRM\Exceptions\AmoCRMApiException;
 
 /**
  * Обработка полей полученных с webhook данных 
  */
-class WebhookRequestHandler extends BaseRequestHandler
+class WebhookLeadUpdateService extends BaseWebhookService
 {   
     /**
      * Полученные данные с webhook.
@@ -103,10 +110,6 @@ class WebhookRequestHandler extends BaseRequestHandler
             }
         }
     }
-
-     
- 
-
 
 
 
