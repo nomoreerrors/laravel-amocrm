@@ -61,7 +61,7 @@ class AmoCrmController extends BaseController
         $updateData->updateId = $webHookHandler->getUpdate('id');
         } 
         catch(ErrorException $e) {
-            Log::info($e);
+            Log::info([$e->getMessage(), $e->getFile(), $e->getLine()]);
             response('ok');
             die;
         }
