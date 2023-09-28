@@ -26,9 +26,10 @@ class AmoCrmConnectionModel extends BaseAmoCrmConnectionModel
 
     public function connect($config): void
     {
-        $this->apiClient = new AmoCRMApiClient($config['client_id'], $config['client_secret'], $config['redirect_uri']);
+
+        $this->apiClient = new AmoCRMApiClient($config->client_id, $config->client_secret, $config->redirect_uri);
         $this->oAuthClient = $this->apiClient->getOAuthClient();
-        $this->apiOAuthRequest($config['baseDomain'], $config['auth_code']);
+        $this->apiOAuthRequest($config->baseDomain, $config->auth_code);
     }
 
 

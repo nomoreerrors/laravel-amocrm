@@ -26,7 +26,8 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "App\\Http\\Classes\\": "app/Http/classes"
+            "App\\Http\\Classes\\": "app/Http/classes",
+            "Resources\\Services\\" : "resources/services"
         }
           
     },

@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\AmoCRM\BaseController;
 use App\Http\classes\AmoCRMConfig;
 use Illuminate\Support\Facades\Log;
-
+use stdClass;
 
 class AmoCrmController extends BaseController
 {   
@@ -55,78 +55,24 @@ class AmoCrmController extends BaseController
          
         $data = $request->except('state');
 
-
         $webHookHandler = new WebhookLeadUpdateService($data);
         $accountId = $webHookHandler->getAccount('id'); 
-        $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
+        // $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
 
 
-        $webHookHandler->checkRequestLimit($lastRequestTime, $accountId);
-
-
-        $primeCost = $webHookHandler->getCustomFieldsValues($this->primeCostFieldId)[0]['value']; 
-        $price = $webHookHandler->getUpdate('price');
-        $updateId = $webHookHandler->getUpdate('id');
-        $profit = (int)$price - (int)$primeCost;
-        
-
-
-
-        // if($lastRequestTime && 
-        //    array_key_exists($accountId, $lastRequestTime) &&
-        //    $lastRequestTime[$accountId] >= time()) {
-        //         Log::info('Остановка цикла запросов. Слишком частые попытки обновить сделку '
-        //                                     . $lastRequestTime[$accountId] .' ' . time());
-        //         response('ok');
-        //         die;
-        // }
-
-
-        
-
-        $crm->connect(new AmoCRMConfig);
-        
-
-      
-
-        $leadsService = $crm->apiClient->leads();
-        $lead = new LeadModel();
-        $leadCustomFieldsValues = new CustomFieldsValuesCollection();
-        $textCustomFieldValueModel = new TextCustomFieldValuesModel();
-        $textCustomFieldValueModel->setFieldId($this->profitFieldId);
-     
-
-      
-        $textCustomFieldValueModel->setValues(
-            (new TextCustomFieldValueCollection())
-                ->add((new TextCustomFieldValueModel())->setValue($profit))
-        );
-        $leadCustomFieldsValues->add($textCustomFieldValueModel);
-        $lead->setCustomFieldsValues($leadCustomFieldsValues);
-        $lead->setId($updateId);
-
-
-        
-      
-
-
-        try {
-            $lead = $leadsService->updateOne($lead);
-            $lastRequestTime[$accountId] = time() + 3;
-            Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
-            Log::info('Запрос к хуку');
-
-        } catch (AmoCRMApiException $e) {
-            dd($e);
-            die;
-        }
-
-
-         
-
- 
- 
        
+
+        $updateData = new stdClass();
+        $updateData->primeCost = $webHookHandler->getCustomFieldsValues($this->primeCostFieldId)[0]['value']; 
+        $updateData->price = $webHookHandler->getUpdate('price');
+        $updateData->updateId = $webHookHandler->getUpdate('id');
+        $updateData->profit = (int)$updateData->price - (int)$updateData->primeCost;
+        $updateData->profitFieldId = $this->profitFieldId;
+        $updateData->accountId = $accountId;
+
+        
+        $webHookHandler->updateProfitField($updateData);
+        
         
     }
 }

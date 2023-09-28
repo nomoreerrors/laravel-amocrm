@@ -5,6 +5,7 @@ namespace Resources\Services;
 use Resources\Services\BaseWebhookService;
 use Exception;
 use Illuminate\Support\Arr;
+use App\Http\classes\AmoCRMConfig;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use AmoCRM\Models\LeadModel;
@@ -13,6 +14,7 @@ use AmoCRM\Models\CustomFieldsValues\TextCustomFieldValuesModel;
 use AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueCollection;
 use AmoCRM\Models\CustomFieldsValues\ValueModels\TextCustomFieldValueModel;
 use AmoCRM\Exceptions\AmoCRMApiException;
+use App\Models\AmoCRM\AmoCrmConnectionModel;
 
 /**
  * Обработка полей полученных с webhook данных 
@@ -109,6 +111,45 @@ class WebhookLeadUpdateService extends BaseWebhookService
                 return $obj['values'];
             }
         }
+    }
+
+
+
+    public function updateProfitField(object $updateData): void
+    {
+        $crm = new AmoCrmConnectionModel();
+        $crm->connect(new AmoCRMConfig());
+
+
+        $leadsService = $crm->apiClient->leads();
+        $lead = new LeadModel();
+        $leadCustomFieldsValues = new CustomFieldsValuesCollection();
+        $textCustomFieldValueModel = new TextCustomFieldValuesModel();
+        $textCustomFieldValueModel->setFieldId($updateData->profitFieldId);
+     
+      
+        $textCustomFieldValueModel->setValues(
+            (new TextCustomFieldValueCollection())
+                ->add((new TextCustomFieldValueModel())->setValue($updateData->profit))
+        );
+        $leadCustomFieldsValues->add($textCustomFieldValueModel);
+        $lead->setCustomFieldsValues($leadCustomFieldsValues);
+        $lead->setId($updateData->updateId);
+
+
+        
+      
+
+
+        try {
+            $lead = $leadsService->updateOne($lead);
+
+        } catch (AmoCRMApiException $e) {
+            dd($e);
+            die;
+        }
+
+
     }
 
 
