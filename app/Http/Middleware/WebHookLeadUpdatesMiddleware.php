@@ -32,13 +32,11 @@ class WebHookLeadUpdatesMiddleware
         $state = (new AmoCRMConfig)->state;
         $requestState = $request->state;
 
-        // self::$webHookHandler->checkUserRequestLimit($lastRequestTime, $accountId);
-        // 
-        // self::$webHookHandler->setGeneralRequestCount();
+        self::$webHookHandler->preventRequestInfiniteLoop($lastRequestTime, $accountId);
 
+        self::$webHookHandler->checkRequestLimitPerSecond();
      
 
-        
 
         /** Аутентификация webhook по state */
 
@@ -49,7 +47,6 @@ class WebHookLeadUpdatesMiddleware
         }
 
 
-
         /** Сохранить на сервере объект request */
         Storage::put('HOOK.txt', json_encode($request->all()));
         Log::info('Входящий запрос');
@@ -57,6 +54,9 @@ class WebHookLeadUpdatesMiddleware
 
         return $next($request);
     }
+
+
+
 
     /**
      * Выполнить после обработки и отправки данных

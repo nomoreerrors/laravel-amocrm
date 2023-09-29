@@ -12,34 +12,32 @@ class BaseWebhookService
 {
 
     /**
-     * Учет и ограничение общего количества запросов всех пользователей аккаунта
+     * Учет и ограничение общего количества запросов в секунду всех пользователей аккаунта
      */
-    public function setGeneralRequestCount(): void
+    public function checkRequestLimitPerSecond(): void
     {
        $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
+       $lastRequestTime['users_request_count'][] = time();
+       Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
 
-            $lastRequestTime['users_request_count'][] = time();
+
             $c = $lastRequestTime['users_request_count'];
-
+            $lastElementIndex = array_search(end($c), $c);
            
             
 
-            if(count($c) < 7) { 
-                Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
-            }
-
-            if(count($c) >= 7 && $c[6] - $c[0] < 10) {
+            if(count($c) >= 7 && $c[$lastElementIndex] - $c[$lastElementIndex - 6] < 2) {
                 Log::info('Слишком частые запросы к API от пользователей аккаунта');
-                dd($c);
                 response('ok');
                 die;
             } 
-            dd('here');
-            // elseif(count($c) >= 7) {
-            //     $lastRequestTime['users_request_count'] = [];
-            //     $lastRequestTime['users_request_count'][] = time();
-            //     Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
-            // }
+            
+           
+            if(count($c) >= 100) {
+                $lastRequestTime['users_request_count'] = [];
+                $lastRequestTime['users_request_count'][] = time();
+                Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
+            }
     
     }
 
@@ -47,7 +45,7 @@ class BaseWebhookService
     /**
      * Остановка цикла и ограничение кол-ва запросов к API
      */
-    public function checkUserRequestLimit(?array $lastRequestTime, string $accountId)
+    public function preventRequestInfiniteLoop(?array $lastRequestTime, string $accountId)
     {
          if($lastRequestTime && 
            array_key_exists($accountId, $lastRequestTime) &&
@@ -57,8 +55,6 @@ class BaseWebhookService
                 response('ok');
                 die;
         }
-  
-
     }
 
 
