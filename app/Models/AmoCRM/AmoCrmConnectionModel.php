@@ -2,9 +2,9 @@
 
 namespace App\Models\AmoCRM;
  
-use App\Http\classes\AccessTokenHandler;
 use AmoCRM\Client\AmoCRMApiClient;
 use AmoCRM\OAuth\AmoCRMOAuth;
+use App\Http\classes\AmoCRMRepository;
 use League\OAuth2\Client\Token\AccessToken;
 use App\Models\AmoCRM\BaseAmoCrmConnectionModel;
 
@@ -31,8 +31,7 @@ class AmoCrmConnectionModel extends BaseAmoCrmConnectionModel
     {
         
         $this->apiClient->setAccountBaseDomain($baseDomain);
-        $a = AccessTokenHandler::getTokenFromStorage();
-        // dd($a);
+        $a = AmoCRMRepository::getTokenFromStorage();
         if(!$a) {
             $this->accessToken = $this->apiClient
                                       ->getOAuthClient()
@@ -47,11 +46,11 @@ class AmoCrmConnectionModel extends BaseAmoCrmConnectionModel
         $this->apiClient->setAccessToken($this->accessToken)
                   ->onAccessTokenRefresh(
                     function (AccessToken $accessToken, string $baseDomain) {
-                        AccessTokenHandler::saveTokenToStorage($accessToken, $baseDomain);
+                        AmoCRMRepository::saveTokenToStorage($accessToken, $baseDomain);
                     });
  
         if(!$a) {
-         AccessTokenHandler::saveTokenToStorage($this->accessToken, $baseDomain);
+            AmoCRMRepository::saveTokenToStorage($this->accessToken, $baseDomain);
         }
             
     }

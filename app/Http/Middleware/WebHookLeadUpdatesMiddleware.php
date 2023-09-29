@@ -31,21 +31,27 @@ class WebHookLeadUpdatesMiddleware
 
         self::$webHookHandler->checkRequestLimit($lastRequestTime, $accountId);
 
+
+
         if((int)($requestState) !== (int)$state) {
+            response('ok');
             throw new Exception('Неверный state в параметре запроса webhook' . __CLASS__);
+            die;
         }
 
-         /** Сохранить на сервере объект request */
-         Storage::put('HOOK.txt', json_encode($request->all()));
-         Log::info('Входящий запрос');
+
+
+        /** Сохранить на сервере объект request */
+        Storage::put('HOOK.txt', json_encode($request->all()));
+        Log::info('Входящий запрос');
          
 
-         
-         
         return $next($request);
     }
 
-
+    /**
+     * Выполнить после обработки и отправки данных
+     */
     public function terminate():void
     {
 

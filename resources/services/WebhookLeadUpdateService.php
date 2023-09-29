@@ -14,7 +14,10 @@ use AmoCRM\Models\CustomFieldsValues\TextCustomFieldValuesModel;
 use AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueCollection;
 use AmoCRM\Models\CustomFieldsValues\ValueModels\TextCustomFieldValueModel;
 use AmoCRM\Exceptions\AmoCRMApiException;
+use App\Http\classes\AmoCRMRepository;
+use ErrorException;
 use App\Models\AmoCRM\AmoCrmConnectionModel;
+use stdClass;
 
 /**
  * Обработка полей полученных с webhook данных 
@@ -27,14 +30,16 @@ class WebhookLeadUpdateService extends BaseWebhookService
      */
     private array $data;
     private $crm;
+    private $CrmRepository;
+
 
 
     
     public function __construct(array $data)
     {
         $this->data = $data;
-        $this->crm = new AmoCrmConnectionModel();
-        $this->crm->connect(new AmoCRMConfig());
+        $this->CrmRepository = new AmoCRMRepository();
+
     }
 
 
@@ -118,38 +123,28 @@ class WebhookLeadUpdateService extends BaseWebhookService
 
 
 
-    public function updateProfitField(object $updateData): void
+    public function updateProfitField(int $primeCostFieldId, int $profitFieldId): void
     {
+        $accountId = $this->getAccount('id'); 
        
 
-
-        $leadsService = $this->crm->apiClient->leads();
-        $lead = new LeadModel();
-        $leadCustomFieldsValues = new CustomFieldsValuesCollection();
-        $textCustomFieldValueModel = new TextCustomFieldValuesModel();
-        $textCustomFieldValueModel->setFieldId($updateData->profitFieldId);
-     
-      
-        $textCustomFieldValueModel->setValues(
-            (new TextCustomFieldValueCollection())
-                ->add((new TextCustomFieldValueModel())->setValue($updateData->profit))
-        );
-        $leadCustomFieldsValues->add($textCustomFieldValueModel);
-        $lead->setCustomFieldsValues($leadCustomFieldsValues);
-        $lead->setId($updateData->updateId);
-
-
-        
-      
-
-
         try {
-            $lead = $leadsService->updateOne($lead);
-
-        } catch (AmoCRMApiException $e) {
-            dd($e);
+        $primeCost = $this->getCustomFieldsValues($primeCostFieldId)[0]['value']; 
+        $price = $this->getUpdate('price');
+        $updateId = $this->getUpdate('id');
+        } 
+        catch(ErrorException $e) {
+            Log::info([$e->getMessage(), $e->getFile(), $e->getLine()]);
+            response('ok');
             die;
         }
+        
+        
+        $profit = (int)$price - (int)$primeCost;
+        $profitFieldId = $profitFieldId;
+        $accountId = $accountId;
+        
+        $this->CrmRepository->setValue($primeCostFieldId, $profit, $updateId);
 
 
     }

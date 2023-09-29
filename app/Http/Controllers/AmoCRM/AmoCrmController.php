@@ -44,34 +44,14 @@ class AmoCrmController extends BaseController
     /**
      * Обработка входящих данных с webhook
      */
-    public function getWebHookLeadUpdates(Request $request)
+    protected function getWebHookLeadUpdates(Request $request)
     {   
         $data = $request->except('state');
 
         $webHookHandler = new WebhookLeadUpdateService($data);
-        $accountId = $webHookHandler->getAccount('id'); 
-        $updateData = new stdClass();
-
-
-        try {
-        $updateData->primeCost = $webHookHandler->getCustomFieldsValues($this->primeCostFieldId)[0]['value']; 
-        $updateData->price = $webHookHandler->getUpdate('price');
-        $updateData->updateId = $webHookHandler->getUpdate('id');
-        } 
-        catch(ErrorException $e) {
-            Log::info([$e->getMessage(), $e->getFile(), $e->getLine()]);
-            response('ok');
-            die;
-        }
-        
-        
-        $updateData->profit = (int)$updateData->price - (int)$updateData->primeCost;
-        $updateData->profitFieldId = $this->profitFieldId;
-        $updateData->accountId = $accountId;
-
-        
-        $webHookHandler->updateProfitField($updateData);
-        
-        
+        $webHookHandler->updateProfitField($this->primeCostFieldId, $this->profitFieldId);
+         //добавить счетчик запросов для каждого пользователя
+        //Не более 7-и в секунду
+       
     }
 }

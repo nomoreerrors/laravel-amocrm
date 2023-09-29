@@ -2,19 +2,67 @@
 
 namespace App\Http\classes;
 
-use Exception;
+use App\Models\AmoCRM\AmoCrmConnectionModel;
+use AmoCRM\Models\LeadModel;
+use AmoCRM\Collections\CustomFieldsValuesCollection;
+use AmoCRM\Models\CustomFieldsValues\TextCustomFieldValuesModel;
+use AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueCollection;
+use AmoCRM\Models\CustomFieldsValues\ValueModels\TextCustomFieldValueModel;
+use AmoCRM\Exceptions\AmoCRMApiException;
 use Illuminate\Support\Facades\Storage;
 use League\OAuth2\Client\Token\AccessToken;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
+use App\Http\classes\BaseCRMRepository;
 
 
-class AccessTokenHandler extends AccessToken
-
-/**
- * Put token to Laravel storage
- */
+class AmoCRMRepository extends BaseCRMRepository
 {
+
+    private $crm;
+
+    
+    public function __construct()
+    {
+        $this->crm = new AmoCrmConnectionModel();
+        $this->crm->connect(new AmoCRMConfig());
+    }
+
+
+
+
+    public function setValue(int $fieldId, int $value, string $updateFieldId)
+    {
+        $leadsService = $this->crm->apiClient->leads();
+        $lead = new LeadModel();
+        $leadCustomFieldsValues = new CustomFieldsValuesCollection();
+        $textCustomFieldValueModel = new TextCustomFieldValuesModel();
+        $textCustomFieldValueModel->setFieldId($fieldId);
+     
+      
+        $textCustomFieldValueModel->setValues(
+            (new TextCustomFieldValueCollection())
+                ->add((new TextCustomFieldValueModel())->setValue($value))
+        );
+        $leadCustomFieldsValues->add($textCustomFieldValueModel);
+        $lead->setCustomFieldsValues($leadCustomFieldsValues);
+        $lead->setId($updateFieldId);
+
+
+
+        try {
+            $lead = $leadsService->updateOne($lead);
+
+        } catch (AmoCRMApiException $e) {
+            dd($e);
+            die;
+        }
+    }
+
+
+
+    /**
+     * Save token to Laravel storage
+     */
     public static function saveTokenToStorage(AccessToken $accessToken, string $baseDomain): void
     {
         if (
@@ -32,7 +80,6 @@ class AccessTokenHandler extends AccessToken
                 ]
                 ));
 
-            // echo 'Token is saved';
             
         } else {
             exit('Invalid access token ' . var_export($accessToken, true));
@@ -61,7 +108,7 @@ class AccessTokenHandler extends AccessToken
             && isset($accessToken['expires'])
             && isset($accessToken['baseDomain'])
         ) {
-            return new AccessTokenHandler([
+            return new AccessToken([
                 'access_token' => $accessToken['accessToken'],
                 'refresh_token' => $accessToken['refreshToken'],
                 'expires' => $accessToken['expires'],
@@ -75,4 +122,3 @@ class AccessTokenHandler extends AccessToken
         }
     }
 }
-
