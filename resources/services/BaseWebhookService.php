@@ -16,9 +16,11 @@ class BaseWebhookService
      */
     public function checkRequestLimitPerSecond(): void
     {
+
        $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
        $lastRequestTime['users_request_count'][] = time();
        Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
+
 
 
             $c = $lastRequestTime['users_request_count'];
@@ -50,8 +52,8 @@ class BaseWebhookService
          if($lastRequestTime && 
            array_key_exists($accountId, $lastRequestTime) &&
            $lastRequestTime[$accountId] >= time()) {
-                Log::info('Остановка цикла запросов'
-                                            . $lastRequestTime[$accountId] .' ' . time());
+                Log::info('Остановка цикла запросов.
+                 Время предыдущего запроса: '. $lastRequestTime[$accountId] .' Новый запрос' . time());
                 response('ok');
                 die;
         }

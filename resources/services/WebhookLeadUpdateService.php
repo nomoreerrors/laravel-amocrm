@@ -5,19 +5,11 @@ namespace Resources\Services;
 use Resources\Services\BaseWebhookService;
 use Exception;
 use Illuminate\Support\Arr;
-use App\Http\classes\AmoCRMConfig;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
-use AmoCRM\Models\LeadModel;
-use AmoCRM\Collections\CustomFieldsValuesCollection;
-use AmoCRM\Models\CustomFieldsValues\TextCustomFieldValuesModel;
-use AmoCRM\Models\CustomFieldsValues\ValueCollections\TextCustomFieldValueCollection;
-use AmoCRM\Models\CustomFieldsValues\ValueModels\TextCustomFieldValueModel;
-use AmoCRM\Exceptions\AmoCRMApiException;
+
 use App\Http\classes\AmoCRMRepository;
 use ErrorException;
-use App\Models\AmoCRM\AmoCrmConnectionModel;
-use stdClass;
+
 
 /**
  * Обработка полей полученных с webhook данных 
