@@ -25,7 +25,7 @@ class WebHookLeadUpdatesMiddleware
     {   
 
         /** Проверка и обновление времени последнего запроса пользователя */
-
+       
         self::$webHookHandler = new WebhookLeadUpdateService($request->except('state'));
         $accountId = self::$webHookHandler->getAccount('id'); 
         $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
@@ -46,7 +46,7 @@ class WebHookLeadUpdatesMiddleware
             die;
         }
 
-
+        
         /** Сохранить на сервере объект request */
         Storage::put('HOOK.txt', json_encode($request->all()));
         Log::info('Входящий запрос');

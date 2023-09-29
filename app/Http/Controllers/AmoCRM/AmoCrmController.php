@@ -46,7 +46,7 @@ class AmoCrmController extends BaseController
         $data = $request->except('state');
 
         $webHookHandler = new WebhookLeadUpdateService($data);
-        // $webHookHandler->updateProfitField($this->primeCostFieldId, $this->profitFieldId);
+        $webHookHandler->updateProfitField($this->primeCostFieldId, $this->profitFieldId);
        
     }
 }
