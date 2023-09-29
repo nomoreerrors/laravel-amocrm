@@ -143,8 +143,8 @@ class WebhookLeadUpdateService extends BaseWebhookService
         $profit = (int)$price - (int)$primeCost;
         $profitFieldId = $profitFieldId;
         $accountId = $accountId;
-        
-        $this->CrmRepository->setValue($profitFieldId, $profit, $updateId);
+        dd('here');
+        $this->CrmRepository->setCustomFieldsValue($profitFieldId, $profit, $updateId);
 
 
     }

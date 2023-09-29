@@ -7,10 +7,7 @@ use Illuminate\Http\Request;
 use Resources\Services\WebhookLeadUpdateService;
 use App\Http\Controllers\AmoCRM\BaseController;
 use App\Http\classes\AmoCRMConfig;
-use ErrorException;
-use Exception;
-use Illuminate\Support\Facades\Log;
-use stdClass;
+
 
 class AmoCrmController extends BaseController
 {   
@@ -49,9 +46,7 @@ class AmoCrmController extends BaseController
         $data = $request->except('state');
 
         $webHookHandler = new WebhookLeadUpdateService($data);
-        $webHookHandler->updateProfitField($this->primeCostFieldId, $this->profitFieldId);
-         //добавить счетчик запросов для каждого пользователя
-        //Не более 7-и в секунду
+        // $webHookHandler->updateProfitField($this->primeCostFieldId, $this->profitFieldId);
        
     }
 }

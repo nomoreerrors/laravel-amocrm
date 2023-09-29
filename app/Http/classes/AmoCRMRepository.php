@@ -30,7 +30,7 @@ class AmoCRMRepository extends BaseCRMRepository
 
 
 
-    public function setValue(int $fieldId, int $value, string $updateFieldId)
+    public function setCustomFieldsValue(int $fieldId, int $value, string $updateFieldId)
     {
         $leadsService = $this->crm->apiClient->leads();
         $lead = new LeadModel();

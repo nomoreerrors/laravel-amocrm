@@ -23,15 +23,24 @@ class WebHookLeadUpdatesMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {   
+
+        /** Проверка и обновление времени последнего запроса пользователя */
+
         self::$webHookHandler = new WebhookLeadUpdateService($request->except('state'));
         $accountId = self::$webHookHandler->getAccount('id'); 
         $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
         $state = (new AmoCRMConfig)->state;
         $requestState = $request->state;
 
-        self::$webHookHandler->checkRequestLimit($lastRequestTime, $accountId);
+        // self::$webHookHandler->checkUserRequestLimit($lastRequestTime, $accountId);
+        // 
+        // self::$webHookHandler->setGeneralRequestCount();
 
+     
 
+        
+
+        /** Аутентификация webhook по state */
 
         if((int)($requestState) !== (int)$state) {
             response('ok');
