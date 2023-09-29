@@ -63,10 +63,6 @@ class WebHookLeadUpdatesMiddleware
      */
     public function terminate():void
     {
-
-        $accountId = self::$webHookHandler->getAccount('id');
-        $lastRequestTime[$accountId] = time() + 3;
-        Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
         Log::info('Успешный запрос к хуку');
     }
 }

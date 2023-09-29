@@ -16,11 +16,9 @@ class BaseWebhookService
      */
     public function checkRequestLimitPerSecond(): void
     {
-
-       $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
-       $lastRequestTime['users_request_count'][] = time();
-       Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
-
+        $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
+        $lastRequestTime['users_request_count'][] = time();
+        Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
 
 
             $c = $lastRequestTime['users_request_count'];
@@ -56,7 +54,10 @@ class BaseWebhookService
                  Время предыдущего запроса: '. $lastRequestTime[$accountId] .' Новый запрос' . time());
                 response('ok');
                 die;
-        }
+         }
+         
+         $lastRequestTime[$accountId] = time() + 3;
+         Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
     }
 
 
