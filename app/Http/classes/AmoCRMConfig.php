@@ -17,6 +17,7 @@ class AmoCRMConfig
 
     public function __construct()
     {
+
         $this->baseDomain = env('AMOCRM_BASE_DOMAIN');
         $this->client_id = env('AMOCRM_CLIENT_ID');
         $this->client_secret = env('AMOCRM_CLIENT_SECRET');
