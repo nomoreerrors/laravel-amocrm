@@ -56,11 +56,20 @@ class WebhookLeadUpdateService extends BaseWebhookService
     {
         if(!$key) {
             $result = Arr::get($this->data, 'leads.update' );
-            return $result;
+            if($result) {
+                return $result;
+            }
+            else throw new ErrorException('Ключ Update не найден');
         }
+
+
         if($key) {
             $result = Arr::get($this->data, 'leads.update.0.'.$key );
-            return $result;
+            if($result) {
+                return $result;
+            }
+            else throw new ErrorException('Ключ не найден');
+           
         };
        
 
@@ -90,7 +99,14 @@ class WebhookLeadUpdateService extends BaseWebhookService
        }
        else {
            $result = Arr::get($this->data, 'account.'.$key);
-           return $result;
+           if($result) {
+                return $result;
+           }
+           else {
+                Log::info('Поле value  не найдено. ', [__CLASS__, __LINE__]);
+                return null;
+           }
+           
        }
 
     }
@@ -98,18 +114,23 @@ class WebhookLeadUpdateService extends BaseWebhookService
     
 
     /**
-     * Возвращает значение custom_fields value объекта webhook
+     * Возвращает значение custom_fields value объекта webhook по id кастомного поля
      * @throws Exception
      * @return string
      */
-    public function getCustomFieldsValues(int $id): array
+    public function getCustomFieldValue(int $id): string | null
     {
         $c = Arr::get($this->data, 'leads.update.0.custom_fields');
 
         foreach($c as $obj) {
             if($obj['id'] == $id) {
-                return $obj['values'];
+                return $obj['values'][0]['value'];
             }
+            
+            else {
+                Log::info('Поле value  не найдено. ', [__CLASS__, __LINE__]);
+                return null;
+            } 
         }
 
     }
@@ -123,23 +144,15 @@ class WebhookLeadUpdateService extends BaseWebhookService
         $accountId = $this->getAccount('id'); 
        
 
-        try {
-        $primeCost = $this->getCustomFieldsValues($primeCostFieldId)[0]['value']; 
+        $primeCost = $this->getCustomFieldValue($primeCostFieldId); 
         $price = $this->getUpdate('price');
         $updateId = $this->getUpdate('id');
-        } 
-        catch(ErrorException $e) {
-            Log::info([$e->getMessage(), $e->getFile(), $e->getLine()]);
-            Log::info([$primeCost, $price, $updateId]);
-            response('ok');
-            die;
-        }
-        
-        
+
+        Log::info('Переменные: ', [$primeCost, $price, $updateId]);
         $profit = (int)$price - (int)$primeCost;
         $profitFieldId = $profitFieldId;
         $accountId = $accountId;
-
+        dd('trying to setcustomfieldsvalue at the end');
         $this->CrmRepository->setCustomFieldsValue($profitFieldId, $profit, $updateId);
 
 
