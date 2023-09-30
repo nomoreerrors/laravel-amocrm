@@ -50,8 +50,9 @@ class BaseWebhookService
          if($lastRequestTime && 
            array_key_exists($accountId, $lastRequestTime) &&
            $lastRequestTime[$accountId] >= time()) {
-                Log::info('Остановка цикла запросов.
-                 Время предыдущего запроса: '. $lastRequestTime[$accountId] .' Новый запрос: ' . time());
+                Log::info('Остановка цикла запросов. 
+                Время предыдущего запроса: '. $lastRequestTime[$accountId] .' Новый запрос: ' . time()
+                . __CLASS__ . __LINE__);
                 response('ok');
                 die;
          }

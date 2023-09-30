@@ -120,8 +120,9 @@ class WebhookLeadUpdateService extends BaseWebhookService
      */
     public function getCustomFieldValue(int $id): string | null
     {
+        Log::info('first C: ', [$this->data, 'leads.update.0.custom_fields']);
         $c = Arr::get($this->data, 'leads.update.0.custom_fields');
-
+        Log::info($c);
         foreach($c as $obj) {
             if($obj['id'] == $id) {
                 return $obj['values'][0]['value'];
