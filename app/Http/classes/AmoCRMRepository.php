@@ -28,9 +28,14 @@ class AmoCRMRepository extends BaseCRMRepository
     }
 
 
-
-
-    public function setCustomFieldsValue(int $fieldId, int $value, string $updateFieldId)
+    /**
+     * Подготовка поля value и отправка в AmoCRM
+     * @param int $fieldId - id кастомного поля
+     * @param int $value - желаемое значение кастомного поля
+     * @param int $leadId - id сделки
+     * @throws AmoCRMApiException
+     */
+    public function setCustomFieldsValue(int $fieldId, int $value, string $leadId)
     {
         $leadsService = $this->crm->apiClient->leads();
         $lead = new LeadModel();
@@ -45,7 +50,7 @@ class AmoCRMRepository extends BaseCRMRepository
         );
         $leadCustomFieldsValues->add($textCustomFieldValueModel);
         $lead->setCustomFieldsValues($leadCustomFieldsValues);
-        $lead->setId($updateFieldId);
+        $lead->setId($leadId);
 
 
         try {

@@ -21,7 +21,6 @@ class WebhookLeadUpdateService extends BaseWebhookService
      * @var array
      */
     private array $data;
-    private $crm;
     private $CrmRepository;
 
 
@@ -49,35 +48,32 @@ class WebhookLeadUpdateService extends BaseWebhookService
     
 
     /**
-     * Возвращает поле update или один из его объектов.
+     * Возвращает объект leads->update/add по ключу.
      * @throws Exception
      */
-    public function getUpdate(?string $key = null): array | string
+    public function getKeyFromLeads(?string $key = null): array | string
     {
+        $c = $this->checkIfUpdateFieldExists();
+
         if(!$key) {
-            $result = Arr::get($this->data, 'leads.update' );
+            $result = Arr::get($this->data, 'leads.'.$c );
             if($result) {
                 return $result;
             }
-            else throw new ErrorException('Ключ Update не найден');
+            else throw new ErrorException('Ключ update или add не найден');
         }
 
-
-        if($key) {
-            $result = Arr::get($this->data, 'leads.update.0.'.$key );
+            $result = Arr::get($this->data, 'leads.'.$c.'.0.'.$key );
             if($result) {
                 return $result;
             }
             else throw new ErrorException('Ключ не найден');
-           
-        };
-       
 
     }
 
     
     /**
-     * Возвращает поле leads из webhook object
+     * Возвращает массив leads из webhook
      */
     public function getLeads(): array 
     {       
@@ -89,7 +85,7 @@ class WebhookLeadUpdateService extends BaseWebhookService
 
 
     /**
-     * Возвращает поле webhook - account.
+     * Возвращает массив webhook - account.
      */
     public function getAccount(?string $key = ''): string | array
     {
@@ -106,13 +102,22 @@ class WebhookLeadUpdateService extends BaseWebhookService
                 Log::info('Поле value  не найдено. ', [__CLASS__, __LINE__]);
                 return null;
            }
-           
        }
-
     }
 
-    
 
+    /**
+     * Проверяем - создана сделка или обновлена
+     * @return string update/add
+     */
+    private function checkIfUpdateFieldExists(): string
+    {   
+        Arr::get($this->data, 'leads.update') ? $result = 'update' : $result = 'add';
+        return $result;
+    }
+
+
+    
     /**
      * Возвращает значение custom_fields value объекта webhook по id кастомного поля
      * @throws Exception
@@ -120,10 +125,11 @@ class WebhookLeadUpdateService extends BaseWebhookService
      */
     public function getCustomFieldValue(int $id): string | null
     {
+        $result = $this->checkIfUpdateFieldExists();
+        $d = Arr::get($this->data, 'leads.'.$result.'.0.custom_fields');
 
-        $c = Arr::get($this->data, 'leads.update.0.custom_fields');
 
-        foreach($c as $obj) {
+        foreach($d as $obj) {
             if($obj['id'] == $id) {
                 return $obj['values'][0]['value'];
             }
@@ -146,15 +152,15 @@ class WebhookLeadUpdateService extends BaseWebhookService
        
 
         $primeCost = $this->getCustomFieldValue($primeCostFieldId); 
-        $price = $this->getUpdate('price');
-        $updateId = $this->getUpdate('id');
+        $price = $this->getKeyFromLeads('price');
+        $leadId = $this->getKeyFromLeads('id');
 
-        Log::info('Переменные: ', [$primeCost, $price, $updateId]);
+        Log::info('Переменные: ', [$primeCost, $price, $leadId]);
         $profit = (int)$price - (int)$primeCost;
         $profitFieldId = $profitFieldId;
         $accountId = $accountId;
-        dd('trying to setcustomfieldsvalue at the end');
-        $this->CrmRepository->setCustomFieldsValue($profitFieldId, $profit, $updateId);
+        
+        $this->CrmRepository->setCustomFieldsValue($profitFieldId, $profit, $leadId);
 
 
     }
