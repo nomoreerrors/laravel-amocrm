@@ -51,11 +51,11 @@ class BaseWebhookService
            array_key_exists($accountId, $lastRequestTime) &&
            $lastRequestTime[$accountId] >= time()) {
                 Log::info('Остановка цикла запросов.
-                 Время предыдущего запроса: '. $lastRequestTime[$accountId] .' Новый запрос' . time());
+                 Время предыдущего запроса: '. $lastRequestTime[$accountId] .' Новый запрос: ' . time());
                 response('ok');
                 die;
          }
-         
+
          $lastRequestTime[$accountId] = time() + 3;
          Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
     }

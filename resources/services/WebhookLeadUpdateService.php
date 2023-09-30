@@ -111,10 +111,13 @@ class WebhookLeadUpdateService extends BaseWebhookService
                 return $obj['values'];
             }
         }
+
     }
 
 
-
+    /**
+     * Обновить поле "Себестоимость".
+     */
     public function updateProfitField(int $primeCostFieldId, int $profitFieldId): void
     {
         $accountId = $this->getAccount('id'); 
@@ -127,6 +130,7 @@ class WebhookLeadUpdateService extends BaseWebhookService
         } 
         catch(ErrorException $e) {
             Log::info([$e->getMessage(), $e->getFile(), $e->getLine()]);
+            Log::info([$primeCost, $price, $updateId]);
             response('ok');
             die;
         }
