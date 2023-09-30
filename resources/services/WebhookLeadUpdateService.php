@@ -145,6 +145,8 @@ class WebhookLeadUpdateService extends BaseWebhookService
 
     /**
      * Обновить поле "Себестоимость".
+     * @param int $primeCostFieldId id поля "себестоимость"
+     * @param int $primeCostFieldId id поля "прибыль"
      */
     public function updateProfitField(int $primeCostFieldId, int $profitFieldId): void
     {
@@ -159,7 +161,7 @@ class WebhookLeadUpdateService extends BaseWebhookService
         $profit = (int)$price - (int)$primeCost;
         $profitFieldId = $profitFieldId;
         $accountId = $accountId;
-        
+
         $this->CrmRepository->setCustomFieldsValue($profitFieldId, $profit, $leadId);
 
 

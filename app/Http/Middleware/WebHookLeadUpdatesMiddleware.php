@@ -23,7 +23,13 @@ class WebHookLeadUpdatesMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {   
+        
+        /** Сохранить на сервере объект request */
+        Storage::put('HOOK.txt', json_encode($request->all()));
+        Log::info('Входящий запрос');
 
+
+        
         /** Проверка и обновление времени последнего запроса пользователя */
        
         self::$webHookHandler = new WebhookLeadUpdateService($request->except('state'));
@@ -47,9 +53,7 @@ class WebHookLeadUpdatesMiddleware
         }
 
         
-        /** Сохранить на сервере объект request */
-        Storage::put('HOOK.txt', json_encode($request->all()));
-        Log::info('Входящий запрос');
+      
          
 
         return $next($request);
