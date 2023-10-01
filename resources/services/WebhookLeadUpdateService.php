@@ -21,7 +21,7 @@ class WebhookLeadUpdateService extends BaseWebhookService
      * @var array
      */
     private array $data;
-    private $CrmRepository;
+    private $crmRepository;
 
 
 
@@ -29,7 +29,7 @@ class WebhookLeadUpdateService extends BaseWebhookService
     public function __construct(array $data)
     {
         $this->data = $data;
-        $this->CrmRepository = new AmoCRMRepository();
+        $this->crmRepository = new AmoCRMRepository();
 
     }
 
@@ -161,7 +161,7 @@ class WebhookLeadUpdateService extends BaseWebhookService
         $profitFieldId = $profitFieldId;
         $accountId = $accountId;
 
-        $this->CrmRepository->setCustomFieldsValue($profitFieldId, $profit, $leadId);
+        $this->crmRepository->setCustomFieldsValue($profitFieldId, $profit, $leadId);
 
 
     }

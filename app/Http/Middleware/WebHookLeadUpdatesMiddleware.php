@@ -24,6 +24,7 @@ class WebHookLeadUpdatesMiddleware
     public function handle(Request $request, Closure $next): Response
     {   
         
+        
         /** Сохранить на сервере объект request */
         Storage::put('HOOK.txt', json_encode($request->all()));
         Log::info('Входящий запрос', [__CLASS__, __LINE__]);
@@ -38,19 +39,22 @@ class WebHookLeadUpdatesMiddleware
         $state = (new AmoCRMConfig)->state;
         $requestState = $request->state;
 
-        self::$webHookHandler->preventRequestInfiniteLoop($lastRequestTime, $accountId);
-
-        self::$webHookHandler->checkRequestLimitPerSecond();
-     
-
-
         /** Аутентификация webhook по state */
-        Log::info('4 checkstate' , [__CLASS__]);
+        Log::info('checkstate' , [__CLASS__]);
         if((int)($requestState) !== (int)$state) {
             response('ok');
             throw new Exception('Неверный state в параметре запроса webhook' . __CLASS__);
             die;
         }
+
+        self::$webHookHandler->preventRequestInfiniteLoop($lastRequestTime, $accountId);
+
+        self::$webHookHandler->checkRequestLimitPerSecond();
+     
+        Log::info('died');
+        die;
+
+        
 
         
       
