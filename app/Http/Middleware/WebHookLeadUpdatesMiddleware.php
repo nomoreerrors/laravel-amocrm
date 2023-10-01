@@ -23,8 +23,7 @@ class WebHookLeadUpdatesMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {   
-        response('ok');
-        die;
+       
         
         /** Сохранить на сервере объект request */
         Storage::put('HOOK.txt', json_encode($request->all()));
