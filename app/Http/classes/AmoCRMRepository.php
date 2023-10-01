@@ -51,7 +51,7 @@ class AmoCRMRepository extends BaseCRMRepository
         $leadCustomFieldsValues->add($textCustomFieldValueModel);
         $lead->setCustomFieldsValues($leadCustomFieldsValues);
         $lead->setId($leadId);
-
+        Log::info('7 setcustomfieldsvalue' , [__CLASS__]);
 
         try {
             $lead = $leadsService->updateOne($lead);

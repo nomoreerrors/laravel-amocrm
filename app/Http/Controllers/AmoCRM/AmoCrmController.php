@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Resources\Services\WebhookLeadUpdateService;
 use App\Http\Controllers\AmoCRM\BaseController;
 use App\Http\classes\AmoCRMConfig;
+use Illuminate\Support\Facades\Log;
 use Resources\Factories\LeadsFactory;
 
 class AmoCrmController extends BaseController
@@ -46,7 +47,7 @@ class AmoCrmController extends BaseController
     {   
        
         $data = $request->except('state');
-
+        Log::info('5 controller' , [__CLASS__]);
 
         $webHookHandler = new WebhookLeadUpdateService($data);
         $webHookHandler->updateProfitField($this->primeCostFieldId, $this->profitFieldId);

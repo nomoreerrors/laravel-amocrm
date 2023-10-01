@@ -27,6 +27,7 @@ class WebHookLeadUpdatesMiddleware
         /** Сохранить на сервере объект request */
         Storage::put('HOOK.txt', json_encode($request->all()));
         Log::info('Входящий запрос', [__CLASS__, __LINE__]);
+        Log::info('1 middleware' , [__CLASS__]);
 
         
         /** Проверка и обновление времени последнего запроса пользователя */
@@ -44,7 +45,7 @@ class WebHookLeadUpdatesMiddleware
 
 
         /** Аутентификация webhook по state */
-
+        Log::info('4 checkstate' , [__CLASS__]);
         if((int)($requestState) !== (int)$state) {
             response('ok');
             throw new Exception('Неверный state в параметре запроса webhook' . __CLASS__);
@@ -66,6 +67,7 @@ class WebHookLeadUpdatesMiddleware
      */
     public function terminate():void
     {
-        Log::info('Успешный запрос к хуку');
+        Log::info('8 terminate (окончание)' , [__CLASS__]);
+
     }
 }

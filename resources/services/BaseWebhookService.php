@@ -19,7 +19,7 @@ class BaseWebhookService
         $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
         $lastRequestTime['users_request_count'][] = time();
         Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
-
+        Log::info('3 requestpersecond' , [__CLASS__]);
 
             $c = $lastRequestTime['users_request_count'];
             $lastElementIndex = array_search(end($c), $c);
@@ -47,6 +47,7 @@ class BaseWebhookService
      */
     public function preventRequestInfiniteLoop(?array $lastRequestTime, string $accountId)
     {
+        Log::info('2 preventinfiniteloop' , [__CLASS__]);
          if($lastRequestTime && 
            array_key_exists($accountId, $lastRequestTime) &&
            $lastRequestTime[$accountId] >= time()) {

@@ -156,7 +156,7 @@ class WebhookLeadUpdateService extends BaseWebhookService
         $price = $this->getKeyFromLeads('price');
         $leadId = $this->getKeyFromLeads('id');
 
-        Log::info('Переменные: ', [$primeCost, $price, $leadId]);
+        Log::info('6 updateprofilefield' , [__CLASS__]);
         $profit = (int)$price - (int)$primeCost;
         $profitFieldId = $profitFieldId;
         $accountId = $accountId;
