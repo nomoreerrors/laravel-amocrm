@@ -23,8 +23,12 @@ class WebHookLeadUpdatesMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {   
+        //Почему два запроса???
+        //Почему два запроса???
+        //Почему два запроса???
+        //Почему два запроса???
         Log::info('request here');
-        response('ok');
+        response('ok', 200);
         die;
         
         /** Сохранить на сервере объект request */
