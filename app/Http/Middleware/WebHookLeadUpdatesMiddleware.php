@@ -24,6 +24,7 @@ class WebHookLeadUpdatesMiddleware
     public function handle(Request $request, Closure $next): Response
     {   
         Log::info('request here');
+        response('ok');
         die;
         
         /** Сохранить на сервере объект request */
