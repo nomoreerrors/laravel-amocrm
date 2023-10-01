@@ -45,7 +45,9 @@ class AmoCrmController extends BaseController
      */
     protected function getWebHookLeadUpdates(Request $request)
     {   
-       response('ok');
+
+        Log::info($request);
+        die;
         $data = $request->except('state');
         Log::info('5 controller' , [__CLASS__]);
 
