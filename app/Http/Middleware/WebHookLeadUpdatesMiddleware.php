@@ -28,7 +28,7 @@ class WebHookLeadUpdatesMiddleware
         //Почему два запроса???
         //Почему два запроса???
         Log::info('request here');
-        response('ok', 200);
+        response('ok');
         die;
         
         /** Сохранить на сервере объект request */
