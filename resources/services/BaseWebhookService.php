@@ -47,6 +47,8 @@ class BaseWebhookService
      */
     public function preventRequestInfiniteLoop(?array $lastRequestTime, string $accountId)
     {
+
+        //добавить проверку на дубликат запроса (имя пользователя, id сделки)
         Log::info('2 preventinfiniteloop' , [__CLASS__]);
          if($lastRequestTime && 
            array_key_exists($accountId, $lastRequestTime) &&
