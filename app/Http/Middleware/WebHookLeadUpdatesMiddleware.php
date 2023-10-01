@@ -52,7 +52,7 @@ class WebHookLeadUpdatesMiddleware
         self::$webHookHandler->checkRequestLimitPerSecond();
      
         Log::info('died');
-        die;
+        dd('stop');
 
         
 
