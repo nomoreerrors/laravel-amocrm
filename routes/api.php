@@ -21,6 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/getupdates', [AmoCrmController::class, 'getWebHookLeadUpdates'])
-                                // ->middleware(WebHookLeadUpdatesMiddleware::class)
+                                ->middleware(WebHookLeadUpdatesMiddleware::class)
                                 ->name('getupdates');
 

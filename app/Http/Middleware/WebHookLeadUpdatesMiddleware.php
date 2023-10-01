@@ -23,13 +23,6 @@ class WebHookLeadUpdatesMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {   
-        //Почему два запроса???
-        //Почему два запроса???
-        //Почему два запроса???
-        //Почему два запроса???
-        Log::info('request here');
-        response('ok');
-        die;
         
         /** Сохранить на сервере объект request */
         Storage::put('HOOK.txt', json_encode($request->all()));
@@ -46,7 +39,6 @@ class WebHookLeadUpdatesMiddleware
         $requestState = $request->state;
 
         /** Аутентификация webhook по state */
-        Log::info('checkstate' , [__CLASS__]);
         if((int)($requestState) !== (int)$state) {
             response('ok');
             throw new Exception('Неверный state в параметре запроса webhook' . __CLASS__);
@@ -54,16 +46,7 @@ class WebHookLeadUpdatesMiddleware
         }
 
         self::$webHookHandler->preventRequestInfiniteLoop($lastRequestTime, $accountId);
-
         self::$webHookHandler->checkRequestLimitPerSecond();
-     
-        Log::info('died');
-        die;
-
-        
-
-        
-      
          
 
         return $next($request);
