@@ -94,6 +94,7 @@ class ComposerStaticInit21eb009b6e6d761e9f9599ef116b5d56
         'R' => 
         array (
             'Resources\\Services\\' => 19,
+            'Resources\\Factories\\' => 20,
             'Ramsey\\Uuid\\' => 12,
             'Ramsey\\Collection\\' => 18,
         ),
@@ -313,6 +314,7 @@ class ComposerStaticInit21eb009b6e6d761e9f9599ef116b5d56
         'Symfony\\Component\\HttpFoundation\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/http-foundation',
+            1 => __DIR__ . '/..' . '/symfony/http-foundation',
         ),
         'Symfony\\Component\\Finder\\' => 
         array (
@@ -357,6 +359,10 @@ class ComposerStaticInit21eb009b6e6d761e9f9599ef116b5d56
         'Resources\\Services\\' => 
         array (
             0 => __DIR__ . '/../..' . '/resources/services',
+        ),
+        'Resources\\Factories\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/resources/factories',
         ),
         'Ramsey\\Uuid\\' => 
         array (
@@ -1034,14 +1040,16 @@ class ComposerStaticInit21eb009b6e6d761e9f9599ef116b5d56
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
         'App\\Http\\Middleware\\PreventRequestsDuringMaintenance' => __DIR__ . '/../..' . '/app/Http/Middleware/PreventRequestsDuringMaintenance.php',
         'App\\Http\\Middleware\\RedirectIfAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAuthenticated.php',
+        'App\\Http\\Middleware\\TestMiddleware' => __DIR__ . '/../..' . '/app/Http/Middleware/TestMiddleware.php',
         'App\\Http\\Middleware\\TrimStrings' => __DIR__ . '/../..' . '/app/Http/Middleware/TrimStrings.php',
         'App\\Http\\Middleware\\TrustHosts' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustHosts.php',
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\ValidateSignature' => __DIR__ . '/../..' . '/app/Http/Middleware/ValidateSignature.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\Http\\Middleware\\WebHookLeadUpdatesMiddleware' => __DIR__ . '/../..' . '/app/Http/Middleware/WebHookLeadUpdatesMiddleware.php',
-        'App\\Http\\classes\\AccessTokenHandler' => __DIR__ . '/../..' . '/app/Http/classes/AccessTokenHandler.php',
         'App\\Http\\classes\\AmoCRMConfig' => __DIR__ . '/../..' . '/app/Http/classes/AmoCRMConfig.php',
+        'App\\Http\\classes\\AmoCRMRepository' => __DIR__ . '/../..' . '/app/Http/classes/AmoCRMRepository.php',
+        'App\\Http\\classes\\BaseCRMRepository' => __DIR__ . '/../..' . '/app/Http/classes/BaseCRMRepository.php',
         'App\\Models\\AmoCRM\\AmoCrmConnectionModel' => __DIR__ . '/../..' . '/app/Models/AmoCRM/AmoCrmConnectionModel.php',
         'App\\Models\\AmoCRM\\BaseAmoCrmConnectionModel' => __DIR__ . '/../..' . '/app/Models/AmoCRM/BaseAmoCrmConnectionModel.php',
         'App\\Models\\CrmConnectionInterface' => __DIR__ . '/../..' . '/app/Models/CrmConnectionInterface.php',
@@ -5688,6 +5696,7 @@ class ComposerStaticInit21eb009b6e6d761e9f9599ef116b5d56
         'Ramsey\\Uuid\\UuidInterface' => __DIR__ . '/..' . '/ramsey/uuid/src/UuidInterface.php',
         'Ramsey\\Uuid\\Validator\\GenericValidator' => __DIR__ . '/..' . '/ramsey/uuid/src/Validator/GenericValidator.php',
         'Ramsey\\Uuid\\Validator\\ValidatorInterface' => __DIR__ . '/..' . '/ramsey/uuid/src/Validator/ValidatorInterface.php',
+        'Resources\\Factories\\LeadsFactory' => __DIR__ . '/../..' . '/resources/factories/LeadsFactory.php',
         'Resources\\Services\\BaseWebhookService' => __DIR__ . '/../..' . '/resources/services/BaseWebhookService.php',
         'Resources\\Services\\WebhookLeadUpdateService' => __DIR__ . '/../..' . '/resources/services/WebhookLeadUpdateService.php',
         'SebastianBergmann\\CliParser\\AmbiguousOptionException' => __DIR__ . '/..' . '/sebastian/cli-parser/src/exceptions/AmbiguousOptionException.php',
@@ -7040,6 +7049,7 @@ class ComposerStaticInit21eb009b6e6d761e9f9599ef116b5d56
         'Tests\\Feature\\ExampleTest' => __DIR__ . '/../..' . '/tests/Feature/ExampleTest.php',
         'Tests\\TestCase' => __DIR__ . '/../..' . '/tests/TestCase.php',
         'Tests\\Unit\\ExampleTest' => __DIR__ . '/../..' . '/tests/Unit/ExampleTest.php',
+        'Tests\\Unit\\WebhookServiceTest' => __DIR__ . '/../..' . '/tests/Unit/WebhookServiceTest.php',
         'TheSeer\\Tokenizer\\Exception' => __DIR__ . '/..' . '/theseer/tokenizer/src/Exception.php',
         'TheSeer\\Tokenizer\\NamespaceUri' => __DIR__ . '/..' . '/theseer/tokenizer/src/NamespaceUri.php',
         'TheSeer\\Tokenizer\\NamespaceUriException' => __DIR__ . '/..' . '/theseer/tokenizer/src/NamespaceUriException.php',

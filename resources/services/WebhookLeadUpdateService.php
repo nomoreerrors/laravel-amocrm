@@ -128,7 +128,6 @@ class WebhookLeadUpdateService extends BaseWebhookService
         $result = $this->checkIfUpdateFieldExists();
         $d = Arr::get($this->data, 'leads.'.$result.'.0.custom_fields');
 
-
         foreach($d as $obj) {
             if($obj['id'] == $id) {
                 return $obj['values'][0]['value'];

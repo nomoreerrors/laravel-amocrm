@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\AmoCRM;
 
+use AmoCRM\Models\LeadModel;
 use App\Models\AmoCRM\AmoCrmConnectionModel;
 use Illuminate\Http\Request;
 use Resources\Services\WebhookLeadUpdateService;
 use App\Http\Controllers\AmoCRM\BaseController;
 use App\Http\classes\AmoCRMConfig;
-
+use Resources\Factories\LeadsFactory;
 
 class AmoCrmController extends BaseController
 {   
@@ -43,10 +44,13 @@ class AmoCrmController extends BaseController
      */
     protected function getWebHookLeadUpdates(Request $request)
     {   
+       
         $data = $request->except('state');
+
 
         $webHookHandler = new WebhookLeadUpdateService($data);
         $webHookHandler->updateProfitField($this->primeCostFieldId, $this->profitFieldId);
+       
        
     }
 }

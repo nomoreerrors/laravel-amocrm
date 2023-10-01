@@ -26,8 +26,7 @@ class WebHookLeadUpdatesMiddleware
         
         /** Сохранить на сервере объект request */
         Storage::put('HOOK.txt', json_encode($request->all()));
-        Log::info('Входящий запрос');
-
+        Log::info('Входящий запрос', [__CLASS__, __LINE__]);
 
         
         /** Проверка и обновление времени последнего запроса пользователя */

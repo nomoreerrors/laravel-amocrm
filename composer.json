@@ -27,7 +27,9 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
             "App\\Http\\Classes\\": "app/Http/classes",
-            "Resources\\Services\\" : "resources/services"
+            "Resources\\Services\\" : "resources/services",
+            "Resources\\Factories\\" : "resources/factories",
+            "Symfony\\Component\\HttpFoundation\\": "vendor/symfony/http-foundation"
         }
           
     },
