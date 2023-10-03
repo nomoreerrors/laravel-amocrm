@@ -31,6 +31,8 @@ class AmoCrmController extends BaseController
 
     
 
+    
+
 
     /**
      * Аутентификация по коду авторизации и получение access token
@@ -57,14 +59,23 @@ class AmoCrmController extends BaseController
         $state = (new AmoCRMConfig)->state;
         $requestState = $data['state'];
 
+        $price = $webHookHandler->getKeyFromLeads('price');
+        $primeCost = $webHookHandler->getCustomFieldValue($this->primeCostFieldId); 
+
+        if(!$price || !$primeCost) {
+            info('Поле бюджет или себестоимость не заполнено');
+            response('ok');
+            die;
+        }
+
+
         $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
         $webHookHandler->checkState($state, $requestState)
                         ->preventRequestInfiniteLoop($lastRequestTime, $accountId, $lastLeadId);
 
         Storage::put('HOOK.txt', json_encode($data));
 
-       
- 
+  
         CacheRequestsJob::dispatch(json_encode($data));
        
        
