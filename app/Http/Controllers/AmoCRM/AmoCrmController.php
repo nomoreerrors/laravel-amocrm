@@ -47,19 +47,15 @@ class AmoCrmController extends BaseController
     {   
 
          
-        $data = $request->except('state');
-        Log::info('5 controller' , [__CLASS__]);
+        // $data = $request->except('state');
+        // Log::info('5 controller' , [__CLASS__]);
 
-        $webHookHandler = new WebhookLeadUpdateService($data);
-        $webHookHandler->updateProfitField($this->primeCostFieldId, $this->profitFieldId);
+        // $webHookHandler = new WebhookLeadUpdateService($data);
+        // $webHookHandler->updateProfitField($this->primeCostFieldId, $this->profitFieldId);
        
        
     }
 
 
-
-    protected function test(string $string)
-    {
-        dd('lolwut');
-    }
+ 
 }

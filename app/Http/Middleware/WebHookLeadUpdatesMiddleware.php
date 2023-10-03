@@ -26,40 +26,40 @@ class WebHookLeadUpdatesMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {   
-        $data = $request->except('state');
-        self::$webHookHandler = new WebhookLeadUpdateService($data);
+        $data = $request->all();
+        // self::$webHookHandler = new WebhookLeadUpdateService($data);
         CacheRequestsJob::dispatch(json_encode($data));
+        dd('lolwut');
 
-        info('lolwut');
-        die;
-        /** Сохранить на сервере объект request */
-        Storage::put('HOOK.txt', json_encode($request->all()));
-        Log::info('Входящий запрос', [__CLASS__, __LINE__]);
+        // die;
+        // /** Сохранить на сервере объект request */
+        // Storage::put('HOOK.txt', json_encode($request->all()));
+        // Log::info('Входящий запрос', [__CLASS__, __LINE__]);
 
 
         
         
-        /** Проверка и обновление времени последнего запроса пользователя */
+        // /** Проверка и обновление времени последнего запроса пользователя */
        
         
-        $accountId = self::$webHookHandler->getAccount('id'); 
-        $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
-        $state = (new AmoCRMConfig)->state;
-        $requestState = $request->state;
+        // $accountId = self::$webHookHandler->getAccount('id'); 
+        // $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
+        // $state = (new AmoCRMConfig)->state;
+        // $requestState = $request->state;
 
 
 
-        /** Аутентификация webhook по state */
-        if((int)($requestState) !== (int)$state) {
-            response('ok');
-            throw new Exception('Неверный state в параметре запроса webhook' . __CLASS__);
-            die;
-        }
+        // /** Аутентификация webhook по state */
+        // if((int)($requestState) !== (int)$state) {
+        //     response('ok');
+        //     throw new Exception('Неверный state в параметре запроса webhook' . __CLASS__);
+        //     die;
+        // }
 
 
 
-        self::$webHookHandler->preventRequestInfiniteLoop($lastRequestTime, $accountId);
-        // self::$webHookHandler->checkRequestLimitPerSecond();
+        // self::$webHookHandler->preventRequestInfiniteLoop($lastRequestTime, $accountId);
+        // // self::$webHookHandler->checkRequestLimitPerSecond();
          
 
         return $next($request);

@@ -10,26 +10,41 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use App\Http\classes\AmoCRMConfig;
+use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
+use Resources\Services\WebhookLeadUpdateService;
+use Illuminate\Support\Facades\Storage;
 
 class CacheRequestsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
 
-    private $object;
+    private $request;
 
     /** @var int retry times if job failed */
     public $tries = 50;
 
+    /**
+     * id поля "Себестоимость" (value). 
+     * @var int costPriceId
+     */
+    private $primeCostFieldId = 2505835;
+
+    /**
+     * id поля "Прибыль"
+     * @var int $profitId
+     */
+    private $profitFieldId = 2505837;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(string $object)
+    public function __construct(string $request)
     {
-        $this->object = $object;
+        $this->request = $request;
     }
 
     
@@ -43,13 +58,49 @@ class CacheRequestsJob implements ShouldQueue
         //смотрим Laracasts с утра
         
 
+      
 
         Redis::throttle('key')->block(0)->allow(1)->every(3)->then(function () {
             info('Lock obtained...');
 
+            $data = json_decode($this->request, true);
 
-
-            route('test', ['lol']);
+            $webHookHandler = new WebhookLeadUpdateService($data);
+    
+    
+            
+            /** Сохранить на сервере объект request */
+            Storage::put('HOOK.txt', json_encode($data));
+            Log::info('Входящий запрос', [__CLASS__, __LINE__]);
+    
+    
+            
+            
+            /** Проверка и обновление времени последнего запроса пользователя */
+           
+            
+            $accountId = $webHookHandler->getAccount('id'); 
+            $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
+            $state = (new AmoCRMConfig)->state;
+            $requestState = $data['state'];
+    
+    
+    
+            /** Аутентификация webhook по state */
+            if((int)($requestState) !== (int)$state) {
+                response('ok');
+                throw new Exception('Неверный state в параметре запроса webhook' . __CLASS__);
+                die;
+            }
+    
+    
+    
+            $webHookHandler->preventRequestInfiniteLoop($lastRequestTime, $accountId);
+            // $webHookHandler->checkRequestLimitPerSecond();
+             
+       
+        $webHookHandler->updateProfitField($this->primeCostFieldId, $this->profitFieldId);
+             
 
         }, function () {
             info('Im in failed block');
