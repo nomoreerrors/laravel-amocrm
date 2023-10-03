@@ -63,11 +63,11 @@ class WebhookLeadUpdateService extends BaseWebhookService
             else throw new ErrorException('Ключ update или add не найден');
         }
 
-            $result = Arr::get($this->data, 'leads.'.$c.'.0.'.$key );
-            if($result) {
-                return $result;
+            $result = Arr::get($this->data, 'leads.'.$c.'.0');
+            if(array_key_exists($key, $result)) {
+                return $result[$key];
             }
-            else throw new ErrorException('Ключ не найден');
+            else throw new ErrorException('Ключ '.$key.' не найден');
 
     }
 
