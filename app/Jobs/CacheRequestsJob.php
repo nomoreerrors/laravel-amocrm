@@ -68,7 +68,7 @@ class CacheRequestsJob implements ShouldQueue
             info('Im in failed block');
             
      
-            return $this->release(3);
+            return $this->release(1);
         });
     }
 
