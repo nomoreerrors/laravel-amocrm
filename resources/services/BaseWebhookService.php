@@ -47,7 +47,7 @@ class BaseWebhookService
      */
     public function preventRequestInfiniteLoop(?array $lastRequestTime, string $accountId, string $lastLeadId)
     {
-        
+         
 
          if($lastRequestTime && 
            array_key_exists($accountId, $lastRequestTime) &&
