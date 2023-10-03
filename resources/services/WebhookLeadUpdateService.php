@@ -135,7 +135,7 @@ class WebhookLeadUpdateService extends BaseWebhookService
             }
             }
         } catch(ErrorException) {
-                Log::info('Поле value  не найдено. ', [__CLASS__, __LINE__]);
+                Log::info('Поле value с id '.$id.' не найдено. ', [__CLASS__, __LINE__]);
                 return null;
             } 
         }
