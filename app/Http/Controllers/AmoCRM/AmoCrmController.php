@@ -60,7 +60,7 @@ class AmoCrmController extends BaseController
 
         $state = (new AmoCRMConfig)->state;
         $requestState = $data['state'];
-        dd('controller');
+
 
 
         /** Аутентификация webhook по state */
