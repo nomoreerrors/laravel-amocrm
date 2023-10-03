@@ -25,7 +25,7 @@ class CacheRequestsJob implements ShouldQueue
     private $request;
 
     /** @var int retry times if job failed */
-    public $tries = 50;
+    public $tries = 100;
 
     /**
      * id поля "Себестоимость" (value). 

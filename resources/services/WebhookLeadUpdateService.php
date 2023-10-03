@@ -168,5 +168,16 @@ class WebhookLeadUpdateService extends BaseWebhookService
     }
 
 
+    public function checkState(string $state, string $requestState)
+    {
+        if((int)($requestState) !== (int)$state) {
+            response('ok');
+            throw new Exception('Неверный state в параметре запроса webhook' . __CLASS__);
+            die;
+        }
+        return $this;
+    }
+
+
 
 }

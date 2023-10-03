@@ -48,29 +48,23 @@ class AmoCrmController extends BaseController
      */
     protected function getWebHookLeadUpdates(Request $request)
     {   
+
         info('Входящий запрос');
         $data = $request->all();
         $webHookHandler = new WebhookLeadUpdateService($data);
         $accountId = $webHookHandler->getAccount('id'); 
         $lastLeadId = $webHookHandler->getKeyFromLeads('id'); 
-
-        $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
-        $webHookHandler->preventRequestInfiniteLoop($lastRequestTime, $accountId, $lastLeadId);
-        Storage::put('HOOK.txt', json_encode($data));
-
         $state = (new AmoCRMConfig)->state;
         $requestState = $data['state'];
 
+        $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
+        $webHookHandler->checkState($state, $requestState)
+                        ->preventRequestInfiniteLoop($lastRequestTime, $accountId, $lastLeadId);
 
+        Storage::put('HOOK.txt', json_encode($data));
 
-        /** Аутентификация webhook по state */
-        if((int)($requestState) !== (int)$state) {
-            response('ok');
-            throw new Exception('Неверный state в параметре запроса webhook' . __CLASS__);
-            die;
-        }
-
-        // self::$webHookHandler = new WebhookLeadUpdateService($data);
+       
+ 
         CacheRequestsJob::dispatch(json_encode($data));
        
        
