@@ -48,7 +48,7 @@ class AmoCrmController extends BaseController
      */
     protected function getWebHookLeadUpdates(Request $request)
     {   
-
+        info('Входящий запрос');
         $data = $request->all();
         $webHookHandler = new WebhookLeadUpdateService($data);
         $accountId = $webHookHandler->getAccount('id'); 

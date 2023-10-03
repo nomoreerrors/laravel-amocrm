@@ -127,13 +127,14 @@ class WebhookLeadUpdateService extends BaseWebhookService
     {
         $result = $this->checkIfUpdateFieldExists();
         $d = Arr::get($this->data, 'leads.'.$result.'.0.custom_fields');
-
+        
+        try {
         foreach($d as $obj) {
             if($obj['id'] == $id) {
                 return $obj['values'][0]['value'];
             }
-            
-            else {
+            }
+        } catch(ErrorException) {
                 Log::info('Поле value  не найдено. ', [__CLASS__, __LINE__]);
                 return null;
             } 
