@@ -55,4 +55,11 @@ class AmoCrmController extends BaseController
        
        
     }
+
+
+
+    protected function test(string $string)
+    {
+        dd('lolwut');
+    }
 }

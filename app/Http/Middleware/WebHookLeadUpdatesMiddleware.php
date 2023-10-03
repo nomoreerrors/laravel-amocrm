@@ -26,20 +26,16 @@ class WebHookLeadUpdatesMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {   
-         
-        self::$webHookHandler = new WebhookLeadUpdateService($request->except('state'));
+        $data = $request->except('state');
+        self::$webHookHandler = new WebhookLeadUpdateService($data);
+        CacheRequestsJob::dispatch(json_encode($data));
 
-        $leadId = self::$webHookHandler->getKeyFromLeads('id');
-        $json = json_encode($request->except('state'));
-        
-        // $job = Redis::set($leadId, $json);
-        CacheRequestsJob::dispatch($request->except('state'));
-        
+        info('lolwut');
         die;
         /** Сохранить на сервере объект request */
         Storage::put('HOOK.txt', json_encode($request->all()));
         Log::info('Входящий запрос', [__CLASS__, __LINE__]);
-        Log::info('1 middleware' , [__CLASS__]);
+
 
         
         
@@ -63,7 +59,7 @@ class WebHookLeadUpdatesMiddleware
 
 
         self::$webHookHandler->preventRequestInfiniteLoop($lastRequestTime, $accountId);
-        self::$webHookHandler->checkRequestLimitPerSecond();
+        // self::$webHookHandler->checkRequestLimitPerSecond();
          
 
         return $next($request);

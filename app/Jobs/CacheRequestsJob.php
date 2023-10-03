@@ -21,13 +21,13 @@ class CacheRequestsJob implements ShouldQueue
     private $object;
 
     /** @var int retry times if job failed */
-    public $tries = 100;
+    public $tries = 50;
 
 
     /**
      * Create a new job instance.
      */
-    public function __construct(array $object)
+    public function __construct(string $object)
     {
         $this->object = $object;
     }
@@ -41,15 +41,21 @@ class CacheRequestsJob implements ShouldQueue
         //смотрим Laracasts с утра
         //смотрим Laracasts с утра
         //смотрим Laracasts с утра
+        
+
+
         Redis::throttle('key')->block(0)->allow(1)->every(3)->then(function () {
             info('Lock obtained...');
 
 
 
+            route('test', ['lol']);
+
         }, function () {
             info('Im in failed block');
+            
      
-            return $this->release(1);
+            return $this->release(3);
         });
     }
 
