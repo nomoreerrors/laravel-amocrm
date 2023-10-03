@@ -53,51 +53,13 @@ class CacheRequestsJob implements ShouldQueue
      */
     public function handle(): void
     {   
-        //смотрим Laracasts с утра
-        //смотрим Laracasts с утра
-        //смотрим Laracasts с утра
-        
 
-      
-
-        Redis::throttle('key')->block(0)->allow(1)->every(3)->then(function () {
+        Redis::throttle('key')->block(0)->allow(6)->every(1)->then(function () {
             info('Lock obtained...');
 
             $data = json_decode($this->request, true);
-
             $webHookHandler = new WebhookLeadUpdateService($data);
-    
-    
-            
-            /** Сохранить на сервере объект request */
-            Storage::put('HOOK.txt', json_encode($data));
-            Log::info('Входящий запрос', [__CLASS__, __LINE__]);
-    
-    
-            
-            
-            /** Проверка и обновление времени последнего запроса пользователя */
-           
-            
-            $accountId = $webHookHandler->getAccount('id'); 
-            $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
-            $state = (new AmoCRMConfig)->state;
-            $requestState = $data['state'];
-    
-    
-    
-            /** Аутентификация webhook по state */
-            if((int)($requestState) !== (int)$state) {
-                response('ok');
-                throw new Exception('Неверный state в параметре запроса webhook' . __CLASS__);
-                die;
-            }
-    
-    
-    
-            $webHookHandler->preventRequestInfiniteLoop($lastRequestTime, $accountId);
             // $webHookHandler->checkRequestLimitPerSecond();
-             
        
         $webHookHandler->updateProfitField($this->primeCostFieldId, $this->profitFieldId);
              

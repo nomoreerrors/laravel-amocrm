@@ -26,9 +26,7 @@ class WebHookLeadUpdatesMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {   
-        $data = $request->all();
-        // self::$webHookHandler = new WebhookLeadUpdateService($data);
-        CacheRequestsJob::dispatch(json_encode($data));
+        
         dd('lolwut');
 
         // die;
