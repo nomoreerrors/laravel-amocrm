@@ -127,7 +127,7 @@ class WebhookLeadUpdateService extends BaseWebhookService
     {
         $result = $this->checkIfUpdateFieldExists();
         $d = Arr::get($this->data, 'leads.'.$result.'.0.custom_fields');
-        
+
         try {
         foreach($d as $obj) {
             if($obj['id'] == $id) {
@@ -140,7 +140,7 @@ class WebhookLeadUpdateService extends BaseWebhookService
             } 
         }
 
-    }
+    
 
 
     /**
