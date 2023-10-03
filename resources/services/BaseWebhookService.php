@@ -45,23 +45,27 @@ class BaseWebhookService
     /**
      * Остановка цикла и ограничение кол-ва запросов к API
      */
-    public function preventRequestInfiniteLoop(?array $lastRequestTime, string $accountId)
+    public function preventRequestInfiniteLoop(?array $lastRequestTime, string $accountId, string $lastLeadId)
     {
+        
 
-        //добавить проверку на дубликат запроса (имя пользователя, id сделки)
-        Log::info('2 preventinfiniteloop' , [__CLASS__]);
          if($lastRequestTime && 
            array_key_exists($accountId, $lastRequestTime) &&
-           $lastRequestTime[$accountId] >= time()) {
-                Log::info('Остановка цикла запросов. 
-                Время предыдущего запроса: '. $lastRequestTime[$accountId] .' Новый запрос: ' . time()
-                . __CLASS__ . __LINE__);
+           array_key_exists('last_lead_id', $lastRequestTime[$accountId]) &&
+           $lastRequestTime[$accountId]['last_lead_id'] === $lastLeadId &&
+           $lastRequestTime[$accountId]['last_request_time'] >= time()) {
+
+                Log::info('Остановка цикла запросов. ',
+                ['Время предыдущего запроса: '. $lastRequestTime[$accountId]['last_request_time'] .' Новый запрос: ' . time()
+                . __CLASS__ . __LINE__]);
                 response('ok');
                 die;
          }
 
-         $lastRequestTime[$accountId] = time() + 3;
+         $lastRequestTime[$accountId]['last_request_time'] = time() + 3;
+         $lastRequestTime[$accountId]['last_lead_id'] = $lastLeadId;
          Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
+
     }
 
 
