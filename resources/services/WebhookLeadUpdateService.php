@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 use App\Http\classes\AmoCRMRepository;
 use ErrorException;
-
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Обработка полей полученных с webhook данных 
@@ -119,7 +119,7 @@ class WebhookLeadUpdateService extends BaseWebhookService
 
     
     /**
-     * Возвращает значение custom_fields value объекта webhook по id кастомного поля
+     * Возвращает значение custom_fields - value объекта webhook по id кастомного поля
      * @throws Exception
      * @return string
      */
@@ -130,12 +130,13 @@ class WebhookLeadUpdateService extends BaseWebhookService
 
         try {
         foreach($d as $obj) {
-            if($obj['id'] == $id) {
+            if($obj['id'] == $id &&
+                array_key_exists('values', $obj)) {
                 return $obj['values'][0]['value'];
             }
             }
         } catch(ErrorException) {
-                Log::info('Поле value с id '.$id.' не найдено. ', [__CLASS__, __LINE__]);
+                info('Поле value с id '.$id.' не найдено. ', [__CLASS__, __LINE__]);
                 return null;
             } 
         }
@@ -177,6 +178,10 @@ class WebhookLeadUpdateService extends BaseWebhookService
         }
         return $this;
     }
+
+
+   
+     
 
 
 
