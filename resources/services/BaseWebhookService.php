@@ -2,6 +2,8 @@
 
 namespace Resources\Services;
 
+use GuzzleHttp\Psr7\Response;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -14,7 +16,7 @@ class BaseWebhookService
     /**
      * Учет и ограничение общего количества запросов в секунду всех пользователей аккаунта
      */
-    public function checkRequestLimitPerSecond(): void
+    public function checkRequestLimitPerSecond(): HttpResponse
     {
         $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
         $lastRequestTime['users_request_count'][] = time();
