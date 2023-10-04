@@ -54,8 +54,7 @@ class AmoCrmController extends BaseController
         $data = $request->all();
         Storage::append('HOOK.txt', json_encode($data));
         info('incoming request');
-        response('ok');
-        die;
+        
 
 
         $webHookHandler = new WebhookLeadUpdateService($data);
@@ -78,13 +77,13 @@ class AmoCrmController extends BaseController
 
         if(!$price || !$primeCost) {
             info('Поле бюджет или себестоимость не заполнено');
-            response('ok');
-            die;
+            return response('ok');
         }
 
-        
-        response('ok');
+
         CacheRequestsJob::dispatch(json_encode($data));
+
+        return response('ok');
        
        
     }

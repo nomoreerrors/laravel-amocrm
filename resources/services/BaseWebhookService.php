@@ -28,8 +28,7 @@ class BaseWebhookService
 
             if(count($c) >= 7 && $c[$lastElementIndex] - $c[$lastElementIndex - 6] < 2) {
                 Log::info('Слишком частые запросы к API от пользователей аккаунта');
-                response('ok');
-                die;
+                return response('ok');
             } 
             
            
@@ -59,9 +58,8 @@ class BaseWebhookService
                 ['Время предыдущего запроса: '. $lastRequestTime[$accountId]['last_request_time']
                  .' Новый запрос: ' . time().' '
                 . __CLASS__ . __LINE__, 'lead_id :'.$lastRequestTime[$accountId]['last_lead_id']]);
-                
-                response('ok');
-                die;
+
+                return response('ok');
          }
 
          $c = $lastRequestTime;
