@@ -82,7 +82,6 @@ class AmoCrmController extends BaseController
 
 
         CacheRequestsJob::dispatch(json_encode($data));
-        dd('here');
         return response('ok');
        
        
