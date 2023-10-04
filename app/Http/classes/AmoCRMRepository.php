@@ -57,8 +57,10 @@ class AmoCRMRepository extends BaseCRMRepository
             $lead = $leadsService->updateOne($lead);
             info('Отправил lead. id: '.$leadId);
         } catch (AmoCRMApiException $e) {
-            dd($e);
-            die;
+            if($e->getErrorCode() == 400) {
+                info('Код ошибки 400. ', [$e->getDescription()]);
+                return response('ok');
+            }
         }
     }
 
