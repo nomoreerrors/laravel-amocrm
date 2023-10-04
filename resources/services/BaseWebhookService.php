@@ -62,12 +62,15 @@ class BaseWebhookService
                 die;
          }
 
-         $lastRequestTime[$accountId]['last_request_time'] = time() + 1;
-         $lastRequestTime[$accountId]['last_lead_id'] = $lastLeadId;
+         $c = $lastRequestTime;
+         dd(microtime(), floatval(microtime()) * 2);
+
+         $c[$accountId]['last_request_time'] = time() + 1;
+         $c[$accountId]['last_lead_id'] = $lastLeadId;
 
     
          
-         Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
+         Storage::put('lastRequestTime.txt', json_encode($c));
 
     }
 

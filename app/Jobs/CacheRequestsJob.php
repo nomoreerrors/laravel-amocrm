@@ -54,7 +54,7 @@ class CacheRequestsJob implements ShouldQueue
     public function handle(): void
     {   
 
-        Redis::throttle('key')->block(0)->allow(3)->every(1)->then(function () {
+        Redis::throttle('key')->block(1)->allow(3)->every(1)->then(function () {
             info('Lock obtained...');
 
             $data = json_decode($this->request, true);
@@ -67,7 +67,7 @@ class CacheRequestsJob implements ShouldQueue
         }, function () {
             info('Im in failed block');
             
-     
+
             return $this->release(0);
         });
     }
