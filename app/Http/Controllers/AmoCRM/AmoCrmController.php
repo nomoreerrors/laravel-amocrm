@@ -53,13 +53,18 @@ class AmoCrmController extends BaseController
         
         $data = $request->all();
         Storage::append('HOOK.txt', json_encode($data));
-        info('incoming request');
+        
+         
         
 
 
         $webHookHandler = new WebhookLeadUpdateService($data);
         $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
         $lastLeadId = $webHookHandler->getKeyFromLeads('id'); 
+
+        info('incoming request. ', ['Lead id: '.$lastLeadId]);
+
+
 
 
         $accountId = $webHookHandler->getAccount('id'); 
