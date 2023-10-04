@@ -81,7 +81,8 @@ class AmoCrmController extends BaseController
             die;
         }
 
-  
+        
+        response('ok');
         CacheRequestsJob::dispatch(json_encode($data));
        
        
