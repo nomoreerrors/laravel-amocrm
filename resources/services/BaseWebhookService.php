@@ -63,7 +63,7 @@ class BaseWebhookService
          }
 
          $c = $lastRequestTime;
-         dd(microtime(), floatval(microtime()) * 2);
+
 
          $c[$accountId]['last_request_time'] = time() + 1;
          $c[$accountId]['last_lead_id'] = $lastLeadId;
