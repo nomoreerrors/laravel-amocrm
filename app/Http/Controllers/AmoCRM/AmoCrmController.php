@@ -50,11 +50,11 @@ class AmoCrmController extends BaseController
      */
     protected function getWebHookLeadUpdates(Request $request)
     {   
-        
         $data = $request->all();
-        info($request);
-        Storage::append('HOOK.txt', json_encode($data));
-        dd('here');
+        Log::error($request);
+        // Storage::append('HOOK.txt', json_encode($data));
+        Storage::append('HOOK.txt', json_encode([$data, $request->server()]));
+
         return response('ok');
 
       
