@@ -55,6 +55,7 @@ class AmoCrmController extends BaseController
         Storage::append('HOOK.txt', json_encode($data));
         info('incoming request');
         response('ok');
+        die;
 
 
         $webHookHandler = new WebhookLeadUpdateService($data);
