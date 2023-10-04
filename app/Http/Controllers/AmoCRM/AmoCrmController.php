@@ -54,9 +54,10 @@ class AmoCrmController extends BaseController
         $data = $request->all();
         info($request);
         Storage::append('HOOK.txt', json_encode($data));
+        dd('here');
         return response('ok');
 
-        dd('here');
+      
 
         
 
