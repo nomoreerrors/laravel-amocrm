@@ -82,11 +82,11 @@ class AmoCrmController extends BaseController
         $primeCost = $webHookHandler->getCustomFieldValue($this->primeCostFieldId); 
 
         if(!$price || !$primeCost) {
-            info('Поле бюджет или себестоимость не заполнено');
+            info('Поле бюджет или себестоимость не заполнено '. 'Lead id: '.$lastLeadId);
             return response('ok');
         }
 
-
+        dd('here');
         CacheRequestsJob::dispatch(json_encode($data));
         return response('ok');
        

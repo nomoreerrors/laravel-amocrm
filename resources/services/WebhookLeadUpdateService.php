@@ -99,7 +99,7 @@ class WebhookLeadUpdateService extends BaseWebhookService
                 return $result;
            }
            else {
-                Log::info('Поле value  не найдено. ', [__CLASS__, __LINE__]);
+                Log::info('Ключ '.$key.' не найден. ', [__CLASS__, __LINE__]);
                 return null;
            }
        }
@@ -136,7 +136,9 @@ class WebhookLeadUpdateService extends BaseWebhookService
             }
             }
         } catch(ErrorException) {
-                info('Поле value с id '.$id.' не найдено. ', [__CLASS__, __LINE__]);
+
+                info('Поле value с id '.$id.' не найдено. ', 
+                 ['Lead id: '.Arr::get($this->data, 'leads.'.$result.'.0.id'), __CLASS__, __LINE__]);
                 return null;
             } 
         }

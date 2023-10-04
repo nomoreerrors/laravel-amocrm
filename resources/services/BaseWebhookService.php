@@ -48,7 +48,7 @@ class BaseWebhookService
      */
     public function preventRequestInfiniteLoop(?array $lastRequestTime, string $accountId, string $lastLeadId)
     {
-         
+         info('inside preventRequestInfiniteLoop '. __CLASS__);
 
          if($lastRequestTime && 
            array_key_exists($accountId, $lastRequestTime) &&
@@ -57,9 +57,9 @@ class BaseWebhookService
            $lastRequestTime[$accountId]['last_request_time'] >= time()) {
 
                 info('Остановка цикла запросов. ',
-                ['Время предыдущего запроса: '. $lastRequestTime[$accountId]['last_request_time']
-                 .' Новый запрос: ' . time().' '
-                . __CLASS__ . __LINE__, 'lead_id :'.$lastRequestTime[$accountId]['last_lead_id']]);
+                    ['Время предыдущего запроса: '. $lastRequestTime[$accountId]['last_request_time']
+                        .' Новый запрос: ' . time().' '
+                    . __CLASS__ . __LINE__, 'lead_id :'.$lastRequestTime[$accountId]['last_lead_id']]);
 
                 return response('ok');
          }
