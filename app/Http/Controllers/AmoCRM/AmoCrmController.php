@@ -63,6 +63,7 @@ class AmoCrmController extends BaseController
         $lastLeadId = $webHookHandler->getKeyFromLeads('id'); 
 
         info('incoming request. ', ['Lead id: '.$lastLeadId]);
+        return response('ok');
 
 
 
