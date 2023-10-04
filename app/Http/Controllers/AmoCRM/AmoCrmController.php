@@ -50,13 +50,11 @@ class AmoCrmController extends BaseController
      */
     protected function getWebHookLeadUpdates(Request $request)
     {   
-
-        
-
         $data = $request->all();
-        $webHookHandler = new WebhookLeadUpdateService($data);
+        Storage::append('HOOK.txt', json_encode($data));
 
-        
+
+        $webHookHandler = new WebhookLeadUpdateService($data);
         $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
         $lastLeadId = $webHookHandler->getKeyFromLeads('id'); 
 
@@ -64,11 +62,8 @@ class AmoCrmController extends BaseController
         $accountId = $webHookHandler->getAccount('id'); 
         $state = (new AmoCRMConfig)->state;
         $requestState = $data['state'];
-        //static $c = 1;
-        //$c = $c + 1;
-        //$c = $c + 1;
-        //$c = $c + 1;
-        //$c = $c + 1;
+
+
 
         $webHookHandler->checkState($state, $requestState)
                         ->preventRequestInfiniteLoop($lastRequestTime, $accountId, $lastLeadId);
@@ -87,8 +82,8 @@ class AmoCrmController extends BaseController
        
         
 
-        Storage::put('HOOK.txt', json_encode($data));
-
+      
+        dd('here');
   
         CacheRequestsJob::dispatch(json_encode($data));
        
