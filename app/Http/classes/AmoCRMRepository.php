@@ -55,7 +55,7 @@ class AmoCRMRepository extends BaseCRMRepository
 
         try {
             $lead = $leadsService->updateOne($lead);
-            Log::info('Отправил lead');
+            info('Отправил lead. id: '.$leadId);
         } catch (AmoCRMApiException $e) {
             dd($e);
             die;

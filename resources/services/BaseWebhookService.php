@@ -55,9 +55,11 @@ class BaseWebhookService
            $lastRequestTime[$accountId]['last_lead_id'] === $lastLeadId &&
            $lastRequestTime[$accountId]['last_request_time'] >= time()) {
 
-                Log::info('Остановка цикла запросов. ',
-                ['Время предыдущего запроса: '. $lastRequestTime[$accountId]['last_request_time'] .' Новый запрос: ' . time()
-                . __CLASS__ . __LINE__]);
+                info('Остановка цикла запросов. ',
+                ['Время предыдущего запроса: '. $lastRequestTime[$accountId]['last_request_time']
+                 .' Новый запрос: ' . time().' '
+                . __CLASS__ . __LINE__, 'lead_id :'.$lastRequestTime[$accountId]['last_lead_id']]);
+                
                 response('ok');
                 die;
          }
