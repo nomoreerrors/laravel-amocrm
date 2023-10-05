@@ -62,31 +62,29 @@ class AmoCrmController extends BaseController
 
         info('incoming request. ', ['Lead id: '.$lastLeadId]);
 
+
+
+        $accountId = $webHookHandler->getAccount('id'); 
+        $state = (new AmoCRMConfig)->state;
+        $requestState = $data['state'];
+
+
+
+        $webHookHandler->checkState($state, $requestState)
+                        ->preventRequestInfiniteLoop($lastRequestTime, $accountId, $lastLeadId);
+
+
+        $price = $webHookHandler->getKeyFromLeads('price');
+        $primeCost = $webHookHandler->getCustomFieldValue($this->primeCostFieldId); 
+
+        if(!$price || !$primeCost) {
+            info('Поле бюджет или себестоимость не заполнено '. 'Lead id: '.$lastLeadId);
+            return response('ok');
+        }
+
+
+        CacheRequestsJob::dispatch(json_encode($data));
         return response('ok');
-
-
-
-        // $accountId = $webHookHandler->getAccount('id'); 
-        // $state = (new AmoCRMConfig)->state;
-        // $requestState = $data['state'];
-
-
-
-        // $webHookHandler->checkState($state, $requestState)
-        //                 ->preventRequestInfiniteLoop($lastRequestTime, $accountId, $lastLeadId);
-
-
-        // $price = $webHookHandler->getKeyFromLeads('price');
-        // $primeCost = $webHookHandler->getCustomFieldValue($this->primeCostFieldId); 
-
-        // if(!$price || !$primeCost) {
-        //     info('Поле бюджет или себестоимость не заполнено '. 'Lead id: '.$lastLeadId);
-        //     return response('ok');
-        // }
-
-
-        // CacheRequestsJob::dispatch(json_encode($data));
-        // return response('ok');
        
        
     }
@@ -97,16 +95,16 @@ class AmoCrmController extends BaseController
     protected function test(Request $request)
     {   
         
-        $data = $request->all();
-        Storage::append('UHOOK.txt', json_encode($data));
+        // $data = $request->all();
+        // Storage::append('UHOOK.txt', json_encode($data));
 
        
 
-        $webHookHandler = new WebhookLeadUpdateService($data);
-        $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
-        $lastLeadId = $webHookHandler->getKeyFromLeads('id'); 
+        // $webHookHandler = new WebhookLeadUpdateService($data);
+        // $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
+        // $lastLeadId = $webHookHandler->getKeyFromLeads('id'); 
 
-        info('incoming request to TEST. ', ['Lead id: '.$lastLeadId]);
+        // info('incoming request to TEST. ', ['Lead id: '.$lastLeadId]);
 
         return response('ok');
 
