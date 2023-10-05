@@ -24,7 +24,7 @@ Route::post('/getupdates', [AmoCrmController::class, 'getWebHookLeadUpdates'])
                                 ->name('getupdates');
 
                                 
-Route::get('/getupdates2', [AmoCrmController::class, 'test'])
+Route::post('/getupdates2', [AmoCrmController::class, 'test'])
                                 ->name('test');
 
 
