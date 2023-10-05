@@ -50,16 +50,11 @@ class AmoCrmController extends BaseController
      */
     protected function getWebHookLeadUpdates(Request $request)
     {   
+        // [{"id":"40156931
         $data = $request->all();
-        // Storage::append('HOOK.txt', json_encode($data));
-        Storage::append('HOOK.txt', json_encode([$data, $request->server()]));
+        Storage::append('HOOK.txt', json_encode($data));
 
-        return response('ok');
-
-      
-
-        
-
+       
 
         $webHookHandler = new WebhookLeadUpdateService($data);
         $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
@@ -67,31 +62,31 @@ class AmoCrmController extends BaseController
 
         info('incoming request. ', ['Lead id: '.$lastLeadId]);
 
-
-
-
-
-        $accountId = $webHookHandler->getAccount('id'); 
-        $state = (new AmoCRMConfig)->state;
-        $requestState = $data['state'];
-
-
-
-        $webHookHandler->checkState($state, $requestState)
-                        ->preventRequestInfiniteLoop($lastRequestTime, $accountId, $lastLeadId);
-
-
-        $price = $webHookHandler->getKeyFromLeads('price');
-        $primeCost = $webHookHandler->getCustomFieldValue($this->primeCostFieldId); 
-
-        if(!$price || !$primeCost) {
-            info('Поле бюджет или себестоимость не заполнено '. 'Lead id: '.$lastLeadId);
-            return response('ok');
-        }
-
-
-        CacheRequestsJob::dispatch(json_encode($data));
         return response('ok');
+
+
+
+        // $accountId = $webHookHandler->getAccount('id'); 
+        // $state = (new AmoCRMConfig)->state;
+        // $requestState = $data['state'];
+
+
+
+        // $webHookHandler->checkState($state, $requestState)
+        //                 ->preventRequestInfiniteLoop($lastRequestTime, $accountId, $lastLeadId);
+
+
+        // $price = $webHookHandler->getKeyFromLeads('price');
+        // $primeCost = $webHookHandler->getCustomFieldValue($this->primeCostFieldId); 
+
+        // if(!$price || !$primeCost) {
+        //     info('Поле бюджет или себестоимость не заполнено '. 'Lead id: '.$lastLeadId);
+        //     return response('ok');
+        // }
+
+
+        // CacheRequestsJob::dispatch(json_encode($data));
+        // return response('ok');
        
        
     }
