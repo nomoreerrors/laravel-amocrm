@@ -53,6 +53,9 @@ class AmoCRMRepository extends BaseCRMRepository
         $lead->setId($leadId);
         info('setcustomfieldsvalue' , [__CLASS__]);
 
+
+
+        
         try {
             $lead = $leadsService->updateOne($lead);
             info('Отправил lead. id: '.$leadId);

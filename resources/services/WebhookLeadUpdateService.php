@@ -151,14 +151,18 @@ class WebhookLeadUpdateService extends BaseWebhookService
      * @param int $primeCostFieldId id поля "себестоимость"
      * @param int $primeCostFieldId id поля "прибыль"
      */
-    public function updateProfitField(int $primeCostFieldId, int $profitFieldId): void
+    public function updateProfitField(int $primeCostFieldId, int $profitFieldId)
     {
         $accountId = $this->getAccount('id'); 
        
 
         $primeCost = $this->getCustomFieldValue($primeCostFieldId); 
         $price = $this->getKeyFromLeads('price');
+
+        
         $leadId = $this->getKeyFromLeads('id');
+
+         
 
         Log::info('6 updateprofilefield' , [__CLASS__]);
         $profit = (int)$price - (int)$primeCost;
