@@ -95,16 +95,16 @@ class AmoCrmController extends BaseController
     protected function test(Request $request)
     {   
         
-        // $data = $request->all();
-        // Storage::append('UHOOK.txt', json_encode($data));
+        $data = $request->all();
+        Storage::append('UHOOK.txt', json_encode($data));
 
        
 
-        // $webHookHandler = new WebhookLeadUpdateService($data);
-        // $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
-        // $lastLeadId = $webHookHandler->getKeyFromLeads('id'); 
+        $webHookHandler = new WebhookLeadUpdateService($data);
+        $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
+        $lastLeadId = $webHookHandler->getKeyFromLeads('id'); 
 
-        // info('incoming request to TEST. ', ['Lead id: '.$lastLeadId]);
+        info('incoming request to TEST. ', ['Lead id: '.$lastLeadId]);
 
         return response('ok');
 
