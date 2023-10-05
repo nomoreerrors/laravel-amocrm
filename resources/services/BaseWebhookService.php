@@ -14,36 +14,6 @@ class BaseWebhookService
 {
 
     /**
-     * Учет и ограничение общего количества запросов в секунду всех пользователей аккаунта
-     */
-    public function checkRequestLimitPerSecond(): HttpResponse
-    {
-        $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
-        $lastRequestTime['users_request_count'][] = time();
-        Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
-        Log::info('3 requestpersecond' , [__CLASS__]);
-
-            $c = $lastRequestTime['users_request_count'];
-            $lastElementIndex = array_search(end($c), $c);
-           
-            
-
-            if(count($c) >= 7 && $c[$lastElementIndex] - $c[$lastElementIndex - 6] < 2) {
-                Log::info('Слишком частые запросы к API от пользователей аккаунта');
-                return response('ok');
-            } 
-            
-           
-            if(count($c) >= 100) {
-                $lastRequestTime['users_request_count'] = [];
-                $lastRequestTime['users_request_count'][] = time();
-                Storage::put('lastRequestTime.txt', json_encode($lastRequestTime));
-            }
-    
-    }
-
-
-    /**
      * Остановка цикла и ограничение кол-ва запросов к API
      */
     public function preventRequestInfiniteLoop(?array $lastRequestTime, string $accountId, string $lastLeadId)
