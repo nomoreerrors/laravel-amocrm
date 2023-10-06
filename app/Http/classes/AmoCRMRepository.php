@@ -61,8 +61,12 @@ class AmoCRMRepository extends BaseCRMRepository
             info('Отправил lead. id: '.$leadId);
         } catch (AmoCRMApiException $e) {
             if($e->getErrorCode() == 400) {
-                info('Код ошибки 400. ', [$e->getDescription(), $e->getMessage()]);
+                info('Код ошибки 400. Вероятно, попытка обновить несуществующую сделку. id: '.$lead->getId(),
+                [$e->getDescription(), $e->getMessage()]);
                 return response('ok');
+            }
+            else {
+                info($e->getMessage(), [$e->getDescription(), __CLASS__, __LINE__]);
             }
         }
     }

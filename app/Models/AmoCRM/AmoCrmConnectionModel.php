@@ -29,7 +29,7 @@ class AmoCrmConnectionModel extends BaseAmoCrmConnectionModel
     
     private function apiOAuthRequest($baseDomain, $auth_code)
     {
-        
+
         $this->apiClient->setAccountBaseDomain($baseDomain);
         $a = AmoCRMRepository::getTokenFromStorage();
         if(!$a) {
