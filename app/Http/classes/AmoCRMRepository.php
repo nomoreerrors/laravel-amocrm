@@ -63,11 +63,12 @@ class AmoCRMRepository extends BaseCRMRepository
             if($e->getErrorCode() == 400) {
                 info('Код ошибки 400. Вероятно, попытка обновить несуществующую сделку. id: '.$lead->getId(),
                 [$e->getDescription(), $e->getMessage()]);
-                return response('ok');
             }
             else {
                 info($e->getMessage(), [$e->getDescription(), __CLASS__, __LINE__]);
             }
+
+        return response('ok');
         }
     }
 

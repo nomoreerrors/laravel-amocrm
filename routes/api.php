@@ -4,6 +4,7 @@ use App\Http\Controllers\AmoCRM\AmoCrmController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\WebHookLeadUpdatesMiddleware;
+use App\Http\Middleware\WebhookMiddleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/getupdates', [AmoCrmController::class, 'getWebHookLeadUpdates'])
+                                ->middleware(WebhookMiddleware::class)
                                 ->name('getupdates');
 
                                 

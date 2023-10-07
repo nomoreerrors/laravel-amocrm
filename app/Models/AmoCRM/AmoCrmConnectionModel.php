@@ -14,9 +14,6 @@ use App\Models\AmoCRM\BaseAmoCrmConnectionModel;
  */
 class AmoCrmConnectionModel extends BaseAmoCrmConnectionModel
 {
-  
-    
-
     public function connect($config): void
     {
 

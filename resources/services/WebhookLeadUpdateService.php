@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 
 use App\Http\classes\AmoCRMRepository;
 use ErrorException;
-use Illuminate\Support\Facades\Storage;
+
 
 /**
  * Обработка полей полученных с webhook данных 
@@ -20,19 +20,19 @@ class WebhookLeadUpdateService extends BaseWebhookService
      * Полученные данные с webhook.
      * @var array
      */
-    private array $data;
-    private $crmRepository;
+    public array $data;
 
 
 
     
-    public function __construct(array $data)
+    public function __construct(protected AmoCRMRepository $repository){}
+
+    
+    public function setData(array $data)
     {
         $this->data = $data;
-        $this->crmRepository = new AmoCRMRepository();
-
+        return $this;
     }
-
 
 
     /**
@@ -169,7 +169,7 @@ class WebhookLeadUpdateService extends BaseWebhookService
         $profitFieldId = $profitFieldId;
         $accountId = $accountId;
 
-        $this->crmRepository->setCustomFieldsValue($profitFieldId, $profit, $leadId);
+        $this->repository->setCustomFieldsValue($profitFieldId, $profit, $leadId);
 
 
     }

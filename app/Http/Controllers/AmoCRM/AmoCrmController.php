@@ -17,29 +17,17 @@ use App\Jobs\CacheRequestsJob;
 class AmoCrmController extends BaseController
 {   
 
-    /**
-     * id поля "Себестоимость" (value). 
-     * @var int costPriceId
-     */
-    private $primeCostFieldId = 2505835;
-
-    /**
-     * id поля "Прибыль"
-     * @var int $profitId
-     */
-    private $profitFieldId = 2505837;
+    public function __construct(protected WebhookLeadUpdateService $service, 
+                                protected AmoCRMConfig $config 
+                                ){}
 
     
-
-    
-
-
     /**
      * Аутентификация по коду авторизации и получение access token
      */
-    protected function authByCode(AmoCrmConnectionModel $crm, AmoCRMConfig $config): void
+    protected function authByCode(AmoCrmConnectionModel $crm): void
     {
-        $crm->connect($config);
+        $crm->connect($this->config);
     }
   
 
@@ -48,41 +36,11 @@ class AmoCrmController extends BaseController
     /**
      * Обработка входящих данных с webhook
      */
-    protected function getWebHookLeadUpdates(Request $request)
+    protected function getWebHookLeadUpdates(Request $request, WebhookLeadUpdateService $service)
     {   
-        $data = $request->all();
-        Storage::append('HOOK.txt', json_encode($data));
+        $data = $request->except('state');
 
-       
-
-        $webHookHandler = new WebhookLeadUpdateService($data);
-        $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
-        $lastLeadId = $webHookHandler->getKeyFromLeads('id'); 
-
-        info('incoming request. ', ['Lead id: '.$lastLeadId]);
-
-
-
-        $accountId = $webHookHandler->getAccount('id'); 
-        $state = (new AmoCRMConfig)->state;
-        $requestState = $data['state'];
-
-
-
-        $webHookHandler->checkState($state, $requestState)
-                        ->preventRequestInfiniteLoop($lastRequestTime, $accountId, $lastLeadId);
-
-
-        $price = $webHookHandler->getKeyFromLeads('price');
-        $primeCost = $webHookHandler->getCustomFieldValue($this->primeCostFieldId); 
-
-        if(!$price || !$primeCost) {
-            info('Поле бюджет или себестоимость не заполнено '. 'Lead id: '.$lastLeadId);
-            return response('ok');
-        }
-
-
-        CacheRequestsJob::dispatch(json_encode($data));
+        CacheRequestsJob::dispatch($request->except('state'));
         return response('ok');
        
        
@@ -93,20 +51,20 @@ class AmoCrmController extends BaseController
 
     protected function test(Request $request)
     {   
-        
+            
         $data = $request->all();
-        Storage::append('UHOOK.txt', json_encode($data));
+        Storage::append('UHOOK.txt', json_encode([$request->all(), $request->server()]));
 
        
 
-        $webHookHandler = new WebhookLeadUpdateService($data);
+        $this->service->setData($data);
         $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
-        $lastLeadId = $webHookHandler->getKeyFromLeads('id'); 
+        $lastLeadId = $this->service->getKeyFromLeads('id'); 
 
         info('incoming request to TEST. ', ['Lead id: '.$lastLeadId]);
 
         return response('ok');
 
     }
- 
+
 }
