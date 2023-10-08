@@ -36,14 +36,11 @@ class AmoCrmController extends BaseController
     /**
      * Обработка входящих данных с webhook
      */
-    protected function getWebHookLeadUpdates(Request $request, WebhookLeadUpdateService $service)
+    protected function getWebHookLeadUpdates(Request $request)
     {   
         $data = $request->except('state');
-
-        CacheRequestsJob::dispatch($request->except('state'));
+        CacheRequestsJob::dispatch($data);
         return response('ok');
-       
-       
     }
 
 
@@ -59,7 +56,7 @@ class AmoCrmController extends BaseController
 
         $this->service->setData($data);
         $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
-        $lastLeadId = $this->service->getKeyFromLeads('id'); 
+        $lastLeadId = $this->service->getKeyFromLead('id'); 
 
         info('incoming request to TEST. ', ['Lead id: '.$lastLeadId]);
 

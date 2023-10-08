@@ -34,16 +34,19 @@ class WebhookLeadUpdateService extends BaseWebhookService
         return $this;
     }
 
-
-    /**
-     * Возвращает всё поле - custom_fields или один из его объектов по id.
-     *  @throws Exception
-     */
-    public function getCustomFields()
+    
+    
+    public function getCustomFields(): ?array
     {   
-        $result = Arr::get($this->data, 'leads.update.0.custom_fields');
-        return $result;
-
+        $c = $this->checkIfUpdateFieldExists();
+        $result = Arr::get($this->data, 'leads.'.$c.'.0.custom_fields');
+        
+        if($result) {
+            return $result;
+        } else {
+            Log::error('Поле custom_fields не найдено. '.$this->getLeadId(), [__CLASS__], __METHOD__);
+            return null;
+        }
     }
     
 
@@ -51,23 +54,18 @@ class WebhookLeadUpdateService extends BaseWebhookService
      * Возвращает объект leads->update/add по ключу.
      * @throws Exception
      */
-    public function getKeyFromLeads(?string $key = null): array | string
+    public function getKeyFromLead(string $key): mixed
     {
         $c = $this->checkIfUpdateFieldExists();
 
-        if(!$key) {
-            $result = Arr::get($this->data, 'leads.'.$c );
-            if($result) {
-                return $result;
-            }
-            else throw new ErrorException('Ключ update или add не найден');
+        $result = Arr::get($this->data, 'leads.'.$c.'.0');
+        if(array_key_exists($key, $result)) {
+            return $result[$key];
         }
-
-            $result = Arr::get($this->data, 'leads.'.$c.'.0');
-            if(array_key_exists($key, $result)) {
-                return $result[$key];
-            }
-            else throw new ErrorException('Ключ '.$key.' не найден');
+        else {
+            info('Ключ '.$key.' не найден. '.$this->getLeadId(), [__CLASS__, __METHOD__]);
+            return null;
+        }
 
     }
 
@@ -85,13 +83,13 @@ class WebhookLeadUpdateService extends BaseWebhookService
 
 
     /**
-     * Возвращает массив webhook - account.
+     * Возвращает массив account или одно из его значений по ключу.
      */
-    public function getAccount(?string $key = ''): string | array
+    public function getAccount(?string $key = ''): mixed
     {
        if(!$key) {
            $result = Arr::get($this->data, 'account');
-           return $result;
+                return $result;
        }
        else {
            $result = Arr::get($this->data, 'account.'.$key);
@@ -99,7 +97,7 @@ class WebhookLeadUpdateService extends BaseWebhookService
                 return $result;
            }
            else {
-                Log::info('Ключ '.$key.' не найден. ', [__CLASS__, __LINE__]);
+                Log::info('Ключ '.$key.' не найден. '.$this->getLeadId(), [__CLASS__, __LINE__]);
                 return null;
            }
        }
@@ -123,13 +121,13 @@ class WebhookLeadUpdateService extends BaseWebhookService
      * @throws Exception
      * @return string
      */
-    public function getCustomFieldValue(int $id): string | null
+    public function getCustomFieldValue(string $id): ?string 
     {
-        $result = $this->checkIfUpdateFieldExists();
-        $d = Arr::get($this->data, 'leads.'.$result.'.0.custom_fields');
+        $c = $this->checkIfUpdateFieldExists();
+        $result = Arr::get($this->data, 'leads.'.$c.'.0.custom_fields');
 
         try {
-        foreach($d as $obj) {
+        foreach($result as $obj) {
             if($obj['id'] == $id &&
                 array_key_exists('values', $obj)) {
                 return $obj['values'][0]['value'];
@@ -137,11 +135,10 @@ class WebhookLeadUpdateService extends BaseWebhookService
             }
         } catch(ErrorException) {
 
-                info('Поле value с id '.$id.' не найдено. ', 
-                 ['Lead id: '.Arr::get($this->data, 'leads.'.$result.'.0.id'), __CLASS__, __LINE__]);
+                info('Поле value с id '.$id.' не найдено. '.$this->getLeadId(),[__CLASS__, __LINE__]);
                 return null;
             } 
-        }
+    }
 
     
 
@@ -149,25 +146,18 @@ class WebhookLeadUpdateService extends BaseWebhookService
     /**
      * Обновить поле "Себестоимость".
      * @param int $primeCostFieldId id поля "себестоимость"
-     * @param int $primeCostFieldId id поля "прибыль"
+     * @param int $profitFieldId id поля "прибыль"
      */
-    public function updateProfitField(int $primeCostFieldId, int $profitFieldId)
+    public function updateProfitField(string $primeCostFieldId, string $profitFieldId)
     {
-        $accountId = $this->getAccount('id'); 
-       
 
         $primeCost = $this->getCustomFieldValue($primeCostFieldId); 
-        $price = $this->getKeyFromLeads('price');
+        $price = $this->getKeyFromLead('price');
+        $leadId = $this->getKeyFromLead('id');
 
-        
-        $leadId = $this->getKeyFromLeads('id');
-
-         
-
-        Log::info('6 updateprofilefield' , [__CLASS__]);
+        info('inside updateProfitField' , [__CLASS__]);
         $profit = (int)$price - (int)$primeCost;
-        $profitFieldId = $profitFieldId;
-        $accountId = $accountId;
+
 
         $this->repository->setCustomFieldsValue($profitFieldId, $profit, $leadId);
 
@@ -178,10 +168,23 @@ class WebhookLeadUpdateService extends BaseWebhookService
     public function checkState(string $state, string $requestState)
     {
         if((int)($requestState) !== (int)$state) {
-            throw new Exception('Неверный state в параметре запроса webhook' . __CLASS__);
+            throw new Exception('Неверный state в параметре запроса webhook '.$this->getLeadId(), __CLASS__);
             return response('ok');
         }
         return $this;
+    }
+
+
+    private function getLeadId(): ?string
+    {
+        $c = $this->checkIfUpdateFieldExists();
+        $result = Arr::get($this->data, 'leads'.$c.'id');
+        if($result) {
+            return 'Lead id: '.$result;
+        } else {
+            info('Ключ id или leads не существует', [__METHOD__]);
+            return null;
+        }
     }
 
 

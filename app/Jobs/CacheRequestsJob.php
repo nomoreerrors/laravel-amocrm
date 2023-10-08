@@ -31,13 +31,13 @@ class CacheRequestsJob implements ShouldQueue
      * id поля "Себестоимость" (value). 
      * @var int costPriceId
      */
-    private $primeCostFieldId = 2505835;
+    private string $primeCostFieldId = '2505835';
 
     /**
      * id поля "Прибыль"
      * @var int $profitId
      */
-    private $profitFieldId = 2505837;
+    private string $profitFieldId = '2505837';
 
 
     private $service;
