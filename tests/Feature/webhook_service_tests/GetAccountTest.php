@@ -4,26 +4,10 @@ namespace Tests\Feature\webhookservicetests;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
-use Tests\TestObjects;
-use Resources\Services\WebhookLeadUpdateService;
-use App\Http\classes\AmoCRMRepository;
+use Tests\Feature\webhookservicetests\BaseWebhookServiceTest;
 
-class GetAccountTest extends TestCase
+class GetAccountTest extends BaseWebhookServiceTest
 {
-    private $data;
-    private $testObjects;
-    private $service;
-
-    protected function setUp():void
-    {
-        parent::setUp();
-        $this->testObjects = new TestObjects();
-        $this->service = new WebhookLeadUpdateService(new AmoCRMRepository);
-        
-    }
-  
-
     
     public function test_key_argument_not_set_return_account_array(): void
     {

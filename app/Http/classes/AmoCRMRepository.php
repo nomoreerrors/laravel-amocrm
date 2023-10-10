@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\classes;
 
 use App\Models\AmoCRM\AmoCrmConnectionModel;
@@ -13,7 +15,7 @@ use Illuminate\Support\Facades\Storage;
 use League\OAuth2\Client\Token\AccessToken;
 use Illuminate\Support\Facades\Log;
 use App\Http\classes\BaseCRMRepository;
-
+use Exception;
 
 class AmoCRMRepository extends BaseCRMRepository
 {
@@ -29,47 +31,27 @@ class AmoCRMRepository extends BaseCRMRepository
 
 
     /**
-     * Подготовка поля value и отправка в AmoCRM
      * @param int $fieldId - id кастомного поля
-     * @param int $value - желаемое значение кастомного поля
-     * @param int $leadId - id сделки
+     * @param int $data - желаемое значение кастомного поля (value)
      * @throws AmoCRMApiException
      */
-    public function setCustomFieldsValue(int $fieldId, int $value, string $leadId)
+    public function createCustomFieldsTextValue(int $fieldId, string $data)
     {
-        $leadsService = $this->crm->apiClient->leads();
-        $lead = new LeadModel();
-        $leadCustomFieldsValues = new CustomFieldsValuesCollection();
-        $textCustomFieldValueModel = new TextCustomFieldValuesModel();
-        $textCustomFieldValueModel->setFieldId($fieldId);
-     
-      
-        $textCustomFieldValueModel->setValues(
-            (new TextCustomFieldValueCollection())
-                ->add((new TextCustomFieldValueModel())->setValue($value))
-        );
-        $leadCustomFieldsValues->add($textCustomFieldValueModel);
-        $lead->setCustomFieldsValues($leadCustomFieldsValues);
-        $lead->setId($leadId);
-        info('setcustomfieldsvalue' , [__CLASS__]);
 
+            $value = (new TextCustomFieldValueModel())
+                                        ->setValue($data);
 
+            $valueCollection =  (new TextCustomFieldValueCollection())
+                                        ->add($value);
 
-        
-        try {
-            $lead = $leadsService->updateOne($lead);
-            info('Отправил lead. id: '.$leadId);
-        } catch (AmoCRMApiException $e) {
-            if($e->getErrorCode() == 400) {
-                info('Код ошибки 400. Вероятно, попытка обновить несуществующую сделку. id: '.$lead->getId(),
-                [$e->getDescription(), $e->getMessage()]);
-            }
-            else {
-                info($e->getMessage(), [$e->getDescription(), __CLASS__, __LINE__]);
-            }
+            $valuesModel = (new TextCustomFieldValuesModel())
+                                        ->setFieldId($fieldId)
+                                        ->setValues($valueCollection);
+                        
+            $valuesCollection = (new CustomFieldsValuesCollection())
+                                        ->add($valuesModel);
 
-        return response('ok');
-        }
+            return $valuesCollection;
     }
 
 
@@ -96,7 +78,7 @@ class AmoCRMRepository extends BaseCRMRepository
 
             
         } else {
-            exit('Invalid access token ' . var_export($accessToken, true));
+            exit('Одно или несколько полей access token отсутствуют ' . var_export($accessToken, true));
         }
         
     }
@@ -131,8 +113,30 @@ class AmoCRMRepository extends BaseCRMRepository
             
         } 
         else {
-            Log::error('Некоторые поля Access token отсутствуют');
+            info('Одно или несколько полей access token отсутствуют ' . var_export($accessToken, true));
             return false;
         }
     }
+
+
+    public function updateLead(LeadModel $lead): void
+    {
+        try {
+            $leadsService = $this->crm->apiClient->leads();
+            $leadsService->updateOne($lead);
+            info('Отправил lead. id: '.$lead->getId);
+            
+
+        } catch (AmoCRMApiException $e) {
+            if($e->getErrorCode() == 400) {
+                info('Код ошибки 400. Вероятно, попытка обновить несуществующую сделку. id: '.$lead->getId(),
+                [$e->getDescription(), $e->getMessage()]);
+            }
+            else {
+                info($e->getMessage(), [$e->getDescription(), __CLASS__, __LINE__]);
+            }
+        }
+    }
+
+
 }

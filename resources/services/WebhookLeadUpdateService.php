@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Resources\Services;
 
+use AmoCRM\Models\LeadModel;
 use Resources\Services\BaseWebhookService;
 use Exception;
 use Illuminate\Support\Arr;
@@ -63,8 +66,7 @@ class WebhookLeadUpdateService extends BaseWebhookService
             return $result[$key];
         }
         else {
-            info('Ключ '.$key.' не найден. '.$this->getLeadId(), [__CLASS__, __METHOD__]);
-            return null;
+            throw new ErrorException('Ключ '.$key.' не найден. '.$this->getLeadId());
         }
 
     }
@@ -121,24 +123,23 @@ class WebhookLeadUpdateService extends BaseWebhookService
      * @throws Exception
      * @return string
      */
-    public function getCustomFieldValue(string $id): ?string 
+    public function getCustomFieldValue(int $id): ?string 
     {
         $c = $this->checkIfUpdateFieldExists();
         $result = Arr::get($this->data, 'leads.'.$c.'.0.custom_fields');
 
-        try {
         foreach($result as $obj) {
             if($obj['id'] == $id &&
                 array_key_exists('values', $obj)) {
                 return $obj['values'][0]['value'];
-            }
-            }
-        } catch(ErrorException) {
-
-                info('Поле value с id '.$id.' не найдено. '.$this->getLeadId(),[__CLASS__, __LINE__]);
-                return null;
             } 
+            else {
+            throw new ErrorException('Поле value с id '.$id.' не найдено. '.$this->getLeadId());
+            }
+        } 
     }
+
+    
 
     
 
@@ -148,39 +149,46 @@ class WebhookLeadUpdateService extends BaseWebhookService
      * @param int $primeCostFieldId id поля "себестоимость"
      * @param int $profitFieldId id поля "прибыль"
      */
-    public function updateProfitField(string $primeCostFieldId, string $profitFieldId)
+    public function updateProfitField(int $primeCostFieldId, int $profitFieldId)
     {
+        try {
+            $primeCost = (int)$this->getCustomFieldValue($primeCostFieldId); 
+            $price = (int)$this->getKeyFromLead('price');
+            $leadId = (int)$this->getKeyFromLead('id');
+            $profit = strval($price - $primeCost);
 
-        $primeCost = $this->getCustomFieldValue($primeCostFieldId); 
-        $price = $this->getKeyFromLead('price');
-        $leadId = $this->getKeyFromLead('id');
+            $lead = new LeadModel();
+            $textValue = $this->repository->createCustomFieldsTextValue($profitFieldId, $profit);
 
-        info('inside updateProfitField' , [__CLASS__]);
-        $profit = (int)$price - (int)$primeCost;
+            $lead->setCustomFieldsValues($textValue)
+                 ->setId($leadId);
 
+            $this->repository->updateLead($lead);
 
-        $this->repository->setCustomFieldsValue($profitFieldId, $profit, $leadId);
-
-
+        } catch (Exception $e) {
+            info($e->getMessage(), [__METHOD__]);
+            return false;
+        }
     }
 
 
     public function checkState(string $state, string $requestState)
     {
         if((int)($requestState) !== (int)$state) {
-            throw new Exception('Неверный state в параметре запроса webhook '.$this->getLeadId(), __CLASS__);
-            return response('ok');
+            info('Неверный state в параметре запроса webhook '.$this->getLeadId());
+            return false;
+        } else {
+            return $this;
         }
-        return $this;
     }
 
 
-    private function getLeadId(): ?string
+    public function getLeadId(): ?int
     {
         $c = $this->checkIfUpdateFieldExists();
-        $result = Arr::get($this->data, 'leads'.$c.'id');
+        $result = Arr::get($this->data, 'leads.'.$c.'.0.id');
         if($result) {
-            return 'Lead id: '.$result;
+            return (int)$result;
         } else {
             info('Ключ id или leads не существует', [__METHOD__]);
             return null;

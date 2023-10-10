@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\AmoCRM;
 
 use AmoCRM\Models\LeadModel;
@@ -8,11 +10,13 @@ use Illuminate\Http\Request;
 use Resources\Services\WebhookLeadUpdateService;
 use App\Http\Controllers\AmoCRM\BaseController;
 use App\Http\classes\AmoCRMConfig;
-use Illuminate\Support\Facades\Log;
+use App\Http\classes\AmoCRMRepository;
 use Exception;
+use App\Http\classes\MyMock;
 use Illuminate\Support\Facades\Storage;
 use Resources\Factories\LeadsFactory;
 use App\Jobs\CacheRequestsJob;
+use PHPUnit\Framework\MockObject\Generator\MockClass;
 
 class AmoCrmController extends BaseController
 {   
@@ -29,7 +33,7 @@ class AmoCrmController extends BaseController
     {
         $crm->connect($this->config);
     }
-  
+
 
 
 
@@ -38,6 +42,7 @@ class AmoCrmController extends BaseController
      */
     protected function getWebHookLeadUpdates(Request $request)
     {   
+        // grep -wrin "declare" vendor/amocrm/amocrm-api-library   
         $data = $request->except('state');
         CacheRequestsJob::dispatch($data);
         return response('ok');

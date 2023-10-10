@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -19,7 +21,7 @@ class WebhookMiddleware extends BaseWebhookMiddleware
      * id поля "Себестоимость" (value). 
      * @var int costPriceId
      */
-    private $primeCostFieldId = 2505835;
+    private int $primeCostFieldId = 2505835;
 
   
 
@@ -38,18 +40,25 @@ class WebhookMiddleware extends BaseWebhookMiddleware
         $data = $request->all();
         Storage::append('HOOK.txt', json_encode([$request->all(), $request->server()]));
         $service = (new WebhookLeadUpdateService(new AmoCRMRepository()))->setData($data);
-
-
+        
         App::instance(WebhookLeadUpdateService::class, $service);
 
         $this->service->setData($data);
-        $lastLeadId = $this->service->getKeyFromLead('id'); 
+        $lastLeadId = $this->service->getLeadId(); 
+
+
+        
         $state = (new AmoCRMConfig)->state;
         $requestState = $data['state'];
+
         info('incoming request. ', ['Lead id: '.$lastLeadId]);
 
         // $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
-        $this->service->checkState($state, $requestState);
+        $result = $this->service->checkState($state, $requestState);
+        if(!$result) {
+            return response('Wrong state');
+            exit;
+        }
                         // ->preventRequestInfiniteLoop($lastRequestTime, $accountId, $lastLeadId);
 
 
@@ -58,10 +67,10 @@ class WebhookMiddleware extends BaseWebhookMiddleware
 
         if(!$price || !$primeCost) {
             info('Поле бюджет или себестоимость не заполнено '. 'Lead id: '.$lastLeadId);
-            return response('ok');
+            return response('Поле бюджет или себестоимость не заполнено ');
         }
 
-
+        
         return $next($request);
     }
 }

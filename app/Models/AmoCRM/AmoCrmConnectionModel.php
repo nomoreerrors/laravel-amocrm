@@ -14,12 +14,12 @@ use App\Models\AmoCRM\BaseAmoCrmConnectionModel;
  */
 class AmoCrmConnectionModel extends BaseAmoCrmConnectionModel
 {
-    public function connect($config): void
+    public function connect(object $config)
     {
 
         $this->apiClient = new AmoCRMApiClient($config->client_id, $config->client_secret, $config->redirect_uri);
-        $this->oAuthClient = $this->apiClient->getOAuthClient();
         $this->apiOAuthRequest($config->baseDomain, $config->auth_code);
+
     }
 
 
@@ -28,13 +28,13 @@ class AmoCrmConnectionModel extends BaseAmoCrmConnectionModel
     {
 
         $this->apiClient->setAccountBaseDomain($baseDomain);
-        $a = AmoCRMRepository::getTokenFromStorage();
-        if(!$a) {
+        $token = AmoCRMRepository::getTokenFromStorage();
+        if(!$token) {
             $this->accessToken = $this->apiClient
                                       ->getOAuthClient()
                                       ->getAccessTokenByCode($auth_code);
         } else {
-            $this->accessToken =  $a;
+            $this->accessToken =  $token;
           
         }   
 
@@ -46,7 +46,7 @@ class AmoCrmConnectionModel extends BaseAmoCrmConnectionModel
                         AmoCRMRepository::saveTokenToStorage($accessToken, $baseDomain);
                     });
  
-        if(!$a) {
+        if(!$token) {
             AmoCRMRepository::saveTokenToStorage($this->accessToken, $baseDomain);
         }
             
@@ -63,7 +63,7 @@ class AmoCrmConnectionModel extends BaseAmoCrmConnectionModel
 
     public function getOauthClient(): AmoCRMOAuth
     {
-        return $this->oAuthClient;
+        return $this->apiClient->getOauthClient();
     }
 
 

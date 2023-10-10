@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
@@ -27,17 +29,15 @@ class CacheRequestsJob implements ShouldQueue
     /** @var int retry times if job failed */
     public $tries = 1;
 
-    /**
-     * id поля "Себестоимость" (value). 
-     * @var int costPriceId
-     */
-    private string $primeCostFieldId = '2505835';
+    
+    /** @var int $primeCostFieldId */
+    private int $primeCostFieldId = 2505835;
 
     /**
      * id поля "Прибыль"
      * @var int $profitId
      */
-    private string $profitFieldId = '2505837';
+    private int $profitFieldId = 2505837;
 
 
     private $service;
@@ -56,7 +56,9 @@ class CacheRequestsJob implements ShouldQueue
      */
     public function handle(WebhookLeadUpdateService $service): void
     {   
-
+        //Написать тест для очереди
+        //Избавиться от preventInfiniteLoop, если возможно
+        //Задача на завтра
         Redis::throttle('key')->block(0)->allow(3)->every(1)->then(function () use ($service){
             info('Job в очереди выполняется...');
 

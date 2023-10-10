@@ -17,8 +17,8 @@ class BaseAmoCrmConnectionModel implements CrmConnectionInterface
   
 
       
-    public function connect($config): void
+    public function connect(object $config)
     {
-        //
+       
     }
 }
