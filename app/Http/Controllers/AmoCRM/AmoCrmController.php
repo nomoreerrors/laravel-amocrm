@@ -42,10 +42,12 @@ class AmoCrmController extends BaseController
      */
     protected function getWebHookLeadUpdates(Request $request)
     {   
+       
         // grep -wrin "declare" vendor/amocrm/amocrm-api-library   
         $data = $request->except('state');
+
         CacheRequestsJob::dispatch($data);
-        return response('ok');
+        // return response('send to queue');
     }
 
 
@@ -57,15 +59,15 @@ class AmoCrmController extends BaseController
         $data = $request->all();
         Storage::append('UHOOK.txt', json_encode([$request->all(), $request->server()]));
 
-       
+
 
         $this->service->setData($data);
-        $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
+
         $lastLeadId = $this->service->getKeyFromLead('id'); 
 
         info('incoming request to TEST. ', ['Lead id: '.$lastLeadId]);
 
-        return response('ok');
+        // return response('ok');
 
     }
 

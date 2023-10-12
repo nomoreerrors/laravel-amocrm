@@ -7,28 +7,19 @@ namespace App\Jobs;
 use Illuminate\Bus\Queueable;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
-use App\Jobs\Middleware\RedisRateLimitMiddleware;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Http\classes\AmoCRMConfig;
-use Exception;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Resources\Services\WebhookLeadUpdateService;
-use Illuminate\Support\Facades\Storage;
 
 class CacheRequestsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
 
-    private $request;
-
-    /** @var int retry times if job failed */
-    public $tries = 1;
-
+    private array $request;
     
     /** @var int $primeCostFieldId */
     private int $primeCostFieldId = 2505835;
@@ -42,6 +33,11 @@ class CacheRequestsJob implements ShouldQueue
 
     private $service;
 
+
+    /** @var int retry times if job failed */
+    public $tries = 10;
+
+
     /**
      * Create a new job instance.
      */
@@ -54,25 +50,26 @@ class CacheRequestsJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(WebhookLeadUpdateService $service): void
+    public function handle(WebhookLeadUpdateService $service): bool
     {   
-        //Написать тест для очереди
-        //Избавиться от preventInfiniteLoop, если возможно
-        //Задача на завтра
-        Redis::throttle('key')->block(0)->allow(3)->every(1)->then(function () use ($service){
             info('Job в очереди выполняется...');
-
+            
             $service->setData($this->request);
             $service->updateProfitField($this->primeCostFieldId, $this->profitFieldId);
-             
-
-        }, function () {
-            info('Job in failed block');
+            return true;
             
-
-            return $this->release(0);
-        });
     }
 
- 
+
+    public function withoutOverLapping(string $request): array
+    {
+        return [new WithoutOverlapping($request)];
+    }
+    
+
+    
+    public function middleware(): array
+    {
+        return $this->withoutOverLapping(json_encode($this->request));
+    }
 }

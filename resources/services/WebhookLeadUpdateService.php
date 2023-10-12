@@ -123,21 +123,24 @@ class WebhookLeadUpdateService extends BaseWebhookService
      * @throws Exception
      * @return string
      */
-    public function getCustomFieldValue(int $id): ?string 
+    public function getCustomFieldValue(int $id): string | null 
     {
         $c = $this->checkIfUpdateFieldExists();
         $result = Arr::get($this->data, 'leads.'.$c.'.0.custom_fields');
-
+        try {
         foreach($result as $obj) {
             if($obj['id'] == $id &&
                 array_key_exists('values', $obj)) {
                 return $obj['values'][0]['value'];
-            } 
-            else {
-            throw new ErrorException('Поле value с id '.$id.' не найдено. '.$this->getLeadId());
             }
+        }
+        }
+        catch(ErrorException $e) {
+            info($e->getMessage());
+            info('Поле value с id '.$id.' не найдено. '.$this->getLeadId());
+            return null;
         } 
-    }
+    } 
 
     
 
@@ -174,7 +177,8 @@ class WebhookLeadUpdateService extends BaseWebhookService
 
     public function checkState(string $state, string $requestState)
     {
-        if((int)($requestState) !== (int)$state) {
+        if($requestState !== $state) {
+            
             info('Неверный state в параметре запроса webhook '.$this->getLeadId());
             return false;
         } else {
@@ -183,7 +187,7 @@ class WebhookLeadUpdateService extends BaseWebhookService
     }
 
 
-    public function getLeadId(): ?int
+    public function getLeadId(): int
     {
         $c = $this->checkIfUpdateFieldExists();
         $result = Arr::get($this->data, 'leads.'.$c.'.0.id');

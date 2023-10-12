@@ -31,7 +31,7 @@ class UpdateProfitFieldTest extends BaseWebhookServiceTest
     public function test_object_has_no_any_field_return_false(): void
     {
        $this->service->setData($this->testObjects->getWithOutValues());
-       $this->assertFalse($this->service->updateProfitField($this->primeCostFieldId, $this->profitFieldId));
+       $this->assertNull($this->service->updateProfitField($this->primeCostFieldId, $this->profitFieldId));
 
     }
 }

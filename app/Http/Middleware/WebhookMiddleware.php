@@ -23,11 +23,9 @@ class WebhookMiddleware extends BaseWebhookMiddleware
      */
     private int $primeCostFieldId = 2505835;
 
-  
 
 
     public function __construct(protected WebhookLeadUpdateService $service){}
-
 
     /**
      * Handle an incoming request.
@@ -40,26 +38,24 @@ class WebhookMiddleware extends BaseWebhookMiddleware
         $data = $request->all();
         Storage::append('HOOK.txt', json_encode([$request->all(), $request->server()]));
         $service = (new WebhookLeadUpdateService(new AmoCRMRepository()))->setData($data);
-        
+       
         App::instance(WebhookLeadUpdateService::class, $service);
 
         $this->service->setData($data);
+
+
         $lastLeadId = $this->service->getLeadId(); 
-
-
-        
         $state = (new AmoCRMConfig)->state;
         $requestState = $data['state'];
 
         info('incoming request. ', ['Lead id: '.$lastLeadId]);
 
-        // $lastRequestTime = json_decode(Storage::get('lastRequestTime.txt'), true);
+
+
         $result = $this->service->checkState($state, $requestState);
         if(!$result) {
-            return response('Wrong state');
-            exit;
+            return response('Wrong state', 403);
         }
-                        // ->preventRequestInfiniteLoop($lastRequestTime, $accountId, $lastLeadId);
 
 
         $price = $this->service->getKeyFromLead('price');
@@ -67,7 +63,7 @@ class WebhookMiddleware extends BaseWebhookMiddleware
 
         if(!$price || !$primeCost) {
             info('Поле бюджет или себестоимость не заполнено '. 'Lead id: '.$lastLeadId);
-            return response('Поле бюджет или себестоимость не заполнено ');
+            return response('Поле бюджет или себестоимость не заполнено', 100);
         }
 
         
