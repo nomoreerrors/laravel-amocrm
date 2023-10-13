@@ -53,7 +53,7 @@ class WithoutOverlapping
      * @param  \DateTimeInterface|int  $expiresAfter
      * @return void
      */
-    public function __construct(string $key = '', ?int $releaseAfter = 0, int $expiresAfter = 0)
+    public function __construct($key = '', $releaseAfter = 0, $expiresAfter = 0)
     {
         $this->key = $key;
         $this->releaseAfter = $releaseAfter;

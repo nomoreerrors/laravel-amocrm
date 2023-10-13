@@ -16,6 +16,7 @@ use App\Http\classes\MyMock;
 use Illuminate\Support\Facades\Storage;
 use Resources\Factories\LeadsFactory;
 use App\Jobs\CacheRequestsJob;
+use App\Models\User;
 use PHPUnit\Framework\MockObject\Generator\MockClass;
 
 class AmoCrmController extends BaseController
@@ -42,8 +43,12 @@ class AmoCrmController extends BaseController
      */
     protected function getWebHookLeadUpdates(Request $request)
     {   
-       
         // grep -wrin "declare" vendor/amocrm/amocrm-api-library   
+        // User::create([
+        //     'name' => 'vvwefaffflya',
+        //     'email' => 'stavwefnffd',
+        //     'password' => 'fowiejfo20f2040240'
+        // ]);
         $data = $request->except('state');
 
         CacheRequestsJob::dispatch($data);

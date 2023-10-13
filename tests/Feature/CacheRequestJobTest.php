@@ -10,9 +10,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Mockery;
 use App\Jobs\CacheRequestsJob;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Resources\Services\WebhookLeadUpdateService;
 use Tests\TestCase;
 use Tests\TestObjects;
+use Illuminate\Support\Facades\Queue;
+
 
 class CacheRequestJobTest extends TestCase
 {
@@ -33,19 +37,19 @@ class CacheRequestJobTest extends TestCase
     }
 
 
-   public function test_return_true_after_job_is_done()
+   public function test_handle_method_returns_true()
    {
       $this->assertTrue($this->job->handle($this->service));
    }
 
    
 
-    public function test_withoutoverlapping_method_exists_and_argument_type_is_string(): void
+    public function test_request_job_can_be_shipped(): void
     {
-       $this->assertIsArray($this->job->withoutOverLapping('some_string'));
-       
-
- 
+    
+      Queue::fake();
+      $this->post('/api/getupdates', $this->object);
+      Queue::assertPushed(CacheRequestsJob::class);
     }
 }
 

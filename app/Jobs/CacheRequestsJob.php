@@ -30,7 +30,6 @@ class CacheRequestsJob implements ShouldQueue
      */
     private int $profitFieldId = 2505837;
 
-
     private $service;
 
 
@@ -53,7 +52,6 @@ class CacheRequestsJob implements ShouldQueue
     public function handle(WebhookLeadUpdateService $service): bool
     {   
             info('Job в очереди выполняется...');
-            
             $service->setData($this->request);
             $service->updateProfitField($this->primeCostFieldId, $this->profitFieldId);
             return true;
@@ -61,15 +59,12 @@ class CacheRequestsJob implements ShouldQueue
     }
 
 
-    public function withoutOverLapping(string $request): array
-    {
-        return [new WithoutOverlapping($request)];
-    }
+    
     
 
     
     public function middleware(): array
     {
-        return $this->withoutOverLapping(json_encode($this->request));
+        return [new WithoutOverlapping(json_encode($this->request))];
     }
 }

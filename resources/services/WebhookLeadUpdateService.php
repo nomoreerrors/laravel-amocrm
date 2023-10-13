@@ -177,6 +177,7 @@ class WebhookLeadUpdateService extends BaseWebhookService
 
     public function checkState(string $state, string $requestState)
     {
+        // dd($requestState, $state);
         if($requestState !== $state) {
             
             info('Неверный state в параметре запроса webhook '.$this->getLeadId());
